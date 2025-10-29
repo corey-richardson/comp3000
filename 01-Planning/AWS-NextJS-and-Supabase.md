@@ -42,4 +42,4 @@ Free or very low | Lots of AWS services that could add up quickly here
 
 Frontend: Next.js with React, host on Vercel <br>
 Backend: Supabase (PostgreSQL + Auth + Storage) <br>
-Computation: Python Microservice running Flask/FastAPI with archeryutils; seperate deployment?
+Computation: Python Microservice running Flask/FastAPI with archeryutils; seperate deployment? Could this be AWS Lambda?
