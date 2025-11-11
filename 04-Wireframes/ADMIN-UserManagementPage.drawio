@@ -1,0 +1,74 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.7 Chrome/138.0.7204.251 Electron/37.7.1 Safari/537.36" version="28.2.7">
+  <diagram name="Page-1" id="474E5ErVLRbHx7cPLsBT">
+    <mxGraphModel dx="1749" dy="1703" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-20" value="&lt;b&gt;&lt;u&gt;ADMIN only content&lt;/u&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;perimeterSpacing=0;arcSize=4;labelPosition=center;verticalLabelPosition=bottom;align=center;verticalAlign=top;fontColor=light-dark(#ff0000, #ededed);" vertex="1" parent="1">
+          <mxGeometry x="20" y="580" width="800" height="940" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-1" value="&lt;b&gt;&lt;font style=&quot;font-size: 36px;&quot;&gt;&amp;nbsp;TITLE&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="760" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-2" value="&lt;b&gt;NAV LINKS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="50" width="310" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-3" value="Member Management Table" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="760" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-4" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="620" width="480" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-5" value="Create Invite Form" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="620" width="240" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-6" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="40" y="600" as="sourcePoint" />
+            <mxPoint x="480" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-9" value="2.71" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="5e1Wwx-fwr6-dDHrlIOL-6">
+          <mxGeometry x="-0.0119" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-7" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="560" y="600" as="sourcePoint" />
+            <mxPoint x="800" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-10" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="5e1Wwx-fwr6-dDHrlIOL-7">
+          <mxGeometry x="0.0059" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-11" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="680" width="460" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-13" value="Outgoing Invites" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="50" y="640" width="460" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-14" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="750" width="460" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-15" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="820" width="460" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-16" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="890" width="460" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-17" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="960" width="460" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-18" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1030" width="460" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5e1Wwx-fwr6-dDHrlIOL-19" value="&quot;Danger Zone&quot;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1169" width="760" height="271" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
