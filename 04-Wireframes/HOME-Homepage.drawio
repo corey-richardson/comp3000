@@ -1,0 +1,25 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.7 Chrome/138.0.7204.251 Electron/37.7.1 Safari/537.36" version="28.2.7">
+  <diagram name="Page-1" id="riZw_S_W6IyfgxnPg9Mn">
+    <mxGraphModel dx="1224" dy="1192" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="PCTVF6sKzuRRoH023iDp-1" value="" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="760" height="1020" as="geometry" />
+        </mxCell>
+        <mxCell id="PCTVF6sKzuRRoH023iDp-2" value="TITLE AND PREAMBLE" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="60" width="720" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="PCTVF6sKzuRRoH023iDp-3" value="Tool description" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="420" width="720" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="PCTVF6sKzuRRoH023iDp-4" value="Login Form" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="640" width="340" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="PCTVF6sKzuRRoH023iDp-5" value="Signup Form" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="640" width="340" height="400" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
