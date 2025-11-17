@@ -1,2 +1,6 @@
 .env
+.env.local
+.password
+.supabase
 node_modules/
+/generated/prisma
