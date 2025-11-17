@@ -4,3 +4,5 @@
 .supabase
 node_modules/
 /generated/prisma
+
+.$*.bkp

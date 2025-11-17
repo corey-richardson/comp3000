@@ -1,0 +1,12 @@
+.sideForm {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 1167px) {
+    .sideForm {
+        grid-template-columns: 2.71fr 1fr;
+        gap: 2rem;
+    }
+}
