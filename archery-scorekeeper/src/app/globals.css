@@ -30,6 +30,10 @@ html, body {
   text-align: center !important;
 }
 
+.error-message {
+  color: red;
+}
+
 .small {
   font-size: 0.85rem;
   opacity: 0.7;

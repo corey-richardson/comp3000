@@ -1,5 +1,7 @@
 import sideFormStyles from "@/app/styles/SideForm.module.css";
 import Banner from "../components/Banner/Banner";
+import SignUpForm from "../components/Auth/SignUpForm";
+import LoginForm from "../components/Auth/LoginForm";
 
 import Link from "next/link";
 
@@ -28,6 +30,9 @@ export default async function LandingPage() {
             <div>
                 <h1>Auth Forms</h1>
                 <Link href="/dashboard">Dashboard</Link>
+
+                <LoginForm />
+                <SignUpForm />
             </div>
 
         </div>
