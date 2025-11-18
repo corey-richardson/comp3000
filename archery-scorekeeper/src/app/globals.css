@@ -19,8 +19,7 @@ html, body {
 
 .content {
   max-width: min(var(--max-content-width), 90vw) !important;
-  margin: 20px auto;
-  padding: 20px;
+  margin: 0 auto;
 }
 
 .bold {
