@@ -1,12 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase-client";
 
 const SignUpForm = () => {
-    const router = useRouter();
-
     const [ email, setEmail ] = useState("");
     const [ name, setName ] = useState("");
     const [ password, setPassword ] = useState("");
