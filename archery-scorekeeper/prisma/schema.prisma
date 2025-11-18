@@ -2,6 +2,18 @@
 // npx prisma generate
 
 // npx prisma studio
+// npx prisma format
+
+/*
+Schema Naming Conventions:
+
+Domain fields (defaultBowstlye, yearOfBirth, ...) use camelCase
+Relation fields (memberOf, invitesReceived, ...) use camelCase
+Metadata/Timestamps (created_at, updated_at, ...) use snake_case
+Models (EmergencyContact) use singular PascalCase
+Enum Objects (AgeCategories, ...) use PascalCase
+Enum values (OVER_FIFTY) use ALL_CAPS SNAKE_CASE 
+*/
 
 generator client {
   provider = "prisma-client-js"
@@ -13,10 +25,152 @@ datasource db {
   // directUrl = env("DIRECT_URL")
 }
 
+// Models
+
+model User {
+  id String @id @default(cuid())
+  name String
+  membershipNumber String? @unique
+  defaultBowstyle Bowstyle?
+  sex Sex?
+  yearOfBirth Int?
+
+  created_at DateTime @default(now())
+  updated_at DateTime?
+  archived_at DateTime?
+
+  memberOf Membership[]
+  invitesReceived Invite[] @relation("invitesReceived")
+  invitesSent Invite[] @relation("invitesSent")
+  emergencyContacts EmergencyContact[]
+  scores Score[]
+  scoresheets Scoresheet[]
+  recordsSummary RecordsSummary?
+}
+
+model Club {
+  id String @id @default(cuid())
+  name String @unique
+
+  created_at DateTime @default(now())
+  updated_at DateTime?
+  archived_at DateTime?
+
+  members Membership[]
+  invites Invite[]
+}
+
+model Membership {
+  id String @id @default(cuid())
+
+  clubId String
+  userId String
+
+  roles Role[]
+  joined_at DateTime @default(now())
+  ended_at DateTime?
+
+  club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Invite {
+  id String @id @default(cuid())
+
+  clubId String
+  userId String?
+  membershipNumber String?
+
+  invitedBy String
+  status InviteStatus @default(PENDING)
+
+  created_at DateTime @default(now())
+  accepted_at DateTime?
+  declined_at DateTime?
+
+  club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  invitee User? @relation("invitesReceived", fields: [userId], references: [id])
+  inviter User @relation("invitesSent", fields: [invitedBy], references: [id])
+}
+
+model EmergencyContact {
+  id String @id @default(cuid())
+  userId String 
+
+  name String
+  phoneNumber String
+  emailAddress String?
+  relationshipToUser RelationshipType?
+
+  updated_at DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Score {
+  id String @id @default(cuid())
+  userId String
+
+  dateShot DateTime
+  roundName String
+  venue Venue @default(INDOOR)
+  bowstyle Bowstyle
+
+  score Int
+  xs Int?
+  tens Int?
+  nines Int?
+  hits Int?
+
+  sex Sex @default(OPEN)
+  ageCategory AgeCategories @default(SENIOR)
+
+  notes String?
+  journal String?
+
+  roundIndoorClassification IndoorClassification?
+  roundOutdoorClassification OutdoorClassification?
+  roundHandicap Int?
+
+  submitted_at DateTime @default(now())
+  processed_at DateTime?
+  updated_at DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scoresheet Scoresheet?
+}
+
+model Scoresheet {
+  id String @id @default(cuid())
+  scoreId String @unique
+  fileUrl String
+  uploadedById String
+
+  score Score @relation(fields: [scoreId], references: [id], onDelete: Cascade)
+  uploadedBy User @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+}
+
+model RecordsSummary {
+  id String @id @default(cuid())
+  userId String @unique
+
+  indoorClassification IndoorClassification @default(UNCLASSIFIED)
+  indoorClassificationBadgeGiven IndoorClassification?
+  indoorHandicap Int?
+  
+  outdoorClassification OutdoorClassification @default(UNCLASSIFIED)
+  outdoorClassificationBadgeGiven OutdoorClassification?
+  outdoorHandicap Int?
+
+  notes String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
 // Enumerated Types
 
-enum MembershipRole {
+enum Role {
   MEMBER
   COACH
   RECORDS
@@ -32,7 +186,7 @@ enum Bowstyle {
 }
 
 enum Sex {
-  MALE
+  OPEN
   FEMALE
   NOT_SET
 }
@@ -58,7 +212,7 @@ enum RelationshipType {
   OTHER
 }
 
-enum RoundType {
+enum Venue {
   INDOOR
   OUTDOOR
 }
@@ -88,9 +242,15 @@ enum OutdoorClassification {
   UNCLASSIFIED
 }
 
-enum CompetitionLevel {
+enum CompetitionStatus {
   PRACTICE
   CLUB_EVENT
   OPEN_COMPETITION
   RECORD_STATUS_COMPETITION
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
 }
