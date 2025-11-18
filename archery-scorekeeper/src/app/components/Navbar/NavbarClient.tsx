@@ -7,18 +7,26 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import styles from "./Navbar.module.css";
 import { HiMenu, HiOutlineChevronDown  } from "react-icons/hi";
+import { supabase } from "@/app/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 const NAVIGATION_LINKS = [
-  { href: "/", label: "Landing" },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/1", label: "Placeholder 1" },
-  { href: "/2", label: "Placeholder 2" },
-  { href: "/3", label: "Placeholder 3" },
+  // { href: "/1", label: "Placeholder 1" },
+  // { href: "/2", label: "Placeholder 2" },
+  // { href: "/3", label: "Placeholder 3" },
 ];
 
 const NavbarClient = () => {
+  const router = useRouter();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const handleSignout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  }
 
   return (
     <nav className={styles.navbar}>
@@ -49,6 +57,14 @@ const NavbarClient = () => {
             {link.label}
           </Link>
         ))}
+
+        <button
+          className={styles.navLink}
+          onClick={handleSignout}
+        >
+          Sign Out
+        </button>
+
       </div>
     </nav>
   );
