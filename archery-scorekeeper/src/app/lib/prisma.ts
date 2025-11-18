@@ -1,18 +1,18 @@
 import { PrismaClient } from "@prisma/client";
 
-declare global {
-    var prisma: PrismaClient | undefined;
-}
+const prisma = new PrismaClient().$extends({
+    model: {
+        user: {
+            async create(args: any, next: any) {
+                const user = await next(args);
+                await prisma.recordsSummary.create({
+                    data: {userId: user.id },
+                });
 
-let prisma: PrismaClient;
-
-if (process.env.NODE_ENV === "production") {
-    prisma = new PrismaClient();
-} else {
-    if (!global.prisma) {
-        global.prisma = new PrismaClient();
-    }
-    prisma = global.prisma;
-}
+                return user;
+            },
+        },
+    },
+});
 
 export default prisma;
