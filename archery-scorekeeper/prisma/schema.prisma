@@ -12,3 +12,85 @@ datasource db {
   url       = env("DATABASE_URL")
   // directUrl = env("DIRECT_URL")
 }
+
+
+// Enumerated Types
+
+enum MembershipRole {
+  MEMBER
+  COACH
+  RECORDS
+  CAPTAIN
+  ADMIN
+}
+
+enum Bowstyle {
+  BAREBOW
+  RECURVE
+  COMPOUND
+  LONGBOW
+}
+
+enum Sex {
+  MALE
+  FEMALE
+  NOT_SET
+}
+
+enum AgeCategories {
+  UNDER_12
+  UNDER_14
+  UNDER_15
+  UNDER_16
+  UNDER_18
+  UNDER_21
+  SENIOR
+  OVER_FIFTY
+}
+
+enum RelationshipType {
+  PARENT
+  GRANDPARENT
+  GUARDIAN
+  SPOUSE
+  SIBLING
+  FRIEND
+  OTHER
+}
+
+enum RoundType {
+  INDOOR
+  OUTDOOR
+}
+
+enum IndoorClassification {
+  IA3
+  IA2
+  IA1
+  IB3
+  IB2
+  IB1
+  IMB
+  IGMB
+  UNCLASSIFIED
+}
+
+enum OutdoorClassification {
+  A3
+  A2
+  A1
+  B3
+  B2
+  B1
+  MB
+  GMB
+  EMB
+  UNCLASSIFIED
+}
+
+enum CompetitionLevel {
+  PRACTICE
+  CLUB_EVENT
+  OPEN_COMPETITION
+  RECORD_STATUS_COMPETITION
+}
