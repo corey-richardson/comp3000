@@ -32,7 +32,7 @@ const Dashboard = async () => {
 
             <EmergencyContacts />
         </div>
-     );
+    );
 }
  
 export default Dashboard;

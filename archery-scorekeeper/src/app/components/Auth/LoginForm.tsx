@@ -19,7 +19,7 @@ const LoginForm = () => {
         setLoading(true);
         setError("");
 
-        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        const { data: _data, error: signInError } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
@@ -61,7 +61,7 @@ const LoginForm = () => {
                 { error && <p className="error-message">{ error }</p>}
             </form>
         </div>
-     );
+    );
 }
  
 export default LoginForm;

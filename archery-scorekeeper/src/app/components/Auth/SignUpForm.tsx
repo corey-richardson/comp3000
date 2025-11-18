@@ -104,7 +104,7 @@ const SignUpForm = () => {
                 { error && <p className="error-message">{ error }</p>}
             </form>
         </div>
-     );
+    );
 }
  
 export default SignUpForm;

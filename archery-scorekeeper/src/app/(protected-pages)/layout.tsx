@@ -7,30 +7,30 @@ import { createServerSupabase } from '@/app/utils/supabase/server';
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: {
-    template: `%s | ${ APP_NAME }`,
-    default:  `${ APP_NAME }`,
-  },
-  description: "Archery Scorekeeping Tool",
+    title: {
+        template: `%s | ${ APP_NAME }`,
+        default:  `${ APP_NAME }`,
+    },
+    description: "Archery Scorekeeping Tool",
 };
 
 export default async function RootLayout({
-  children,
+    children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
 
-  const supabase = await createServerSupabase();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) redirect("/");
+    const supabase = await createServerSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) redirect("/");
 
-  return (
-    <>
-      <Navbar />
+    return (
+        <>
+            <Navbar />
       
-      <div className="content">
-        {children}
-      </div>
-    </>
-  );
+            <div className="content">
+                {children}
+            </div>
+        </>
+    );
 }
