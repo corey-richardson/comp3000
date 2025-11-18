@@ -3,6 +3,9 @@ import { APP_NAME } from "../lib/constants";
 import Navbar from "../components/Navbar/Navbar";
 import "../globals.css";
 
+import { createServerSupabase } from '@/app/utils/supabase/server';
+import { redirect } from "next/navigation";
+
 export const metadata: Metadata = {
   title: {
     template: `%s | ${ APP_NAME }`,
@@ -11,11 +14,16 @@ export const metadata: Metadata = {
   description: "Archery Scorekeeping Tool",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const supabase = await createServerSupabase();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) redirect("/");
+
   return (
     <>
       <Navbar />
