@@ -60,6 +60,33 @@ const LoginForm = () => {
 
                 { error && <p className="error-message">{ error }</p>}
             </form>
+
+            <hr />
+
+            {/* <button
+                type="button"
+                disabled={loading}
+                onClick={() => {
+                    supabase.auth.signInWithOAuth({provider: "google"})
+                }}
+            >
+                Continue with Google
+            </button> */}
+            
+            <button
+                type="button"
+                disabled={loading}
+                onClick={() => {
+                    supabase.auth.signInWithOAuth({
+                        provider: "github",
+                        options: {
+                            redirectTo: `${window.location.origin}/auth/callback`
+                        }
+                    })
+                }}
+            >
+                Continue with GitHub
+            </button>
         </div>
     );
 }
