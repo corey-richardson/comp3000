@@ -1,6 +1,6 @@
 // npx prisma migrate dev --name <msg>
 // npx prisma generate
-
+// npx prisma db push
 // npx prisma studio
 // npx prisma format
 
@@ -26,7 +26,7 @@ datasource db {
 
 // Models
 
-model User {
+model Profile {
   id               String    @id @default(cuid())
   name             String
   membershipNumber String?   @unique
@@ -70,7 +70,7 @@ model Membership {
   ended_at  DateTime?
 
   club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Invite {
@@ -88,8 +88,8 @@ model Invite {
   declined_at DateTime?
 
   club    Club  @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  invitee User? @relation("invitesReceived", fields: [userId], references: [id])
-  inviter User  @relation("invitesSent", fields: [invitedBy], references: [id])
+  invitee Profile? @relation("invitesReceived", fields: [userId], references: [id])
+  inviter Profile  @relation("invitesSent", fields: [invitedBy], references: [id])
 }
 
 model EmergencyContact {
@@ -103,7 +103,7 @@ model EmergencyContact {
 
   updated_at DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Score {
@@ -135,7 +135,7 @@ model Score {
   processed_at DateTime?
   updated_at   DateTime?
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile       Profile        @relation(fields: [userId], references: [id], onDelete: Cascade)
   scoresheet Scoresheet?
 }
 
@@ -146,7 +146,7 @@ model Scoresheet {
   uploadedById String
 
   score      Score @relation(fields: [scoreId], references: [id], onDelete: Cascade)
-  uploadedBy User  @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  uploadedBy Profile  @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
 }
 
 model RecordsSummary {
@@ -163,7 +163,7 @@ model RecordsSummary {
 
   notes String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Enumerated Types

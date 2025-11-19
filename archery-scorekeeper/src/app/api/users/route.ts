@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
     try {
         const { id, name } = await request.json();
 
-        const user = await prisma.user.create({
+        const user = await prisma.profile.create({
             data: {
                 id, // From Supabase.auth
                 name,
