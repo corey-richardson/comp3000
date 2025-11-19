@@ -46,7 +46,7 @@ const SignUpForm = () => {
          * Key, RLS can be bypassed without exposing elevated permissions to the client. Yay!
          */
 
-        const response = await fetch("/api/users", {
+        const response = await fetch("/api/profiles", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify({
