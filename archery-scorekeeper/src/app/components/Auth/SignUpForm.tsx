@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { supabase } from "@/app/utils/supabase/client";
 
+import formStyles from "@/app/styles/Forms.module.css";
+
 const SignUpForm = () => {
     const [ email, setEmail ] = useState("");
     const [ name, setName ] = useState("");
@@ -80,8 +82,8 @@ const SignUpForm = () => {
     };
 
     return ( 
-        <div>
-            <h1>Sign Up</h1>
+        <div className={formStyles.formContainer}>
+            <h2>Sign Up</h2>
             <form onSubmit={handleSubmit}>
                 <input 
                     type="text"
@@ -118,6 +120,8 @@ const SignUpForm = () => {
                 <button type="submit" disabled={loading}>
                     {loading ? "Signing up..." : "Sign up"}
                 </button>
+
+                <button disabled>comouter say no</button>
 
                 { message && <p className="small">{ message }</p>}
                 { error && <p className="error-message">{ error }</p>}

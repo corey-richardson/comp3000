@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/utils/supabase/client";
 
+import formStyles from "@/app/styles/Forms.module.css";
+
 const LoginForm = () => {
     const router = useRouter();
 
@@ -35,8 +37,8 @@ const LoginForm = () => {
     }
 
     return ( 
-        <div>
-            <h1>Login</h1>
+        <div className={formStyles.formContainer}>
+            <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <input 
                     type="email" 
@@ -61,7 +63,7 @@ const LoginForm = () => {
                 { error && <p className="error-message">{ error }</p>}
             </form>
 
-            <hr />
+            <p className="small centred">or continue with</p>
 
             {/* <button
                 type="button"
@@ -70,7 +72,7 @@ const LoginForm = () => {
                     supabase.auth.signInWithOAuth({provider: "google"})
                 }}
             >
-                Continue with Google
+                Google
             </button> */}
             
             <button
@@ -85,7 +87,7 @@ const LoginForm = () => {
                     })
                 }}
             >
-                Continue with GitHub
+                GitHub
             </button>
         </div>
     );
