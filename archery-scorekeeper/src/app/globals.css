@@ -19,7 +19,7 @@ html, body {
 
 .content {
   max-width: min(var(--max-content-width), 90vw) !important;
-  margin: 0 auto;
+  margin: 3rem auto;
 }
 
 .bold {
