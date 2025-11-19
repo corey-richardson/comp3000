@@ -7,3 +7,5 @@ node_modules/
 
 # Draw.IO temp files
 .$*.bkp
+# Ignore Excel temp files
+~$*

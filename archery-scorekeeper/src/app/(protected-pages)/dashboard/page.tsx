@@ -7,6 +7,7 @@ import ClubCards from "@/app/components/ClubCards/ClubCards";
 import EmergencyContacts from "@/app/components/EmergencyContacts/EmergencyContacts";
 
 import { createServerSupabase } from "@/app/utils/supabase/server";
+import { cookies } from "next/headers";
 
 import dashboardStyles from "./Dashboard.module.css";
 
@@ -16,11 +17,22 @@ export const metadata: Metadata = {
 
 const Dashboard = async () => {
     const supabase = await createServerSupabase();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+
+    // console.log(supabaseUser?.id);
+
+    // const { data: userData, error } = await supabase
+    //     .from("Profile")
+    //     .select("name")
+    //     .eq("id", supabaseUser?.id)
+    //     .single();
+
+    // console.log(userData);
+    // console.log(error);
 
     return ( 
         <div>
-            <h1>{ user?.email }</h1>
+            <h1>{ supabaseUser?.id }</h1>
 
             <RecentScores />
             <CurrentClassificationsAndHandicaps />
