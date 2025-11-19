@@ -16,11 +16,11 @@ export const metadata: Metadata = {
 
 const Dashboard = async () => {
     const supabase = await createServerSupabase();
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { user } } = await supabase.auth.getUser();
 
     return ( 
         <div>
-            <h1>{ session?.user.email }</h1>
+            <h1>{ user?.email }</h1>
 
             <RecentScores />
             <CurrentClassificationsAndHandicaps />
