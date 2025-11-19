@@ -1,5 +1,7 @@
 import sideFormStyles from "@/app/styles/SideForm.module.css";
 import Banner from "../components/Banner/Banner";
+
+import formStyles from "./Forms.module.css";
 import SignUpForm from "../components/Auth/SignUpForm";
 import LoginForm from "../components/Auth/LoginForm";
 
@@ -25,8 +27,7 @@ export default async function LandingPage() {
 
             </div>
 
-            <div>
-                <h1>Auth Forms</h1>
+            <div className={formStyles.formBox}>
                 <LoginForm />
                 <SignUpForm />
             </div>
