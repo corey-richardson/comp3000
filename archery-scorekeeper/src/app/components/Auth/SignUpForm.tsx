@@ -35,6 +35,15 @@ const SignUpForm = () => {
             return;
         }
 
+        /** Using an API route to create a User record after sign up is the safer option here as
+         * after signup and until the user confirms their email address and then signs in, the 
+         * client is unauthenticated. Any inserts to the table from the browser would be under the
+         * `anon` role. Allowing `anon` to insert to the user table would requiring loosening RLS
+         * policies and granting write privileges to all unauthenticated visitors. 
+         * Instead, the request is done through a server-side API endpoint using the Service Role
+         * Key, RLS can be bypassed without exposing elevated permissions to the client. Yay!
+         */
+
         const response = await fetch("/api/users", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
@@ -51,6 +60,16 @@ const SignUpForm = () => {
             setLoading(false);
             return;
         }
+
+        // const { data: response, error: insertError } = await supabase
+        //     .from("User")
+        //     .insert([{ id: data.user.id, name }]);
+            
+        // if (insertError) {
+        //     setError(insertError.message || "Failed to create User record.");
+        //     setLoading(false);
+        //     return;
+        // }
 
         setMessage("Sign up successful! Please check your email to confirm your account before signing in.")
 
