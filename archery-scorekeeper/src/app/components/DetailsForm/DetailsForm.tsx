@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback,useEffect, useState } from "react";
 
 import type { ProfileData, PropTypes } from "@/types/profile";
 
@@ -15,6 +15,8 @@ const DetailsFormSkeleton = () => {
 const DetailsForm = ({userId} : PropTypes) => {
     const [ profile, setProfile ] = useState<ProfileData | null>(null);
 
+    const [ refreshFlag, setRefreshFlag ] = useState(false);
+    const [ changesPending, setChangesPending ] = useState(false);
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState("");
 
@@ -34,7 +36,38 @@ const DetailsForm = ({userId} : PropTypes) => {
         }
 
         fetchProfile(userId);
-    }, [ userId ]);
+    }, [ userId, refreshFlag ]);
+
+    // Handlers
+
+    // setName
+    // const handleInputChange = useCallback(
+    //     (setter: React.Dispatch<React.SetStateAction<string>>) => (
+    //         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    //             setter(e.target.value);
+    //             setChangesPending(true);
+    //         },
+    //     []
+    // );
+
+    const handleInputChange = useCallback(
+        (key: keyof ProfileData) => (
+            e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+                const newValue = e.target.value;
+
+                setProfile(prev => {
+                    if (!prev) return prev;
+
+                    return {
+                        ...prev,
+                        [key]: newValue
+                    };
+                });
+
+                setChangesPending(true);
+            },
+        []
+    );
 
     if (loading) {
         return <DetailsFormSkeleton />;
@@ -42,8 +75,57 @@ const DetailsForm = ({userId} : PropTypes) => {
 
     return ( 
         <div>
-            <h1>My Details:</h1>
-            <p>{ profile?.name }</p>
+            <h2>My Details:</h2>
+
+            <form>
+                <label htmlFor="name">*Name:</label>
+                <input type="text" id="name" value={profile?.name ?? ""} onChange={handleInputChange("name")} required/>
+
+                <label htmlFor="name">*Email:</label>
+                <input type="email" id="email" value={profile?.email ?? ""} onChange={handleInputChange("email")} required/>
+
+                <label>Archery GB Number:</label>
+                <input value={profile?.membershipNumber ?? ""} onChange={ handleInputChange("membershipNumber") } placeholder="1234567" />
+
+                <label>Sex Category (as per AGB):</label>
+                <select value={profile?.sex ?? "NOT_SET"} onChange={ handleInputChange("sex") }>
+                    <option value="NOT_SET" disabled>Please Select</option>
+                    <option value="OPEN">Open</option>
+                    <option value="FEMALE">Female</option>
+                </select>
+
+                <label>Year of Birth:</label>
+                <input
+                    value={profile?.yearOfBirth ?? ""}
+                    onChange={ handleInputChange("yearOfBirth") }
+                    type="number"
+                    step="1"
+                    min="1900" max={new Date().getFullYear()}
+                    placeholder="Please Set"/>
+
+                {/* <input disabled value={ageCategory ?? ""} /> */}
+
+                <label>Default Bowstyle:</label>
+                <select value={profile?.defaultBowstyle ?? "NOT_SET"} onChange={ handleInputChange("defaultBowstyle") }>
+                    <option disabled value="NOT_SET">Please Select</option>
+                    <option value="BAREBOW">Barebow</option>
+                    <option value="RECURVE">Recurve</option>
+                    <option value="COMPOUND">Compound</option>
+                    <option value="LONGBOW">Longbow</option>
+                </select>
+
+                { !loading && !changesPending && <button disabled>Save Details</button> }
+                { !loading && changesPending && <button type="submit">Save Details</button> }
+                { loading && <button disabled>Loading...</button> }
+            </form>
+
+            { !loading && (
+                <p className="small centred">
+                    Your details were last updated at { profile &&
+                        new Date(profile?.updated_at !== null ? profile.updated_at : profile.created_at).toLocaleString()
+                    }.
+                </p>
+            )}
             
             {error && <p className="error-message">{ error }</p>}
         </div>

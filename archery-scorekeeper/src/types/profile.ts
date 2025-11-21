@@ -10,6 +10,7 @@ export interface ProfileData {
     defaultBowstyle: string,
     membershipNumber: string,
     sex: string,
-    updatedAt: string,
     yearOfBirth: string,
+    updated_at: string,
+    created_at: string,
 }
