@@ -20,7 +20,6 @@ const DetailsForm = ({userId} : PropTypes) => {
 
     useEffect(() => {
         const fetchProfile = async (profileId : string) => {
-            console.log(profileId);
             const profileResponse = await fetch(`/api/profiles/${profileId}`);
             const profile = await profileResponse.json();
 
@@ -29,8 +28,6 @@ const DetailsForm = ({userId} : PropTypes) => {
                 setLoading(false);
                 return;
             }
-
-            console.log(profile);
 
             setProfile(profile);
             setLoading(false);

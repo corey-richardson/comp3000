@@ -30,7 +30,7 @@ const AuthCallback = () => {
                     });
                 }
                 catch (error) {
-                    console.log("Failed to create profile: " + error);
+                    console.error("Failed to create profile.");
                 }
 
                 router.push("/dashboard");
