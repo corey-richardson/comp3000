@@ -1,6 +1,4 @@
-interface PropTypes {
-    userId: string;
-}
+import type { ProfileData as _ProfileData, PropTypes } from "@/types/profile";
 
 const RecentScoresSkeleton = () => {
     return ( 
