@@ -1,4 +1,16 @@
-const ClubCards = () => {
+interface PropTypes {
+    userId: string;
+}
+
+const ClubCardsSkeleton = () => {
+    return ( 
+        <div>
+            <h1>My Clubs:</h1>
+        </div>
+    );
+}
+
+const ClubCards = ({userId} : PropTypes) => {
     return ( 
         <div>
             <h1>My Clubs:</h1>
@@ -6,4 +18,4 @@ const ClubCards = () => {
     );
 }
  
-export default ClubCards;
+export { ClubCardsSkeleton, ClubCards };
