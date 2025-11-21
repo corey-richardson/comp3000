@@ -3,7 +3,8 @@ import type { ProfileData as _ProfileData, PropTypes } from "@/types/profile";
 const EmergencyContactsSkeleton = () => {
     return ( 
         <div>
-            <h1>Emergency Contact Details</h1>
+            <h2>Emergency Contact Details</h2>
+            <p className="small centred">Loading...</p>
         </div>
     );
 }
@@ -11,7 +12,7 @@ const EmergencyContactsSkeleton = () => {
 const EmergencyContacts = ({userId} : PropTypes) => {
     return ( 
         <div>
-            <h1>Emergency Contact Details</h1>
+            <h2>Emergency Contact Details</h2>
         </div>
     );
 }

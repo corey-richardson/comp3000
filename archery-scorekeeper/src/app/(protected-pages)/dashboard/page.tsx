@@ -15,6 +15,9 @@ export const metadata: Metadata = {
     title: "Dashboard",
 };
 
+/* Suspense 'isolates' the loading time of each component, If one component is slow, React will still 
+render the components which have already loaded in the meantime; improved UX. */
+
 const Dashboard = async () => {
     const supabase = await createServerSupabase();
     const { data: { user: supabaseUser } } = await supabase.auth.getUser();

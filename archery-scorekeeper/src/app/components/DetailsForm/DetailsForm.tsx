@@ -7,7 +7,8 @@ import type { ProfileData, PropTypes } from "@/types/profile";
 const DetailsFormSkeleton = () => {
     return ( 
         <div>
-            <h1>My Details Skeleton:</h1>
+            <h2>My Details</h2>
+            <p className="small centred">Loading...</p>
         </div>
     );
 }
@@ -15,7 +16,7 @@ const DetailsFormSkeleton = () => {
 const DetailsForm = ({userId} : PropTypes) => {
     const [ profile, setProfile ] = useState<ProfileData | null>(null);
 
-    const [ refreshFlag, setRefreshFlag ] = useState(false);
+    const [ refreshFlag, setRefreshFlag ] = useState(false); // to be used in handleSubmit
     const [ changesPending, setChangesPending ] = useState(false);
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState("");
@@ -75,7 +76,7 @@ const DetailsForm = ({userId} : PropTypes) => {
 
     return ( 
         <div>
-            <h2>My Details:</h2>
+            <h2>My Details</h2>
 
             <form>
                 <label htmlFor="name">*Name:</label>
