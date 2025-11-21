@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/app/utils/supabase/client";
+import { useState } from "react";
 
 import formStyles from "@/app/styles/Forms.module.css";
+import { supabase } from "@/app/utils/supabase/client";
 
 const LoginForm = () => {
     const router = useRouter();

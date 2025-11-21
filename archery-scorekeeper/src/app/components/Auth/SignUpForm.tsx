@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/app/utils/supabase/client";
 
 import formStyles from "@/app/styles/Forms.module.css";
+import { supabase } from "@/app/utils/supabase/client";
+
 
 const SignUpForm = () => {
     const [ email, setEmail ] = useState("");

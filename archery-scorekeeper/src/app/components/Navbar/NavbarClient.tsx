@@ -1,14 +1,17 @@
 "use client";
 
-import { APP_NAME } from "@/app/lib/constants";
-import Link from "next/link";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import styles from "./Navbar.module.css";
-import { HiMenu, HiOutlineChevronDown  } from "react-icons/hi";
-import { supabase } from "@/app/utils/supabase/client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { HiMenu, HiOutlineChevronDown  } from "react-icons/hi";
+
+import { APP_NAME } from "@/app/lib/constants";
+import { supabase } from "@/app/utils/supabase/client";
+
+import styles from "./Navbar.module.css";
+
 
 const NAVIGATION_LINKS = [
     { href: "/dashboard", label: "Dashboard" },

@@ -1,4 +1,5 @@
 import { APP_NAME } from "@/app/lib/constants";
+
 import bannerStyles from "./Banner.module.css";
 
 const Banner = () => {

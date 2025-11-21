@@ -1,16 +1,15 @@
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { RecentScoresSkeleton, RecentScores } from "@/app/components/RecentScores/RecentScores";
+import { ClubCardsSkeleton, ClubCards } from "@/app/components/ClubCards/ClubCards";
 import { CurrentClassificationsAndHandicapsSkeleton, CurrentClassificationsAndHandicaps } from "@/app/components/CurrentClAndHc/CurrentClAndHc";
 import { DetailsFormSkeleton, DetailsForm } from "@/app/components/DetailsForm/DetailsForm";
-import { ClubCardsSkeleton, ClubCards } from "@/app/components/ClubCards/ClubCards";
 import { EmergencyContactsSkeleton, EmergencyContacts } from "@/app/components/EmergencyContacts/EmergencyContacts";
-
+import { RecentScoresSkeleton, RecentScores } from "@/app/components/RecentScores/RecentScores";
 import { createServerSupabase } from "@/app/utils/supabase/server";
 
 import dashboardStyles from "./Dashboard.module.css";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
     title: "Dashboard",

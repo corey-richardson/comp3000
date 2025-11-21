@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import { APP_NAME } from "./lib/constants";
 import "./globals.css";
 

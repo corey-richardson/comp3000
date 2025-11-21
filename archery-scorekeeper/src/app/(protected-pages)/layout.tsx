@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { APP_NAME } from "../lib/constants";
-import Navbar from "../components/Navbar/Navbar";
-import "../globals.css";
-
-import { createServerSupabase } from '@/app/utils/supabase/server';
 import { redirect } from "next/navigation";
+
+import Navbar from "@/app/components/Navbar/Navbar";
+import { createServerSupabase } from '@/app/utils/supabase/server';
+
+import { APP_NAME } from "../lib/constants";
+import "../globals.css";
 
 export const metadata: Metadata = {
     title: {
