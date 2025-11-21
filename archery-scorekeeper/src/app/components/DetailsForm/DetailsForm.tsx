@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback,useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import type { ProfileData, PropTypes } from "@/types/profile";
+import calculateAgeCategory from "@/app/lib/calculateAgeCategory";
+import EnumMap from "@/app/lib/enumMap";
 
 const DetailsFormSkeleton = () => {
     return ( 
@@ -15,6 +17,7 @@ const DetailsFormSkeleton = () => {
 
 const DetailsForm = ({userId} : PropTypes) => {
     const [ profile, setProfile ] = useState<ProfileData | null>(null);
+    const [ ageCategory, setAgeCategory ] = useState("NOT_SET");
 
     const [ refreshFlag, setRefreshFlag ] = useState(false); // to be used in handleSubmit
     const [ changesPending, setChangesPending ] = useState(false);
@@ -38,6 +41,11 @@ const DetailsForm = ({userId} : PropTypes) => {
 
         fetchProfile(userId);
     }, [ userId, refreshFlag ]);
+
+    useEffect(() => {
+        const year = parseInt(profile?.yearOfBirth ?? "");
+        setAgeCategory(calculateAgeCategory(year));
+    }, [ profile?.yearOfBirth ]);
 
     // Handlers
 
@@ -91,8 +99,8 @@ const DetailsForm = ({userId} : PropTypes) => {
                 <label>Sex Category (as per AGB):</label>
                 <select value={profile?.sex ?? "NOT_SET"} onChange={ handleInputChange("sex") }>
                     <option value="NOT_SET" disabled>Please Select</option>
-                    <option value="OPEN">Open</option>
-                    <option value="FEMALE">Female</option>
+                    <option value="OPEN">{ EnumMap["OPEN"] }</option>
+                    <option value="FEMALE">{ EnumMap["FEMALE"] }</option>
                 </select>
 
                 <label>Year of Birth:</label>
@@ -104,15 +112,15 @@ const DetailsForm = ({userId} : PropTypes) => {
                     min="1900" max={new Date().getFullYear()}
                     placeholder="Please Set"/>
 
-                {/* <input disabled value={ageCategory ?? ""} /> */}
+                <input disabled value={ageCategory ?? ""} />
 
                 <label>Default Bowstyle:</label>
                 <select value={profile?.defaultBowstyle ?? "NOT_SET"} onChange={ handleInputChange("defaultBowstyle") }>
                     <option disabled value="NOT_SET">Please Select</option>
-                    <option value="BAREBOW">Barebow</option>
-                    <option value="RECURVE">Recurve</option>
-                    <option value="COMPOUND">Compound</option>
-                    <option value="LONGBOW">Longbow</option>
+                    <option value="RECURVE">{ EnumMap["RECURVE"] }</option>
+                    <option value="BAREBOW">{ EnumMap["BAREBOW"] }</option>
+                    <option value="COMPOUND">{ EnumMap["COMPOUND"] }</option>
+                    <option value="LONGBOW">{ EnumMap["LONGBOW"] }</option>
                 </select>
 
                 { !loading && !changesPending && <button disabled>Save Details</button> }
