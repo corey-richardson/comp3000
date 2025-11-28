@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import type { ProfileData, PropTypes } from "@/types/profile";
 import calculateAgeCategory from "@/app/lib/calculateAgeCategory";
 import EnumMap from "@/app/lib/enumMap";
+import type { ProfileData, PropTypes } from "@/types/profile";
 
 const DetailsFormSkeleton = () => {
     return ( 
@@ -17,12 +17,14 @@ const DetailsFormSkeleton = () => {
 
 const DetailsForm = ({userId} : PropTypes) => {
     const [ profile, setProfile ] = useState<ProfileData | null>(null);
-    const [ ageCategory, setAgeCategory ] = useState("NOT_SET");
 
     const [ refreshFlag, setRefreshFlag ] = useState(false); // to be used in handleSubmit
     const [ changesPending, setChangesPending ] = useState(false);
+    const [originalEmail, setOriginalEmail] = useState<string | null>(null);
+
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState("");
+    const [ message, setMessage ] = useState("");
 
     useEffect(() => {
         const fetchProfile = async (profileId : string) => {
@@ -36,16 +38,16 @@ const DetailsForm = ({userId} : PropTypes) => {
             }
 
             setProfile(profile);
+            setOriginalEmail(profile.email);
             setLoading(false);
+
+            setMessage(`Your details were last updated at ${ profile &&
+                new Date(profile?.updated_at !== null ? profile.updated_at : profile.created_at).toLocaleString()
+            }.`);
         }
 
         fetchProfile(userId);
     }, [ userId, refreshFlag ]);
-
-    useEffect(() => {
-        const year = parseInt(profile?.yearOfBirth ?? "");
-        setAgeCategory(calculateAgeCategory(year));
-    }, [ profile?.yearOfBirth ]);
 
     // Handlers
 
@@ -62,21 +64,58 @@ const DetailsForm = ({userId} : PropTypes) => {
     const handleInputChange = useCallback(
         (key: keyof ProfileData) => (
             e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-                const newValue = e.target.value;
+            const newValue = e.target.value;
 
-                setProfile(prev => {
-                    if (!prev) return prev;
+            setProfile(prev => {
+                if (!prev) return prev;
 
-                    return {
-                        ...prev,
-                        [key]: newValue
-                    };
-                });
+                return {
+                    ...prev,
+                    [key]: newValue
+                };
+            });
 
-                setChangesPending(true);
-            },
+            setChangesPending(true);
+        },
         []
     );
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+
+        const emailChanged = profile?.email && profile.email !== originalEmail;
+
+        const response = await fetch(`/api/profiles/${userId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: profile?.name,
+                email: profile?.email,
+                membershipNumber: profile?.membershipNumber,
+                sex: profile?.sex === "NOT_SET" ? null : profile?.sex,
+                yearOfBirth: profile?.yearOfBirth ? parseInt(profile?.yearOfBirth) : null,
+                defaultBowstyle: profile?.defaultBowstyle === "NOT_SET" ? null : profile?.defaultBowstyle            
+            })
+        });
+
+        if (response.ok) {
+            setRefreshFlag(prev => !prev);
+            setChangesPending(false);
+            setLoading(false);
+            setError("");
+
+            if (emailChanged) {
+                setMessage("Check your emails to confirm email address change.");
+            } else {
+                setMessage("Your details have been updated.");
+            }
+        } else {
+            const data = await response.json();
+            setError(data.error);
+            setLoading(false);
+        }
+    }
 
     if (loading) {
         return <DetailsFormSkeleton />;
@@ -86,7 +125,7 @@ const DetailsForm = ({userId} : PropTypes) => {
         <div>
             <h2>My Details</h2>
 
-            <form>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="name">*Name:</label>
                 <input type="text" id="name" value={profile?.name ?? ""} onChange={handleInputChange("name")} required/>
 
@@ -112,7 +151,7 @@ const DetailsForm = ({userId} : PropTypes) => {
                     min="1900" max={new Date().getFullYear()}
                     placeholder="Please Set"/>
 
-                <input disabled value={ageCategory ?? ""} />
+                <input disabled value={calculateAgeCategory(parseInt(profile?.yearOfBirth ?? "") ?? EnumMap["SENIOR"])} />
 
                 <label>Default Bowstyle:</label>
                 <select value={profile?.defaultBowstyle ?? "NOT_SET"} onChange={ handleInputChange("defaultBowstyle") }>
@@ -128,12 +167,8 @@ const DetailsForm = ({userId} : PropTypes) => {
                 { loading && <button disabled>Loading...</button> }
             </form>
 
-            { !loading && (
-                <p className="small centred">
-                    Your details were last updated at { profile &&
-                        new Date(profile?.updated_at !== null ? profile.updated_at : profile.created_at).toLocaleString()
-                    }.
-                </p>
+            { !loading && message && (
+                <p className="small centred">{ message }</p>
             )}
             
             {error && <p className="error-message">{ error }</p>}
