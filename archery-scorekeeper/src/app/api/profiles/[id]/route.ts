@@ -90,7 +90,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         if (membershipNumber !== undefined) {
             const existingMembership = await prisma.profile.findFirst({
                 where: {
-                    membershipNumber: prismaData.membershipNumber,
+                    membershipNumber: membershipNumber,
                     NOT: { id: requestedId },
                 },
             });
