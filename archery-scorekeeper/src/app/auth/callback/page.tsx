@@ -29,7 +29,7 @@ const AuthCallback = () => {
                         }),
                     });
                 }
-                catch (error) {
+                catch (_error) {
                     console.error("Failed to create profile.");
                 }
 
