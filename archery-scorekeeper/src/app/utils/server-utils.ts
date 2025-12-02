@@ -26,7 +26,24 @@ export async function getEmailForUserId(userId: string) {
 }
 
 
-export async function requireRole(userId: string, requiredRoles: Role[]) {
+export async function requireRoleInClub(clubId: string, requiredRoles: Role[]) {
+    const requestor = await getAuthenticatedUser();
+
+    const membership = await prisma.membership.findFirst({
+        where: {
+            userId: requestor.id,
+            clubId,
+            ended_at: null,
+            roles: { hasSome: requiredRoles, }
+        },
+        select: { id: true },
+    });
+
+    return Boolean(membership);
+}
+
+
+export async function requireRoleInSharedClub(userId: string, requiredRoles: Role[]) {
     const requestor = await getAuthenticatedUser();
 
     const targetClubs = await prisma.membership.findMany({
@@ -41,6 +58,7 @@ export async function requireRole(userId: string, requiredRoles: Role[]) {
     const requestorMemberships = await prisma.membership.findMany({
         where: {
             userId: requestor.id,
+            ended_at: null,
             clubId: { in: clubIds },
             roles: { hasSome: requiredRoles, }
         },
@@ -51,7 +69,7 @@ export async function requireRole(userId: string, requiredRoles: Role[]) {
 }
 
 
-export async function requireRoleOrOwnership(requestorId: string, requestedId: string, requiredRoles: Role[]) {
+export async function requireRoleInSharedClubOrOwnership(requestorId: string, requestedId: string, requiredRoles: Role[]) {
     if (requestorId === requestedId) return true;
-    return await requireRole(requestorId, requiredRoles);
+    return await requireRoleInSharedClub(requestedId, requiredRoles);
 }

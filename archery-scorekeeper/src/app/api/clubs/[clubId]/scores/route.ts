@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import prisma from "@/app/lib/prisma";
-import { getAuthenticatedUser, requireRole } from "@/app/utils/server-utils";
+import { getAuthenticatedUser, requireRoleInClub } from "@/app/utils/server-utils";
 
 export async function GET({ params }: { params: { clubId: string } }) {
     const { clubId } = await params;
@@ -12,7 +12,7 @@ export async function GET({ params }: { params: { clubId: string } }) {
 
     try {
         const requestor = await getAuthenticatedUser();
-        const isElevated = await requireRole(requestor.id, ["ADMIN", "CAPTAIN", "RECORDS"]);
+        const isElevated = await requireRoleInClub(clubId, ["ADMIN", "CAPTAIN", "RECORDS"]);
 
         if (!isElevated) {
             return NextResponse.json({ error: "Unauthorised." }, { status: 401 });

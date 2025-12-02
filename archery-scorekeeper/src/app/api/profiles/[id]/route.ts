@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 import prisma from "@/app/lib/prisma";
-import { getAuthenticatedUser, requireRole, getEmailForUserId } from "@/app/utils/server-utils";
+import { getAuthenticatedUser, requireRoleInSharedClub, getEmailForUserId } from "@/app/utils/server-utils";
 import { createServerSupabase } from "@/app/utils/supabase/server";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
@@ -15,7 +15,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     try {
         const requestor = await getAuthenticatedUser();
         const isOwner = requestor.id === requestedId;
-        const isElevated = await requireRole(requestor.id, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
+        const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
 
         if (!isOwner && !isElevated) {
             return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
@@ -59,7 +59,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     try {
         const requestor = await getAuthenticatedUser();
         const isOwner = requestor.id === requestedId;
-        const isElevated = await requireRole(requestor.id, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
+        const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
 
         if (!isOwner && !isElevated) {
             return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
@@ -135,7 +135,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     try {
         const requestor = await getAuthenticatedUser();
         const isOwner = requestor.id === requestedId;
-        const isElevated = await requireRole(requestor.id, ["ADMIN"]);
+        const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN"]);
 
         if (!isOwner && !isElevated) {
             return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
