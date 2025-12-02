@@ -36,8 +36,25 @@ export async function DELETE(request: Request, { params }: { params: { clubId: s
     }
 
     try {
-        await prisma.membership.deleteMany({ where: { clubId: clubId } });
-        await prisma.club.delete({ where: { id: clubId } });
+        // await prisma.membership.deleteMany({ where: { clubId: clubId } });
+        // await prisma.club.delete({ where: { id: clubId } });
+        const now = new Date();
+
+        // Transaction ensures both updates succeed before committing, 
+        // or NO changes are made if an error does occur.
+        await prisma.$transaction([
+            prisma.membership.updateMany({ 
+                where: { 
+                    clubId: clubId,
+                    ended_at: null,
+                },
+                data: { ended_at: now },
+            }),
+            prisma.club.update({
+                where: { id: clubId },
+                data: { archived_at: now },
+            }),
+        ]);
 
         return NextResponse.json({ message: "Club deleted successfully." }, { status: 200 });
     } catch (error: unknown) {
