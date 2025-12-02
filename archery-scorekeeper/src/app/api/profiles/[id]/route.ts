@@ -123,3 +123,42 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         return NextResponse.json({ error: "Internal Server Error: " + error }, { status: 500 });
     }
 }
+
+/** UNTESTED */
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+    const { id: requestedId } = await params;
+
+    if (!requestedId) {
+        return NextResponse.json({ error: "Missing User ID field from request." }, { status: 400 });
+    }
+
+    try {
+        const requestor = await getAuthenticatedUser();
+        const isOwner = requestor.id === requestedId;
+        const isElevated = await requireRole(requestor.id, ["ADMIN"]);
+
+        if (!isOwner && !isElevated) {
+            return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+        }
+
+        const deletedProfile = await prisma.profile.delete({
+            where: { id: requestedId },
+        });
+
+        if (!deletedProfile) {
+            return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+        }
+
+        const supabase = await createServerSupabase();
+        const { error: deleteError } = await supabase.auth.admin.deleteUser(requestedId);
+
+        if (deleteError) {
+            return NextResponse.json({ error: "Failed to delete user in authentication service." }, { status: 500 });
+        }
+
+        return NextResponse.json(deletedProfile, { status: 200 });
+
+    } catch (error: unknown) {
+        return NextResponse.json({ error: "Internal Server Error: " + error }, { status: 500 });
+    }
+}
