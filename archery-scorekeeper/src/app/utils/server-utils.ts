@@ -69,8 +69,9 @@ export async function requireRoleInSharedClub(userId: string, requiredRoles: Rol
 }
 
 
-export async function requireRoleInSharedClubOrOwnership(requestorId: string, requestedId: string, requiredRoles: Role[]) {
-    if (requestorId === requestedId) return true;
+export async function requireRoleInSharedClubOrOwnership(requestedId: string, requiredRoles: Role[]) {
+    const requestor = await getAuthenticatedUser();
+    if (requestor.id === requestedId) return true;
     return await requireRoleInSharedClub(requestedId, requiredRoles);
 }
 

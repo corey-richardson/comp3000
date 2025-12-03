@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import prisma from "@/app/lib/prisma";
-import { getAuthenticatedUser, requireRoleInSharedClubOrOwnership } from "@/app/utils/server-utils";
+import { requireRoleInSharedClubOrOwnership } from "@/app/utils/server-utils";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -15,8 +15,7 @@ export async function GET(request: Request) {
     }
 
     try {
-        const requestor = await getAuthenticatedUser();
-        const isAllowed = await requireRoleInSharedClubOrOwnership(requestor.id, userId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
+        const isAllowed = await requireRoleInSharedClubOrOwnership(userId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
 
         if (!isAllowed) {
             return NextResponse.json(
