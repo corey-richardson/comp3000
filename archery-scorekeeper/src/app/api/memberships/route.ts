@@ -19,8 +19,8 @@ export async function GET(request: Request) {
 
         if (!isAllowed) {
             return NextResponse.json(
-                { error: "Unauthorised." }, 
-                { status: 401 }
+                { error: "Forbidden." }, 
+                { status: 403 }
             );
         }
 

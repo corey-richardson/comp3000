@@ -18,8 +18,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
         if (!isAllowed) {
             return NextResponse.json(
-                { error: "Unauthorised." }, 
-                { status: 401 }
+                { error: "Forbidden." }, 
+                { status: 403 }
             );
         }
 

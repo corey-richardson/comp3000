@@ -9,7 +9,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const { id: requestedId } = await params;
 
     if (!requestedId) {
-        return NextResponse.json({ error: "Missing User ID field from request." }, { status: 400 });
+        return NextResponse.json(
+            { error: "Missing User ID field from request." }, 
+            { status: 400 }
+        );
     }
 
     try {
@@ -18,7 +21,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
         const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
 
         if (!isOwner && !isElevated) {
-            return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+            return NextResponse.json(
+                { error: "Forbidden." }, 
+                { status: 403 }
+            );
         }
 
         const profileRecord = await prisma.profile.findUnique({
@@ -26,7 +32,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
         });               
 
         if (!profileRecord) {
-            return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+            return NextResponse.json(
+                { error: "Profile not found." }, 
+                { status: 404 }
+            );
         }
 
         let email = null;
@@ -45,7 +54,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
         return NextResponse.json(profile, { status: 200 });
     } 
     catch (error: unknown) {
-        return NextResponse.json({ error: "Internal Server Error: " + error }, { status: 500 });
+        return NextResponse.json(
+            { error: "Internal Server Error: " + error }, 
+            { status: 500 }
+        );
     }
 }
 
@@ -53,7 +65,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     const { id: requestedId } = await params;
 
     if (!requestedId) {
-        return NextResponse.json({ error: "Missing User ID field from request." }, { status: 400 });
+        return NextResponse.json(
+            { error: "Missing User ID field from request." }, 
+            { status: 400 }
+        );
     }
 
     try {
@@ -62,7 +77,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
 
         if (!isOwner && !isElevated) {
-            return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+            return NextResponse.json(
+                { error: "Forbidden." }, 
+                { status: 403 }
+            );
         }
         
         const body = await request.json();
@@ -96,7 +114,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
             });
 
             if (existingMembership) {
-                return NextResponse.json({ error: "Membership number already exists." }, { status: 409 });
+                return NextResponse.json(
+                    { error: "Membership number already exists." }, 
+                    { status: 409 }
+                );
             }
 
             // TODO: Handle updates to Invites when membership number changes
@@ -113,14 +134,23 @@ export async function PATCH(request: Request, { params }: { params: { id: string
             const { error: emailError } = await supabase.auth.updateUser({ email });
 
             if (emailError) {
-                return NextResponse.json({ error: "Failed to update email in authentication service." }, { status: 500 });
+                return NextResponse.json(
+                    { error: "Failed to update email in authentication service." }, 
+                    { status: 500 }
+                );
             }
         }
 
-        return NextResponse.json({...updatedProfile, email: isOwner ? (email ?? requestor.email) : null}, { status: 200 });
+        return NextResponse.json(
+            {...updatedProfile, email: isOwner ? (email ?? requestor.email) : null}, 
+            { status: 200 }
+        );
     }
     catch (error: unknown) {
-        return NextResponse.json({ error: "Internal Server Error: " + error }, { status: 500 });
+        return NextResponse.json(
+            { error: "Internal Server Error: " + error }, 
+            { status: 500 }
+        );
     }
 }
 
@@ -129,7 +159,10 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     const { id: requestedId } = await params;
 
     if (!requestedId) {
-        return NextResponse.json({ error: "Missing User ID field from request." }, { status: 400 });
+        return NextResponse.json(
+            { error: "Missing User ID field from request." }, 
+            { status: 400 }
+        );
     }
 
     try {
@@ -138,7 +171,10 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
         const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN"]);
 
         if (!isOwner && !isElevated) {
-            return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+            return NextResponse.json(
+                { error: "Forbidden." }, 
+                { status: 403 }
+            );
         }
 
         const deletedProfile = await prisma.profile.delete({
@@ -146,19 +182,28 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
         });
 
         if (!deletedProfile) {
-            return NextResponse.json({ error: "Profile not found." }, { status: 404 });
+            return NextResponse.json(
+                { error: "Profile not found." }, 
+                { status: 404 }
+            );
         }
 
         const supabase = await createServerSupabase();
         const { error: deleteError } = await supabase.auth.admin.deleteUser(requestedId);
 
         if (deleteError) {
-            return NextResponse.json({ error: "Failed to delete user in authentication service." }, { status: 500 });
+            return NextResponse.json(
+                { error: "Failed to delete user in authentication service." }, 
+                { status: 500 }
+            );
         }
 
         return NextResponse.json(deletedProfile, { status: 200 });
 
     } catch (error: unknown) {
-        return NextResponse.json({ error: "Internal Server Error: " + error }, { status: 500 });
+        return NextResponse.json(
+            { error: "Internal Server Error: " + error }, 
+            { status: 500 }
+        );
     }
 }

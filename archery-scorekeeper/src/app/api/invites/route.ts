@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         if (!isAllowed) {
             return NextResponse.json(
                 { error: "Unauthorised." }, 
-                { status: 401 }
+                { status: 403 }
             );
         }
 

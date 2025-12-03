@@ -7,7 +7,10 @@ export async function GET({ params }: { params: { id: string } }) {
     const { id: requestedId } = await params;
 
     if (!requestedId) {
-        return NextResponse.json({ error: "Missing User ID field from request." }, { status: 400 });
+        return NextResponse.json(
+            { error: "Missing User ID field from request." }, 
+            { status: 400 }
+        );
     }
 
     try {
@@ -16,7 +19,10 @@ export async function GET({ params }: { params: { id: string } }) {
         const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN", "CAPTAIN", "RECORDS"]);
 
         if (!isOwner && !isElevated) {
-            return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+            return NextResponse.json(
+                { error: "Forbidden." }, 
+                { status: 403 }
+            );
         }
 
         const scores = await prisma.score.findMany({
@@ -26,6 +32,9 @@ export async function GET({ params }: { params: { id: string } }) {
         return NextResponse.json(scores, { status: 200 });
     } 
     catch (error: unknown) {
-        return NextResponse.json({ error: "Internal Server Error: " + error }, { status: 500 });
+        return NextResponse.json(
+            { error: "Internal Server Error: " + error }, 
+            { status: 500 }
+        );
     }
 }

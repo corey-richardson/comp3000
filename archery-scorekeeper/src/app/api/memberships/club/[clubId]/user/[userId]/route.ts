@@ -17,8 +17,8 @@ export async function PATCH(request: Request, { params }: { params: { clubId: st
         const allowed = requireRoleInSpecificClubOrOwnership(userId, clubId, ["ADMIN"]);
         if (!allowed) {
             return NextResponse.json(
-                { error: "Unauthorised." }, 
-                { status: 401 }
+                { error: "Forbidden." }, 
+                { status: 403 }
             );
         }
 
@@ -86,8 +86,8 @@ export async function DELETE(request: Request, { params }: { params: { clubId: s
         const allowed = requireRoleInSpecificClubOrOwnership(userId, clubId, ["ADMIN"]);
         if (!allowed) {
             return NextResponse.json(
-                { error: "Unauthorised." }, 
-                { status: 401 }
+                { error: "Forbidden." }, 
+                { status: 403 }
             );
         }
 
