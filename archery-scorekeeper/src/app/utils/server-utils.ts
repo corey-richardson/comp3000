@@ -46,26 +46,44 @@ export async function requireRoleInClub(clubId: string, requiredRoles: Role[]) {
 export async function requireRoleInSharedClub(userId: string, requiredRoles: Role[]) {
     const requestor = await getAuthenticatedUser();
 
-    const targetClubs = await prisma.membership.findMany({
-        where: { userId },
-        select: { clubId: true }
-    });
+    // const targetClubs = await prisma.membership.findMany({
+    //     where: { userId },
+    //     select: { clubId: true }
+    // });
 
-    if (targetClubs.length === 0) return false;
-    const clubIds = targetClubs.map(club => club.clubId);
+    // if (targetClubs.length === 0) return false;
+    // const clubIds = targetClubs.map(club => club.clubId);
 
-    // Does the requestor have an elevated role in a club shared with the userId?
-    const requestorMemberships = await prisma.membership.findMany({
+    // // Does the requestor have an elevated role in a club shared with the userId?
+    // const requestorMemberships = await prisma.membership.findMany({
+    //     where: {
+    //         userId: requestor.id,
+    //         ended_at: null,
+    //         clubId: { in: clubIds },
+    //         roles: { hasSome: requiredRoles, }
+    //     },
+    //     select: { id: true }
+    // });
+
+    // Refactor into single, more efficient query
+    const hasRoleInSharedClub = await prisma.membership.findFirst({
         where: {
             userId: requestor.id,
             ended_at: null,
-            clubId: { in: clubIds },
-            roles: { hasSome: requiredRoles, }
+            roles: { hasSome: requiredRoles },
+            club: {
+                members: {
+                    some: { 
+                        userId, 
+                        ended_at: null,
+                    },
+                }
+            }
         },
         select: { id: true }
     });
 
-    return Boolean(requestorMemberships);
+    return Boolean(hasRoleInSharedClub);
 }
 
 
