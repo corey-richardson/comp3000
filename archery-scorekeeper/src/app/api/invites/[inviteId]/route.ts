@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { Role } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 import prisma from "@/app/lib/prisma";
 import { requireRoleInClub, requireRoleInSpecificClubOrOwnership } from "@/app/utils/server-utils";
