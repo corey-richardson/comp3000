@@ -6,9 +6,9 @@ import { getAuthenticatedUser, requireRoleInSharedClub, getEmailForUserId } from
 import { createServerSupabase } from "@/app/utils/supabase/server";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
-    const { id: requestedId } = await params;
+    const { id: targetUserId } = await params;
 
-    if (!requestedId) {
+    if (!targetUserId) {
         return NextResponse.json(
             { error: "Missing User ID field from request." }, 
             { status: 400 }
@@ -16,11 +16,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
 
     try {
-        const requestor = await getAuthenticatedUser();
-        const isOwner = requestor.id === requestedId;
-        const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
+        const requestingUser = await getAuthenticatedUser();
+        const isSelf = requestingUser.id === targetUserId;
+        const hasSharedClubPrivileges = await requireRoleInSharedClub(targetUserId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
 
-        if (!isOwner && !isElevated) {
+        if (!isSelf && !hasSharedClubPrivileges) {
             return NextResponse.json(
                 { error: "Forbidden." }, 
                 { status: 403 }
@@ -28,7 +28,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }
 
         const profileRecord = await prisma.profile.findUnique({
-            where: { id: requestedId },
+            where: { id: targetUserId },
         });               
 
         if (!profileRecord) {
@@ -39,11 +39,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }
 
         let email = null;
-        if (isOwner) {
-            email = requestor.email;
+        if (isSelf) {
+            email = requestingUser.email;
         } 
-        else if (isElevated) {
-            email = await getEmailForUserId(requestedId);
+        else if (hasSharedClubPrivileges) {
+            email = await getEmailForUserId(targetUserId);
         }
 
         const profile = {
@@ -62,9 +62,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-    const { id: requestedId } = await params;
+    const { id: targetUserId } = await params;
 
-    if (!requestedId) {
+    if (!targetUserId) {
         return NextResponse.json(
             { error: "Missing User ID field from request." }, 
             { status: 400 }
@@ -72,11 +72,11 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     }
 
     try {
-        const requestor = await getAuthenticatedUser();
-        const isOwner = requestor.id === requestedId;
-        const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
+        const requestingUser = await getAuthenticatedUser();
+        const isSelf = requestingUser.id === targetUserId;
+        const hasSharedClubPrivileges = await requireRoleInSharedClub(targetUserId, ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]);
 
-        if (!isOwner && !isElevated) {
+        if (!isSelf && !hasSharedClubPrivileges) {
             return NextResponse.json(
                 { error: "Forbidden." }, 
                 { status: 403 }
@@ -94,42 +94,59 @@ export async function PATCH(request: Request, { params }: { params: { id: string
             email // Owner only
         } = body;
 
-        const prismaData: Partial<Prisma.ProfileUpdateInput> = {
+        const profileUpdates: Partial<Prisma.ProfileUpdateInput> = {
             updated_at: new Date()
         };
 
-        if (name !== undefined) prismaData.name = name;
-        if (defaultBowstyle !== undefined) prismaData.defaultBowstyle = defaultBowstyle;
-        if (membershipNumber !== undefined) prismaData.membershipNumber = membershipNumber;
-        if (sex !== undefined) prismaData.sex = sex;
-        if (yearOfBirth !== undefined) prismaData.yearOfBirth = yearOfBirth;
-        
-        // Membership number uniqueness check
+        let previousMembershipNumber: string | null | undefined;
         if (membershipNumber !== undefined) {
-            const existingMembership = await prisma.profile.findFirst({
+            const currentProfile = await prisma.profile.findUnique({
+                where: { id: targetUserId},
+                select: { membershipNumber: true },
+            });
+
+            previousMembershipNumber = currentProfile?.membershipNumber;
+
+            const conflictingProfile = await prisma.profile.findFirst({
                 where: {
                     membershipNumber: membershipNumber,
-                    NOT: { id: requestedId },
+                    NOT: { id: targetUserId },
                 },
             });
 
-            if (existingMembership) {
+            if (conflictingProfile) {
                 return NextResponse.json(
-                    { error: "Membership number already exists." }, 
+                    { error: "Membership number already assigned to another user." }, 
                     { status: 409 }
                 );
             }
-
-            // TODO: Handle updates to Invites when membership number changes
         }
+        
+        if (name !== undefined) profileUpdates.name = name;
+        if (defaultBowstyle !== undefined) profileUpdates.defaultBowstyle = defaultBowstyle;
+        if (membershipNumber !== undefined) profileUpdates.membershipNumber = membershipNumber;
+        if (sex !== undefined) profileUpdates.sex = sex;
+        if (yearOfBirth !== undefined) profileUpdates.yearOfBirth = yearOfBirth;
+        
+        const updatedProfile = await prisma.$transaction(async (tx) => {
+            if (membershipNumber !== undefined && previousMembershipNumber !== membershipNumber) {
 
-        const updatedProfile = await prisma.profile.update({
-            where: { id: requestedId },
-            data: prismaData,
+                await tx.invite.updateMany({
+                    where: { membershipNumber, status: "PENDING" },
+                    data: { userId: targetUserId },
+                });
+            }
+
+            const profile = await tx.profile.update({
+                where: { id: targetUserId },
+                data: profileUpdates,
+            });
+
+            return profile;
         });
 
         // Email processing
-        if (isOwner && email !== undefined && email !== requestor.email) {
+        if (isSelf && email !== undefined && email !== requestingUser.email) {
             const supabase = await createServerSupabase();
             const { error: emailError } = await supabase.auth.updateUser({ email });
 
@@ -142,7 +159,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         }
 
         return NextResponse.json(
-            {...updatedProfile, email: isOwner ? (email ?? requestor.email) : null}, 
+            {...updatedProfile, email: isSelf ? (email ?? requestingUser.email) : null}, 
             { status: 200 }
         );
     }
@@ -156,9 +173,9 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 /** UNTESTED */
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-    const { id: requestedId } = await params;
+    const { id: targetUserId } = await params;
 
-    if (!requestedId) {
+    if (!targetUserId) {
         return NextResponse.json(
             { error: "Missing User ID field from request." }, 
             { status: 400 }
@@ -166,11 +183,11 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     }
 
     try {
-        const requestor = await getAuthenticatedUser();
-        const isOwner = requestor.id === requestedId;
-        const isElevated = await requireRoleInSharedClub(requestedId, ["ADMIN"]);
+        const requestingUser = await getAuthenticatedUser();
+        const isSelf = requestingUser.id === targetUserId;
+        const hasSharedClubPrivileges = await requireRoleInSharedClub(targetUserId, ["ADMIN"]);
 
-        if (!isOwner && !isElevated) {
+        if (!isSelf && !hasSharedClubPrivileges) {
             return NextResponse.json(
                 { error: "Forbidden." }, 
                 { status: 403 }
@@ -178,7 +195,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
         }
 
         const deletedProfile = await prisma.profile.delete({
-            where: { id: requestedId },
+            where: { id: targetUserId },
         });
 
         if (!deletedProfile) {
@@ -189,7 +206,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
         }
 
         const supabase = await createServerSupabase();
-        const { error: deleteError } = await supabase.auth.admin.deleteUser(requestedId);
+        const { error: deleteError } = await supabase.auth.admin.deleteUser(targetUserId);
 
         if (deleteError) {
             return NextResponse.json(
