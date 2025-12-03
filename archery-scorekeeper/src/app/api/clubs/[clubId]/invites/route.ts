@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import prisma from "@/app/lib/prisma";
-import { getAuthenticatedUser, requireRoleInClub } from "@/app/utils/server-utils";
+import { requireRoleInClub } from "@/app/utils/server-utils";
 
 export async function GET({ params }: { params: { clubId: string } }) {
     const { clubId } = await params;
@@ -11,7 +11,6 @@ export async function GET({ params }: { params: { clubId: string } }) {
     }
 
     try {
-        const requestor = await getAuthenticatedUser();
         const isElevated = await requireRoleInClub(clubId, ["ADMIN"]);
 
         if (!isElevated) {
