@@ -1,0 +1,268 @@
+// npx prisma migrate dev --name <msg>
+// npx prisma generate
+// npx prisma db push
+// npx prisma studio
+// npx prisma format
+
+/**
+ * Schema Naming Conventions:
+ * Domain fields (defaultBowstlye, yearOfBirth, ...) use camelCase
+ * Relation fields (memberOf, invitesReceived, ...) use camelCase
+ * Metadata/Timestamps (created_at, updated_at, ...) use snake_case
+ * Models (EmergencyContact) use singular PascalCase
+ * Enum Objects (AgeCategories, ...) use PascalCase
+ * Enum values (OVER_FIFTY) use ALL_CAPS SNAKE_CASE
+ */
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+}
+
+// Models
+
+model Profile {
+  id        String @id @default(cuid())
+  firstName String
+  lastName  String
+  username  String @unique
+  email     String @unique
+  hash String
+
+  membershipNumber String?   @unique
+  defaultBowstyle  Bowstyle?
+  sex              Sex?
+  yearOfBirth      Int?
+
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+  archived_at DateTime?
+
+  memberOf          Membership[]
+  invitesReceived   Invite[]           @relation("invitesReceived")
+  invitesSent       Invite[]           @relation("invitesSent")
+  emergencyContacts EmergencyContact[]
+  scores            Score[]
+  // scoresheets       Scoresheet[]
+  recordsSummary    RecordsSummary?
+  verifiedScores    Score[]            @relation("VerifiedScores")
+}
+
+model Club {
+  id   String @id @default(cuid())
+  name String @unique
+
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+  archived_at DateTime?
+
+  members Membership[]
+  invites Invite[]
+}
+
+model Membership {
+  id String @id @default(cuid())
+
+  clubId String
+  userId String
+
+  roles     Role[]
+  joined_at DateTime  @default(now())
+  ended_at  DateTime?
+
+  club    Club    @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Invite {
+  id String @id @default(cuid())
+
+  clubId           String
+  userId           String?
+  membershipNumber String?
+
+  invitedBy String
+  status    InviteStatus @default(PENDING)
+
+  created_at  DateTime  @default(now())
+  accepted_at DateTime?
+  declined_at DateTime?
+
+  club    Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  invitee Profile? @relation("invitesReceived", fields: [userId], references: [id])
+  inviter Profile  @relation("invitesSent", fields: [invitedBy], references: [id])
+}
+
+model EmergencyContact {
+  id     String @id @default(cuid())
+  userId String
+
+  name               String
+  phoneNumber        String
+  emailAddress       String?
+  relationshipToUser RelationshipType?
+
+  updated_at DateTime @default(now())
+
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Score {
+  id     String @id @default(cuid())
+  userId String
+
+  dateShot    DateTime
+  roundName   String
+  venue       Venue             @default(INDOOR)
+  competition CompetitionStatus @default(PRACTICE)
+  bowstyle    Bowstyle
+
+  score Int
+  xs    Int?
+  tens  Int?
+  nines Int?
+  hits  Int?
+
+  sex         Sex           @default(OPEN)
+  ageCategory AgeCategories @default(SENIOR)
+
+  notes   String?
+  journal String?
+
+  status       ScoreStatus @default(SUBMITTED)
+  verifiedById String? // RO that approved
+  verified_at  DateTime?
+
+  // Metrics for Flask archeryutils
+  classification String?
+  handicap       Float?
+
+  profile    Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verifiedBy Profile? @relation("VerifiedScores", fields: [verifiedById], references: [id])
+  // scoresheet Scoresheet?
+}
+
+// model Scoresheet {
+//   id           String @id @default(cuid())
+//   scoreId      String @unique
+//   fileUrl      String
+//   uploadedById String
+
+//   score      Score @relation(fields: [scoreId], references: [id], onDelete: Cascade)
+//   uploadedBy Profile  @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+// }
+
+model RecordsSummary {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  indoorClassification           IndoorClassification  @default(UNCLASSIFIED)
+  indoorClassificationBadgeGiven IndoorClassification?
+  indoorHandicap                 Int?
+
+  outdoorClassification           OutdoorClassification  @default(UNCLASSIFIED)
+  outdoorClassificationBadgeGiven OutdoorClassification?
+  outdoorHandicap                 Int?
+
+  notes String?
+
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Enumerated Types
+
+enum Role {
+  MEMBER
+  COACH
+  RECORDS
+  CAPTAIN
+  ADMIN
+}
+
+enum Bowstyle {
+  BAREBOW
+  RECURVE
+  COMPOUND
+  LONGBOW
+}
+
+enum Sex {
+  OPEN
+  FEMALE
+  NOT_SET
+}
+
+enum AgeCategories {
+  UNDER_12
+  UNDER_14
+  UNDER_15
+  UNDER_16
+  UNDER_18
+  UNDER_21
+  SENIOR
+  OVER_FIFTY
+}
+
+enum RelationshipType {
+  PARENT
+  GRANDPARENT
+  GUARDIAN
+  SPOUSE
+  SIBLING
+  FRIEND
+  OTHER
+}
+
+enum Venue {
+  INDOOR
+  OUTDOOR
+}
+
+enum IndoorClassification {
+  IA3
+  IA2
+  IA1
+  IB3
+  IB2
+  IB1
+  IMB
+  IGMB
+  UNCLASSIFIED
+}
+
+enum OutdoorClassification {
+  A3
+  A2
+  A1
+  B3
+  B2
+  B1
+  MB
+  GMB
+  EMB
+  UNCLASSIFIED
+}
+
+enum CompetitionStatus {
+  PRACTICE
+  CLUB_EVENT
+  OPEN_COMPETITION
+  RECORD_STATUS_COMPETITION
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum ScoreStatus {
+  SUBMITTED
+  VERIFIED
+  REJECTED
+}
