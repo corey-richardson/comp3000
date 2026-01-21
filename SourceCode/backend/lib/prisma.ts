@@ -6,6 +6,8 @@ declare global {
 
 let prisma: PrismaClient;
 
+console.log("Database URL Check:", process.env.DATABASE_URL?.split('@')[1]);
+
 if (process.env.NODE_ENV === "production") {
     prisma = new PrismaClient();
 } else {

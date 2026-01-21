@@ -30,6 +30,15 @@ app.get("/smoke-test", (request: Request, response: Response) => {
 // app.use("/api/scores", scoreRoutes);
 app.use("/api/users", userRoutes);
 
+app.use((request: Request, response: Response) => {
+    response.status(404).json({ error: "Not Found" });
+});
+
+app.use((error: Error, request: Request, response: Response, next: NextFunction) => {
+    console.error(error);
+    response.status(500).json({ error: "Internal Server Error" });
+});
+
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {

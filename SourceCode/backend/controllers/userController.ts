@@ -55,9 +55,10 @@ export const signupUser = async (request: Request, response: Response) => {
         });
 
         const token = createJwt(profile.id);
-        response.status(201).json({ username, email, token });
+        response.status(201).json({ id: profile.id, username, email, token });
 
     } catch (error: any) {
+        console.error(error.message);
         response.status(500).json({ error: "Internal error during signup." });
     }
 };
