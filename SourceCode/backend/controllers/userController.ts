@@ -9,6 +9,7 @@ const createJwt = (id: string) => {
     return jwt.sign({id}, process.env.SECRET as string, { expiresIn: "3d" });
 };
 
+// GET /api/user/signup
 export const signupUser = async (request: Request, response: Response) => {
     const { username, email, password, firstName, lastName } = request.body;
     const USERNAME_REGEX = /^(?![_-])[a-zA-Z0-9_-]{3,30}(?<![_-])$/;
@@ -63,6 +64,7 @@ export const signupUser = async (request: Request, response: Response) => {
     }
 };
 
+// GET /api/user/login
 export const loginUser = async (request: Request, response: Response) => {
     const { email, password } = request.body;
 
