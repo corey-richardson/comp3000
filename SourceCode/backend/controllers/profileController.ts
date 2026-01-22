@@ -121,3 +121,16 @@ export const updateProfile = async (request: Request, response: Response) => {
         response.status(500).json({ error: "Internal Server Error: " + error.message });
     }
 }
+
+// DELETE:
+/** CASCADE:
+ * - Memberships
+ * - Scores
+ * - Emergency Contacts
+ * - Records Summary
+ * - Invites Sent
+ */
+/** NULL:
+ * - Invites Received
+ * - Scores verifiedBy
+ */
