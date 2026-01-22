@@ -59,14 +59,30 @@ export const updateProfile = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
-        if (username || email || membershipNumber) {
+        // Will this work if a value isn't set? membershipNumber not a required field so
+        // could falsely match against someone else's "null" membershipNumber if not set. 
+        // if (username || email || membershipNumber) {
+        //     const conflict = await prisma.profile.findFirst({
+        //         where: {
+        //             OR: [
+        //                 { username },
+        //                 { email },
+        //                 { membershipNumber },
+        //             ],
+        //             NOT: { id: targetUserId },
+        //         },
+        //     });
+
+        const uniqueFields = [];
+        if (username) uniqueFields.push({ username });
+        if (email) uniqueFields.push({ email });
+        if (membershipNumber) uniqueFields.push({ membershipNumber });
+
+        if (uniqueFields.length > 0) {
+
             const conflict = await prisma.profile.findFirst({
                 where: {
-                    OR: [
-                        { username },
-                        { email },
-                        { membershipNumber },
-                    ],
+                    OR: uniqueFields,
                     NOT: { id: targetUserId },
                 },
             });
