@@ -4,13 +4,17 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 
 import userRoutes from "./routes/userRoutes";
+import profileRoutes from "./routes/profileRoutes";
 // import scoreRoutes from "./routes/scoreRoutes";
 
 // Express App
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:81"
+}));
+
 app.use(express.json());
 
 // Request Logging
@@ -29,9 +33,10 @@ app.get("/smoke-test", (request: Request, response: Response) => {
 // Routes
 // app.use("/api/scores", scoreRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/profiles", profileRoutes);
 
 app.use((request: Request, response: Response) => {
-    response.status(404).json({ error: "Not Found" });
+    response.status(404).json({ error: "Route Not Found!" });
 });
 
 app.use((error: Error, request: Request, response: Response, next: NextFunction) => {

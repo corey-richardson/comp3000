@@ -27,7 +27,6 @@ const DetailsForm = ({ }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             if (!user?.id) return;
-
             try {
                 const response = await fetch(`/api/profiles/${user.id}`, {
                     headers: {
@@ -125,7 +124,7 @@ const DetailsForm = ({ }) => {
                 <input type="text" id="username" value={profile?.username ?? ""} onChange={handleInputChange("username")} required/>
 
                 <label htmlFor="name">*Email:</label>
-                <input type="email" id="email" value={profile?.email ?? ""} onChange={handleInputChange("email")} disabled/>
+                <input type="email" id="email" value={profile?.email ?? ""} onChange={handleInputChange("email")} required/>
 
                 <label>Archery GB Number:</label>
                 <input value={profile?.membershipNumber ?? ""} onChange={ handleInputChange("membershipNumber") } placeholder="1234567" />
