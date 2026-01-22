@@ -4,6 +4,8 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import calculateAgeCategory from "../../lib/calculateAgeCategory.js";
 import EnumMap from "../../lib/enumMap.js";
 
+import formStyles from "../../styles/Forms.module.css";
+
 const DetailsFormSkeleton = () => {
     return ( 
         <div>
@@ -45,7 +47,7 @@ const DetailsForm = ({ }) => {
                 setProfile(data);
                 setLoading(false);
 
-                setMessage(`Your details were last updated at${
+                setMessage(`Your details were last updated at ${
                     new Date(data.updated_at || data.created_at).toLocaleString()
                 }.`);
             } catch (err) {
@@ -110,15 +112,21 @@ const DetailsForm = ({ }) => {
     if (loading) return <DetailsFormSkeleton />;
 
     return ( 
-        <div>
+        <div className={`${formStyles.formContainer} ${formStyles.fullWidth}`}>
             <h2>My Details</h2>
 
             <form onSubmit={handleSubmit}>
-                <label htmlFor="firstName">*First Name:</label>
-                <input type="text" id="firstName" value={profile?.firstName ?? ""} onChange={handleInputChange("firstName")} required/>
+                <div className={formStyles.row}>
+                    <div className={formStyles.fieldGroup}>
+                        <label htmlFor="firstName">*First Name:</label>
+                        <input type="text" id="firstName" value={profile?.firstName ?? ""} onChange={handleInputChange("firstName")} required/>
+                    </div>
 
-                <label htmlFor="lastName">*Last Name:</label>
-                <input type="text" id="lastName" value={profile?.lastName ?? ""} onChange={handleInputChange("lastName")} required/>
+                    <div className={formStyles.fieldGroup}>
+                        <label htmlFor="lastName">*Last Name:</label>
+                        <input type="text" id="lastName" value={profile?.lastName ?? ""} onChange={handleInputChange("lastName")} required/>
+                    </div>
+                </div>
 
                 <label htmlFor="username">*Username:</label>
                 <input type="text" id="username" value={profile?.username ?? ""} onChange={handleInputChange("username")} required/>

@@ -2,6 +2,8 @@
     display: grid;
     width: 100%;
     grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
 }
 
 @media (min-width: 1166px) {

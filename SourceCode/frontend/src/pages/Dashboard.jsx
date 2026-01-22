@@ -1,11 +1,10 @@
-import { Suspense } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 
-import { RecentScores, RecentScoresSkeleton } from "../components/RecentScores/RecentScores.jsx";
-import { CurrentClassificationsAndHandicaps, CurrentClassificationsAndHandicapsSkeleton } from "../components/CurrentClAndHc/CurrentClAndHc.jsx";
-import { DetailsForm, DetailsFormSkeleton } from "../components/DetailsForm/DetailsForm.jsx";
-import { ClubCards, ClubCardsSkeleton } from "../components/ClubCards/ClubCards.jsx";
-import { EmergencyContacts, EmergencyContactsSkeleton } from "../components/EmergencyContacts/EmergencyContacts.jsx";
+import { RecentScores } from "../components/RecentScores/RecentScores.jsx";
+import { CurrentClassificationsAndHandicaps } from "../components/CurrentClAndHc/CurrentClAndHc.jsx";
+import { DetailsForm } from "../components/DetailsForm/DetailsForm.jsx";
+import { ClubCards } from "../components/ClubCards/ClubCards.jsx";
+import { EmergencyContacts } from "../components/EmergencyContacts/EmergencyContacts.jsx";
 
 import dashboardStyles from "../styles/Dashboard.module.css";
 
@@ -18,27 +17,15 @@ const Dashboard = () => {
 
     return ( 
         <div>
-            <Suspense fallback={<RecentScoresSkeleton />}>
-                <RecentScores userId={userId} />
-            </Suspense>
-
-            <Suspense fallback={<CurrentClassificationsAndHandicapsSkeleton />}>
-                <CurrentClassificationsAndHandicaps userId={userId} />
-            </Suspense>
+            <RecentScores userId={userId} />
+            <CurrentClassificationsAndHandicaps userId={userId} />
 
             <div className={dashboardStyles.dashboardGrid}>
-                <Suspense fallback={<DetailsFormSkeleton />}>
-                    <DetailsForm userId={userId} />
-                </Suspense>
-                
-                <Suspense fallback={<ClubCardsSkeleton />}>
-                    <ClubCards userId={userId} />
-                </Suspense>
+                <DetailsForm userId={userId} />
+                <ClubCards userId={userId} />
             </div>
 
-            <Suspense fallback={<EmergencyContactsSkeleton />}>
-                <EmergencyContacts userId={userId}/>
-            </Suspense>
+            <EmergencyContacts userId={userId}/>
         </div>
     );
 }
