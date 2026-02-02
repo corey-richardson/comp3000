@@ -1,4 +1,16 @@
 services:
+
+  archeryutils-service:
+    build: ./archeryutils-service
+    container_name: archeryutils-service
+    volumes:
+      - ./archeryutils-service:/app:rw
+    environment:
+      - FLASK_ENV=development # !!!
+      - FLASK_DEBUG=1
+    ports:
+      - "84:5000"
+
   database:
     image: postgres:15-alpine
     container_name: database
