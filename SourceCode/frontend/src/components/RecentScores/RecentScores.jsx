@@ -25,7 +25,7 @@ const RecentScores = () => {
             setIsLoading(true);
 
             try {
-                const response = await fetch(`/api/scores/user/${user.id}?limit=10`, {
+                const response = await fetch(`/api/scores/user/${user.id}?limit=5`, {
                     headers: {
                         "Authorization": `Bearer ${user.token}`
                     }
@@ -34,7 +34,6 @@ const RecentScores = () => {
                 const data = await response.json();
                 if (response.ok) {
                     setScores(data);
-                    console.log(data);
                 }
             } catch (error) {
                 setError(error.message);

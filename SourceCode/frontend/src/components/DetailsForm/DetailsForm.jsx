@@ -32,7 +32,7 @@ const DetailsForm = () => {
             try {
                 const response = await fetch(`/api/profiles/${user.id}`, {
                     headers: {
-                        'Authorization': `Bearer ${user.token}` // Add JWT Header
+                        "Authorization": `Bearer ${user.token}` // Add JWT Header
                     }
                 });
 
@@ -126,43 +126,66 @@ const DetailsForm = () => {
                         <label htmlFor="lastName">*Last Name:</label>
                         <input type="text" id="lastName" value={profile?.lastName ?? ""} onChange={handleInputChange("lastName")} required/>
                     </div>
+
+                    <div className={formStyles.fieldGroup}>
+                        <label htmlFor="username">*Username:</label>
+                        <input type="text" id="username" value={profile?.username ?? ""} onChange={handleInputChange("username")} required/>
+                    </div>
                 </div>
 
-                <label htmlFor="username">*Username:</label>
-                <input type="text" id="username" value={profile?.username ?? ""} onChange={handleInputChange("username")} required/>
+                <div className={formStyles.row}>
 
-                <label htmlFor="name">*Email:</label>
-                <input type="email" id="email" value={profile?.email ?? ""} onChange={handleInputChange("email")} required/>
+                    <div className={formStyles.fieldGroup}>
+                        <label htmlFor="name">*Email:</label>
+                        <input type="email" id="email" value={profile?.email ?? ""} onChange={handleInputChange("email")} required/>
+                    </div>
 
-                <label>Archery GB Number:</label>
-                <input value={profile?.membershipNumber ?? ""} onChange={ handleInputChange("membershipNumber") } placeholder="1234567" />
+                    <div className={formStyles.fieldGroup}>
+                        <label>Archery GB Number:</label>
+                        <input value={profile?.membershipNumber ?? ""} onChange={ handleInputChange("membershipNumber") } placeholder="1234567" />
+                    </div>
+            
+                </div>
 
-                <label>Sex Category (as per AGB):</label>
-                <select value={profile?.sex ?? "NOT_SET"} onChange={ handleInputChange("sex") }>
-                    <option value="NOT_SET" disabled>Please Select</option>
-                    <option value="OPEN">{ EnumMap["OPEN"] }</option>
-                    <option value="FEMALE">{ EnumMap["FEMALE"] }</option>
-                </select>
+                <div className={formStyles.row}>
 
-                <label>Year of Birth:</label>
-                <input
-                    value={profile?.yearOfBirth ?? ""}
-                    onChange={ handleInputChange("yearOfBirth") }
-                    type="number"
-                    step="1"
-                    min="1900" max={new Date().getFullYear()}
-                    placeholder="Please Set"/>
+                    <div className={formStyles.fieldGroup}>
+                        <label>Default Bowstyle:</label>
+                        <select value={profile?.defaultBowstyle ?? "NOT_SET"} onChange={ handleInputChange("defaultBowstyle") }>
+                            <option disabled value="NOT_SET">Please Select</option>
+                            <option value="RECURVE">{ EnumMap["RECURVE"] }</option>
+                            <option value="BAREBOW">{ EnumMap["BAREBOW"] }</option>
+                            <option value="COMPOUND">{ EnumMap["COMPOUND"] }</option>
+                            <option value="LONGBOW">{ EnumMap["LONGBOW"] }</option>
+                        </select>
+                    </div>
 
-                <input disabled value={calculateAgeCategory(parseInt(profile?.yearOfBirth ?? "") ?? EnumMap["SENIOR"])} />
+                    <div className={formStyles.fieldGroup}>
+                        <label>Sex Category (as per AGB):</label>
+                        <select value={profile?.sex ?? "NOT_SET"} onChange={ handleInputChange("sex") }>
+                            <option value="NOT_SET" disabled>Please Select</option>
+                            <option value="OPEN">{ EnumMap["OPEN"] }</option>
+                            <option value="FEMALE">{ EnumMap["FEMALE"] }</option>
+                        </select>
+                    </div>
 
-                <label>Default Bowstyle:</label>
-                <select value={profile?.defaultBowstyle ?? "NOT_SET"} onChange={ handleInputChange("defaultBowstyle") }>
-                    <option disabled value="NOT_SET">Please Select</option>
-                    <option value="RECURVE">{ EnumMap["RECURVE"] }</option>
-                    <option value="BAREBOW">{ EnumMap["BAREBOW"] }</option>
-                    <option value="COMPOUND">{ EnumMap["COMPOUND"] }</option>
-                    <option value="LONGBOW">{ EnumMap["LONGBOW"] }</option>
-                </select>
+                    <div className={formStyles.fieldGroup}>
+                        <label>Year of Birth:</label>
+                        <input
+                            value={profile?.yearOfBirth ?? ""}
+                            onChange={ handleInputChange("yearOfBirth") }
+                            type="number"
+                            step="1"
+                            min="1900" max={new Date().getFullYear()}
+                            placeholder="Please Set"
+                        />
+                    </div>
+
+                    <div className={formStyles.fieldGroup}>
+                        <label>Age Category:</label>
+                        <input disabled value={calculateAgeCategory(parseInt(profile?.yearOfBirth ?? "") ?? EnumMap["SENIOR"], true) } />
+                    </div>
+                </div>
 
                 { !loading && !changesPending && <button disabled>Save Details</button> }
                 { !loading && changesPending && <button type="submit">Save Details</button> }

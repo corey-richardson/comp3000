@@ -4,7 +4,7 @@ import dashboardStyles from "../../styles/Dashboard.module.css";
 const EmergencyContactsSkeleton = () => {
     return ( 
         <div>
-            <h2>Emergency Contact Details</h2>
+            <h2>Emergency Contact Details.</h2>
             <p className="small centred">Loading...</p>
         </div>
     );
@@ -15,7 +15,7 @@ const EmergencyContacts = () => {
     
     return ( 
         <div className={dashboardStyles.dashboardContainer}>
-            <h2>Emergency Contact Details</h2>
+            <h2>Emergency Contact Details.</h2>
             <p>{user?.username}</p>
         </div>
     );

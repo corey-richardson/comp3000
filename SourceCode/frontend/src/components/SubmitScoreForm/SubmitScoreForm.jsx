@@ -392,7 +392,7 @@ const SubmitScoreForm = () => {
                 </div>
             </div>
 
-            { !isLoading && <button type="submit">Submit Score</button> }
+            { !isLoading && <button type="submit" disabled={!isRoundValid}>Submit Score</button> }
             { isLoading && <button disabled>Submitting...</button> }
 
             { error && <p className="error-message">{error}</p> }

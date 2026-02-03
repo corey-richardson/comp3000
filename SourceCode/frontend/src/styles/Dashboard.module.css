@@ -3,7 +3,7 @@
     width: 100%;
     grid-template-columns: 1fr;
     gap: 2rem;
-    margin: 2rem 0;
+    margin: 2rem auto;
 }
 
 .dashboardContainer {
@@ -33,5 +33,8 @@
 }
 
 .recentScoreItem {
-    /* TODO */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem 2.71rem;
+    margin: none;
 }

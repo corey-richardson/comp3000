@@ -15,7 +15,7 @@ const ClubCards = () => {
 
     return ( 
         <div className={dashboardStyles.dashboardContainer}>
-            <h2>My Clubs</h2>
+            <h2>My Clubs.</h2>
             <p>{user?.username}</p>
         </div>
     );
