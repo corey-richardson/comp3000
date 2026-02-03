@@ -8,15 +8,13 @@ import { EmergencyContacts } from "../components/EmergencyContacts/EmergencyCont
 
 import dashboardStyles from "../styles/Dashboard.module.css";
 
-/* Suspense 'isolates' the loading time of each component, If one component is slow, React will still 
-render the components which have already loaded in the meantime; improved UX. */
-
 const Dashboard = () => {
     const { user } = useAuthContext();
     const userId = user?.id;
 
     return ( 
         <div>
+
             <div className={dashboardStyles.dashboardGrid}>
                 <RecentScores userId={userId} />
                 <CurrentClassificationsAndHandicaps userId={userId} />
@@ -29,7 +27,6 @@ const Dashboard = () => {
                 <EmergencyContacts userId={userId}/>
             </div>
 
-            
         </div>
     );
 }
