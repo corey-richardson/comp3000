@@ -6,6 +6,7 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes";
 import profileRoutes from "./routes/profileRoutes";
 import scoreRoutes from "./routes/scoreRoutes";
+import roundRoutes from "./routes/roundRoutes";
 
 // Express App
 const app = express();
@@ -31,10 +32,10 @@ app.get("/smoke-test", (request: Request, response: Response) => {
 });
 
 // Routes
-// app.use("/api/scores", scoreRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/scores", scoreRoutes);
+app.use("/api/rounds", roundRoutes);
 
 app.use((request: Request, response: Response) => {
     response.status(404).json({ error: "Route Not Found!" });
