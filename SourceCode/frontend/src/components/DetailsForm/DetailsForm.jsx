@@ -9,13 +9,13 @@ import formStyles from "../../styles/Forms.module.css";
 const DetailsFormSkeleton = () => {
     return ( 
         <div>
-            <h2>My Details</h2>
+            <h2>My Details.</h2>
             <p className="small centred">Loading...</p>
         </div>
     );
 }
 
-const DetailsForm = ({ }) => {
+const DetailsForm = () => {
     const { user } = useAuthContext();
 
     const [ profile, setProfile ] = useState(null);
@@ -113,7 +113,7 @@ const DetailsForm = ({ }) => {
 
     return ( 
         <div className={`${formStyles.formContainer} ${formStyles.fullWidth}`}>
-            <h2>My Details</h2>
+            <h2>My Details.</h2>
 
             <form onSubmit={handleSubmit}>
                 <div className={formStyles.row}>

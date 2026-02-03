@@ -17,15 +17,19 @@ const Dashboard = () => {
 
     return ( 
         <div>
-            <RecentScores userId={userId} />
-            <CurrentClassificationsAndHandicaps userId={userId} />
-
             <div className={dashboardStyles.dashboardGrid}>
-                <DetailsForm userId={userId} />
-                <ClubCards userId={userId} />
+                <RecentScores userId={userId} />
+                <CurrentClassificationsAndHandicaps userId={userId} />
             </div>
 
-            <EmergencyContacts userId={userId}/>
+            <DetailsForm userId={userId} />
+
+            <div className={dashboardStyles.dashboardGrid}>
+                <ClubCards userId={userId} />
+                <EmergencyContacts userId={userId}/>
+            </div>
+
+            
         </div>
     );
 }

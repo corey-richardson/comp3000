@@ -6,6 +6,26 @@
     margin: 2rem 0;
 }
 
+.dashboardContainer {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    box-sizing: border-box;
+}
+
+.dashboardContainer h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--primary-color);
+}
+
 @media (min-width: 1166px) {
     .dashboardGrid {
         grid-template-columns: 1fr 1fr;

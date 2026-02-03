@@ -1,18 +1,22 @@
-import type { ProfileData as _ProfileData, PropTypes } from "@/types/profile";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import dashboardStyles from "../../styles/Dashboard.module.css";
 
 const ClubCardsSkeleton = () => {
     return ( 
         <div>
-            <h2>My Clubs</h2>
+            <h2>My Clubs.</h2>
             <p className="small centred">Loading...</p>
         </div>
     );
 }
 
-const ClubCards = ({userId} : PropTypes) => {
+const ClubCards = () => {
+    const { user } = useAuthContext();
+
     return ( 
-        <div>
+        <div className={dashboardStyles.dashboardContainer}>
             <h2>My Clubs</h2>
+            <p>{user?.username}</p>
         </div>
     );
 }

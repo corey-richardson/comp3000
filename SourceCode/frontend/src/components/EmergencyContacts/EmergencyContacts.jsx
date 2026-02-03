@@ -1,4 +1,5 @@
-import type { ProfileData as _ProfileData, PropTypes } from "@/types/profile";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import dashboardStyles from "../../styles/Dashboard.module.css";
 
 const EmergencyContactsSkeleton = () => {
     return ( 
@@ -9,10 +10,13 @@ const EmergencyContactsSkeleton = () => {
     );
 }
 
-const EmergencyContacts = ({userId} : PropTypes) => {
+const EmergencyContacts = () => {
+    const { user } = useAuthContext();
+    
     return ( 
-        <div>
+        <div className={dashboardStyles.dashboardContainer}>
             <h2>Emergency Contact Details</h2>
+            <p>{user?.username}</p>
         </div>
     );
 }
