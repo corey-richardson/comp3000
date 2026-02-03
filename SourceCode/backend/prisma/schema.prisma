@@ -134,6 +134,7 @@ model Score {
   journal String?
 
   status       ScoreStatus @default(SUBMITTED)
+  submitted_at DateTime    @default(now())
   verifiedById String? // RO that approved
   verified_at  DateTime?
 

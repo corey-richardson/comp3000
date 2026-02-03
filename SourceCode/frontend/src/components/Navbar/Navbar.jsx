@@ -11,7 +11,7 @@ import { APP_NAME } from "../../lib/constants";
 
 const NAVIGATION_LINKS = [
     { href: "/dashboard", label: "Dashboard" },
-    // { href: "/1", label: "Placeholder 1" },
+    { href: "/submit-score", label: "Submit a Score" },
     // { href: "/2", label: "Placeholder 2" },
     // { href: "/3", label: "Placeholder 3" },
 ];
@@ -40,48 +40,48 @@ const Navbar = () => {
 
     return ( 
         <nav className={styles.navbar}>
-                    <h1>{APP_NAME}</h1>
-        
-                    <button
-                        className={styles.burger}
-                        aria-label="Toggle menu"
-                        onClick={() => setIsMenuOpen((open) => !open)}
-                    >
-                        {isMenuOpen ? (
-                            <ChevronDown size={24} className={styles.burgerIcon} />
-                        ) : (
-                            <Menu size={24} className={styles.burgerIcon} />
-                        )}
+            <h1>{APP_NAME}</h1>
 
-                    </button>
-        
-                    <div
-                        className={clsx(styles.links, {
-                            [styles.linksOpen]: isMenuOpen,
+            <button
+                className={styles.burger}
+                aria-label="Toggle menu"
+                onClick={() => setIsMenuOpen((open) => !open)}
+            >
+                {isMenuOpen ? (
+                    <ChevronDown size={24} className={styles.burgerIcon} />
+                ) : (
+                    <Menu size={24} className={styles.burgerIcon} />
+                )}
+
+            </button>
+
+            <div
+                className={clsx(styles.links, {
+                    [styles.linksOpen]: isMenuOpen,
+                })}
+            >
+                {NAVIGATION_LINKS.map((link) => (
+                    <Link
+                        key={link.href}
+                        to={link.href}
+                        className={clsx(styles.navLink, {
+                            [styles.active]: pathname === link.href,
                         })}
+                        onClick={() => setTimeout(() => setIsMenuOpen(false), 300)}
                     >
-                        {NAVIGATION_LINKS.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className={clsx(styles.navLink, {
-                                    [styles.active]: pathname === link.href,
-                                })}
-                                onClick={() => setTimeout(() => setIsMenuOpen(false), 300)}
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-        
-                        <button
-                            className={styles.navLink}
-                            onClick={handleSignout}
-                        >
-                  Sign Out
-                        </button>
-        
-                    </div>
-                </nav>
+                        {link.label}
+                    </Link>
+                ))}
+
+                <button
+                    className={styles.navLink}
+                    onClick={handleSignout}
+                >
+                    Sign Out
+                </button>
+
+            </div>
+        </nav>
     );
 }
  

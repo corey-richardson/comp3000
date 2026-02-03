@@ -11,6 +11,7 @@ export const createScore = async (request: Request, response: Response) => {
         const { 
             dateShot,
             roundName,
+            roundCodeName,
             venue,
             competition,
             bowstyle,
@@ -32,7 +33,7 @@ export const createScore = async (request: Request, response: Response) => {
             },
             body: JSON.stringify({
                 score, 
-                roundName,
+                roundCodeName,
                 bowstyle,
                 sex: toPythonSex(prismaSex),
                 ageCategory: toPythonAge(prismaAge),
