@@ -74,7 +74,10 @@ export const createScore = async (request: Request, response: Response) => {
                 ageCategory: prismaAge,
 
                 notes,
-                journal,                
+                journal,
+                
+                maxScore: pythonServiceData.max_score,
+                numArrows: pythonServiceData.num_arrows,
             }
         });
 
@@ -90,6 +93,10 @@ export const getScoresByUser = async (request: Request, response: Response) => {
     const { userId: targetUserId } = request.params as { userId: string };
     const requestingUserId = (request as any).user.id;
 
+    const limit = request.query.limit ? parseInt(request.query.limit as string) : undefined;
+    const page = request.query.page ? parseInt(request.query.page as string) : 1;
+    const skip = limit ? (page - 1) * limit : undefined;
+
     try {
         const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
             requestingUserId,
@@ -104,6 +111,8 @@ export const getScoresByUser = async (request: Request, response: Response) => {
         const scores = await prisma.score.findMany({
             where: { userId: targetUserId },
             orderBy: { dateShot: "desc" },
+            take: limit,
+            skip: skip,
         });
 
         return response.status(200).json(scores);
@@ -116,6 +125,10 @@ export const getScoresByUser = async (request: Request, response: Response) => {
 export const getScoresByClub = async (request: Request, response: Response) => {
     const { clubId } = request.params as { clubId: string };
     const requestingUserId = (request as any).user.id;
+
+    const limit = request.query.limit ? parseInt(request.query.limit as string) : undefined;
+    const page = request.query.page ? parseInt(request.query.page as string) : 1;
+    const skip = limit ? (page - 1) * limit : undefined;
 
     try {
         const isAuthorised = await requireRoleInClub(
@@ -146,6 +159,8 @@ export const getScoresByClub = async (request: Request, response: Response) => {
                 }
             },
             orderBy: { dateShot: "desc" },
+            take: limit,
+            skip: skip,
         });
 
         return response.status(200).json(scores);

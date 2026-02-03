@@ -64,11 +64,13 @@ def calculate_metrics():
                     age_category
                 )
         except Exception:
-            classification_value = "UC"
+            classification_value = "NC"
             
         return jsonify({
             "handicap": int(handicap_value),
-            "classification": classification_value
+            "classification": classification_value,
+            "max_score": round_object.max_score(),
+            "num_arrows": round_object.n_arrows
         })
         
     except KeyError as e:

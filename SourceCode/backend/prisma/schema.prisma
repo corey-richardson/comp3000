@@ -31,7 +31,7 @@ model Profile {
   lastName  String
   username  String @unique
   email     String @unique
-  hash String
+  hash      String
 
   membershipNumber String?   @unique
   defaultBowstyle  Bowstyle?
@@ -126,6 +126,9 @@ model Score {
   tens  Int?
   nines Int?
   hits  Int?
+
+  maxScore  Int @default(0)
+  numArrows Int @default(0)
 
   sex         Sex           @default(OPEN)
   ageCategory AgeCategories @default(SENIOR)
