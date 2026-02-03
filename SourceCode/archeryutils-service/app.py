@@ -36,29 +36,35 @@ def calculate_metrics():
         if not round_object:
             return jsonify({"error": f"Round '{round_codename}' not found"}), 400
         
-        handicap_value = handicaps.handicap_from_score(
-            float(raw_score),
-            round_object,
-            "AGB",
-            int_prec=True
-        )
+        try:
+            handicap_value = handicaps.handicap_from_score(
+                float(raw_score),
+                round_object,
+                "AGB",
+                int_prec=True
+            )
+        except Exception:
+            handicap_value = None
         
-        if venue == "INDOOR":
-            classification_value = classifications.calculate_agb_indoor_classification(
-                raw_score,
-                round_codename,
-                bowstyle,
-                sex_category,
-                age_category
-            )
-        else: # OUTDOOR
-            classification_value = classifications.calculate_agb_outdoor_classification(
-                raw_score,
-                round_codename,
-                bowstyle,
-                sex_category,
-                age_category
-            )
+        try:
+            if venue == "INDOOR":
+                classification_value = classifications.calculate_agb_indoor_classification(
+                    raw_score,
+                    round_codename,
+                    bowstyle,
+                    sex_category,
+                    age_category
+                )
+            else: # OUTDOOR
+                classification_value = classifications.calculate_agb_outdoor_classification(
+                    raw_score,
+                    round_codename,
+                    bowstyle,
+                    sex_category,
+                    age_category
+                )
+        except Exception:
+            classification_value = "UC"
             
         return jsonify({
             "handicap": int(handicap_value),
