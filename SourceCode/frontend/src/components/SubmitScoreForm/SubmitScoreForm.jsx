@@ -218,7 +218,7 @@ const SubmitScoreForm = () => {
             <div className={formStyles.row}>
 
                 <div className={formStyles.fieldGroup}>
-                    <label>Date Shot:</label>
+                    <label>*Date Shot:</label>
                     <input
                         type="date"
                         name="dateShot"
@@ -229,7 +229,7 @@ const SubmitScoreForm = () => {
                 </div>
 
                 <div className={formStyles.fieldGroup}>
-                    <label>Venue:</label>
+                    <label>*Venue:</label>
                     <select name="venue" value={formData.venue} onChange={handleChange}>
                         {roundTypeOptions.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -240,7 +240,7 @@ const SubmitScoreForm = () => {
                 </div>
 
                 <div className={formStyles.fieldGroup}>
-                    <label>Round Name:</label>
+                    <label>*Round Name:</label>
                     <input
                         id="round-search"
                         type="text"
@@ -267,7 +267,7 @@ const SubmitScoreForm = () => {
             <div className={formStyles.row}>
 
                 <div className={formStyles.fieldGroup}>
-                    <label>Bowstyle:</label>
+                    <label>*Bowstyle:</label>
                     <select 
                         value={formData.bowstyle ?? ""} 
                         name="bowstyle" 
@@ -288,7 +288,7 @@ const SubmitScoreForm = () => {
                 </div>
 
                 <div className={formStyles.fieldGroup}>
-                    <label>Competition Level:</label>
+                    <label>*Competition Level:</label>
                     <select value={formData.competition} name="competition" onChange={handleChange} required>
                         {competitionLevelOptions.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -303,7 +303,7 @@ const SubmitScoreForm = () => {
             <div className={formStyles.row}>
 
                 <div className={formStyles.fieldGroup}>
-                    <label>Score{selectedRoundData && ` (Max: ${selectedRoundData.max_score})`}:</label>
+                    <label>*Score{selectedRoundData && ` (Max: ${selectedRoundData.max_score})`}:</label>
                     <input 
                         type="number" 
                         step="1"
@@ -377,7 +377,7 @@ const SubmitScoreForm = () => {
                         value={formData.notes}
                         name="notes"
                         onChange={handleChange} 
-                        placeholder="Add any extra details about the score here. These notes are visible to the Records Officer.">
+                        placeholder="Add any extra details about the score here, such as the location of the shoot, the name of the competition or the IANSEO link. These notes are visible to club administrators.">
                     </textarea>
                 </div>
 
@@ -387,7 +387,7 @@ const SubmitScoreForm = () => {
                         value={formData.journal}
                         name="journal"
                         onChange={handleChange} 
-                        placeholder="Add any extra details about your shooting here. These notes are only visible to you and your club's coaches.">
+                        placeholder="Add a reflection on your shooting here. How did your technique feel? How was your mental state during the shoot? Is there anything you believe needs working on with a coach? These notes are only visible to you and your club's coaches.">
                     </textarea>
                 </div>
             </div>

@@ -53,6 +53,19 @@
     font-size: 1rem;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    font-family: inherit;
+}
+
+.formContainer input[type="date"], .formContainer select {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.formContainer textarea {
+    min-height: 120px;
+    line-height: 1.5;
+    resize: vertical;
+    vertical-align: top;
 }
 
 .formContainer input:focus, 
