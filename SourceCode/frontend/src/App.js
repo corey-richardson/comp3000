@@ -4,8 +4,8 @@ import Navbar from "./components/Navbar/Navbar";
 import { useAuthContext } from "./hooks/useAuthContext";
 import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
-import SubmitScore from "./pages/SubmitScore";
 import MyScores from "./pages/MyScores";
+import SubmitScore from "./pages/SubmitScore";
 
 function App() {
     const { user, authIsReady } = useAuthContext();

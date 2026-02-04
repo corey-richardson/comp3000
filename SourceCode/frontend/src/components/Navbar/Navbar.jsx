@@ -11,7 +11,7 @@ import { APP_NAME } from "../../lib/constants";
 const NAVIGATION_LINKS = [
     { href: "/dashboard", label: <><BowArrow size={20} />&nbsp; Dashboard</> },
     { href: "/my-scores", label: <><UserRound size={20} />&nbsp; My Scores</> },
-    { href: "/submit-score", label: <><CirclePlus size={20} />&nbsp; Submit a Score</>},
+    { href: "/submit-score", label: <><CirclePlus size={20} />&nbsp; Submit a Score</> },
 ];
 
 const Navbar = () => {
