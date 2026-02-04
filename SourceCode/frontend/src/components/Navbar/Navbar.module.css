@@ -1,9 +1,10 @@
 /* Base navbar */
 .navbar {
+  height: 70px;
   padding: 0 20px;
   display: flex;
-  text-align: center;
   align-items: center;
+  text-align: center;
   max-width: var(--max-content-width);
   margin: 0 auto;
   border-bottom: 1px solid var(--light-gray);
@@ -43,6 +44,9 @@
   color: inherit;
   font: inherit;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navLink:hover {
@@ -84,6 +88,10 @@
   display: block;
 }
 
+.signoutText {
+  display: inline;
+}
+
 /* Desktop links */
 @media (width >= 1167px) {
   .links,
@@ -99,5 +107,24 @@
 
   .burger {
     display: none;
+  }
+
+  .signoutText {
+    display: none;
+  }
+
+  .signoutButton {
+    position: relative;
+    margin-left: 24px;
+  }
+
+  .signoutButton::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 10%;
+    height: 80%; 
+    width: 2px;
+    background-color: var(--border-color);
   }
 }

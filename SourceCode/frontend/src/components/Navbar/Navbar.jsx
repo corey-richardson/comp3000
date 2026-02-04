@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Menu, ChevronDown } from "lucide-react";
+import { Menu, ChevronDown, BowArrow, CirclePlus, LogOut, UserRound } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -9,11 +9,9 @@ import useLogout from "../../hooks/useLogout";
 import { APP_NAME } from "../../lib/constants";
 
 const NAVIGATION_LINKS = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/my-scores", label: "My Scores" },
-    { href: "/submit-score", label: "Submit a Score" },
-    // { href: "/2", label: "Placeholder 2" },
-    // { href: "/3", label: "Placeholder 3" },
+    { href: "/dashboard", label: <><BowArrow size={20} />&nbsp; Dashboard</> },
+    { href: "/my-scores", label: <><UserRound size={20} />&nbsp; My Scores</>},
+    { href: "/submit-score", label: <><CirclePlus size={20} />&nbsp; Submit a Score</>},
 ];
 
 const Navbar = () => {
@@ -74,10 +72,12 @@ const Navbar = () => {
                 ))}
 
                 <button
-                    className={styles.navLink}
+                    className={clsx(styles.navLink, styles.signoutButton)}
                     onClick={handleSignout}
+                    title="Sign Out"
                 >
-                    Sign Out
+                    <LogOut size={20}/>&nbsp;
+                    <span className={styles.signoutText}>Sign Out</span>
                 </button>
 
             </div>
