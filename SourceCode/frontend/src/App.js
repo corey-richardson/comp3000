@@ -5,6 +5,7 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
 import SubmitScore from "./pages/SubmitScore";
+import MyScores from "./pages/MyScores";
 
 function App() {
     const { user, authIsReady } = useAuthContext();
@@ -25,6 +26,11 @@ function App() {
                             <Route
                                 path="/dashboard"
                                 element={user ? <Dashboard /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/my-scores"
+                                element={user ? <MyScores /> : <Navigate to="/" />}
                             />
 
                             <Route

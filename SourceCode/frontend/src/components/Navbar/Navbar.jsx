@@ -10,6 +10,7 @@ import { APP_NAME } from "../../lib/constants";
 
 const NAVIGATION_LINKS = [
     { href: "/dashboard", label: "Dashboard" },
+    { href: "/my-scores", label: "My Scores" },
     { href: "/submit-score", label: "Submit a Score" },
     // { href: "/2", label: "Placeholder 2" },
     // { href: "/3", label: "Placeholder 3" },
