@@ -1,0 +1,14 @@
+{
+  "frontend/src/**/*.{js,jsx}": [
+    "eslint --fix"
+  ],
+  "backend/**/*.ts": [
+    "eslint --fix"
+  ],
+  "archeryutils-service/**/*.py": [
+    "flake8"
+  ],
+  "**/*.module.css": [
+    "stylelint --fix"
+  ]
+}
