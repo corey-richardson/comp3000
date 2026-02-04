@@ -2,3 +2,4 @@
 
 cd SourceCode
 npx lint-staged
+npm run lint:fix
