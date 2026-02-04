@@ -5,10 +5,12 @@
   "backend/**/*.ts": [
     "eslint --fix"
   ],
-  "archeryutils-service/**/*.py": [
-    "flake8"
-  ],
   "**/*.module.css": [
     "stylelint --fix"
+  ],
+    "archeryutils-service/**/*.py": [
+    "python -m isort",
+    "python -m black",
+    "python -m flake8 --config=archeryutils-service/.flake8"
   ]
 }

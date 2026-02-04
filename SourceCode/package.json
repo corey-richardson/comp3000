@@ -14,11 +14,14 @@
   "scripts": {
     "prepare": "husky",
     
-    "lint": "npm run lint:js && npm run lint:python",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:python",
     "lint:fix": "npm run lint:js:fix && npm run lint:css:fix && npm run lint:python:fix",
     
     "lint:js": "eslint . --max-warnings 0",
     "lint:js:fix": "eslint . --fix",
+
+    "lint:css": "stylelint \"**/*.module.css\"",
+    "lint:css:fix": "stylelint \"**/*.module.css\" --fix", 
     
     "lint:python": "python -m flake8 --config=archeryutils-service/.flake8 archeryutils-service/ && python -m black --check archeryutils-service/ && python -m isort --check-only archeryutils-service/",
     "lint:python:fix": "python -m isort archeryutils-service/ && python -m black archeryutils-service/ && python -m flake8 --config=archeryutils-service/.flake8 archeryutils-service/"
