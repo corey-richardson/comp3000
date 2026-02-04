@@ -1,12 +1,13 @@
-import { Request, Response } from "express";
-import prisma from "../lib/prisma";
 
 import bcrypt from "bcrypt";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import validator from "validator";
 
+import prisma from "../lib/prisma";
+
 const createJwt = (id: string) => {
-    return jwt.sign({id}, process.env.SECRET as string, { expiresIn: "3d" });
+    return jwt.sign({ id }, process.env.SECRET as string, { expiresIn: "3d" });
 };
 
 // GET /api/user/signup
@@ -15,7 +16,7 @@ export const signupUser = async (request: Request, response: Response) => {
     const USERNAME_REGEX = /^(?![_-])[a-zA-Z0-9_-]{3,30}(?<![_-])$/;
 
     try {
-        let emptyFields = [];
+        const emptyFields = [];
         if (!username) emptyFields.push("username");
         if (!email) emptyFields.push("email");
         if (!password) emptyFields.push("password");
@@ -58,8 +59,7 @@ export const signupUser = async (request: Request, response: Response) => {
         const token = createJwt(profile.id);
         response.status(201).json({ id: profile.id, username, email, token });
 
-    } catch (error: any) {
-        console.error(error.message);
+    } catch (_error: any) {
         response.status(500).json({ error: "Internal error during signup." });
     }
 };
@@ -69,13 +69,13 @@ export const loginUser = async (request: Request, response: Response) => {
     const { email, password } = request.body;
 
     try {
-        let emptyFields = [];
+        const emptyFields = [];
         if (!email) emptyFields.push("email");
         if (!password) emptyFields.push("password");
         if (emptyFields.length > 0)
             return response.status(400).json({ error: "Please fill in all fields.", emptyFields });
 
-        const profile = await prisma.profile.findUnique({ 
+        const profile = await prisma.profile.findUnique({
             where: { email },
         });
         if (!profile) {
@@ -90,7 +90,7 @@ export const loginUser = async (request: Request, response: Response) => {
         const token = createJwt(profile.id);
         response.status(200).json({ email, username: profile.username, token, id: profile.id });
 
-    } catch (error: any) {
+    } catch (_error: any) {
         response.status(500).json({ error: "Internal server error during login." });
     }
 };

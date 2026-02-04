@@ -2,9 +2,8 @@
 import LoginForm from "../components/Auth/LoginForm";
 import SignUpForm from "../components/Auth/SignUpForm";
 import Banner from "../components/Banner/Banner";
-
-import sideFormStyles from "../styles/SideForm.module.css"; 
 import formStyles from "../styles/LandingPageForms.module.css";
+import sideFormStyles from "../styles/SideForm.module.css";
 
 export default function LandingPage() {
 
@@ -13,7 +12,7 @@ export default function LandingPage() {
 
             <div>
                 <Banner />
-                
+
                 <p className="bold">Welcome to the Archery Club Management Tool!</p>
 
                 <p>
@@ -34,5 +33,5 @@ export default function LandingPage() {
             </div>
 
         </div>
-    )
+    );
 }

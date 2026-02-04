@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import prisma from "../lib/prisma";
 import * as AuthUtils from "../utils/serverUtils";
 
@@ -30,22 +31,22 @@ export const getProfile = async (request: Request, response: Response) => {
     } catch (error: any) {
         response.status(500).json({ error: "Internal Server Error: " + error.message });
     }
-}
+};
 
 // PATCH /api/profiles/:id
 export const updateProfile = async (request: Request, response: Response) => {
     const { id: targetUserId } = request.params as { id: string };
     const requestingUser = (request as any).user; // Set by auth middleware
 
-    const { 
-        firstName, 
-        lastName, 
+    const {
+        firstName,
+        lastName,
         username,
         email,
-        membershipNumber, 
-        sex, 
-        yearOfBirth, 
-        defaultBowstyle 
+        membershipNumber,
+        sex,
+        yearOfBirth,
+        defaultBowstyle
     } = request.body;
 
     try {
@@ -60,7 +61,7 @@ export const updateProfile = async (request: Request, response: Response) => {
         }
 
         // Will this work if a value isn't set? membershipNumber not a required field so
-        // could falsely match against someone else's "null" membershipNumber if not set. 
+        // could falsely match against someone else's "null" membershipNumber if not set.
         // if (username || email || membershipNumber) {
         //     const conflict = await prisma.profile.findFirst({
         //         where: {
@@ -116,11 +117,11 @@ export const updateProfile = async (request: Request, response: Response) => {
             return profile;
         });
 
-        response.status(200).json(updateProfile);
+        response.status(200).json(updatedProfile);
     } catch (error: any) {
         response.status(500).json({ error: "Internal Server Error: " + error.message });
     }
-}
+};
 
 // DELETE:
 /** CASCADE:

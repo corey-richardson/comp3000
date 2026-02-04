@@ -1,6 +1,6 @@
-/** Acts as a "single source of truth" for converting internal database enum 
+/** Acts as a "single source of truth" for converting internal database enum
  * keys into a display-ready string.
- * 
+ *
  * Ensures consistency across the application.
  */
 

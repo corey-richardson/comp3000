@@ -1,12 +1,11 @@
+import clsx from "clsx";
+import { Menu, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ChevronDown } from "lucide-react";
-import clsx from "clsx";
 
-import useLogout from "../../hooks/useLogout";
-import { useAuthContext } from "../../hooks/useAuthContext";
 import styles from "./Navbar.module.css";
-
+import { useAuthContext } from "../../hooks/useAuthContext";
+import useLogout from "../../hooks/useLogout";
 import { APP_NAME } from "../../lib/constants";
 
 const NAVIGATION_LINKS = [
@@ -28,17 +27,17 @@ const Navbar = () => {
         logout();
         setIsMenuOpen(false);
         navigate("/");
-    }
+    };
 
     if (!user) {
         return (
             <nav className={styles.navbar}>
                 <h1>{ APP_NAME }</h1>
             </nav>
-        )
+        );
     }
 
-    return ( 
+    return (
         <nav className={styles.navbar}>
             <h1>{APP_NAME}</h1>
 
@@ -83,6 +82,6 @@ const Navbar = () => {
             </div>
         </nav>
     );
-}
- 
+};
+
 export default Navbar;

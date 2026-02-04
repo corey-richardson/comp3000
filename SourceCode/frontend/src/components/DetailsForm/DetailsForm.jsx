@@ -1,19 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
-import { useAuthContext } from "../../hooks/useAuthContext";
 
+import { useAuthContext } from "../../hooks/useAuthContext";
 import calculateAgeCategory from "../../lib/calculateAgeCategory.js";
 import EnumMap from "../../lib/enumMap.js";
-
 import formStyles from "../../styles/Forms.module.css";
 
 const DetailsFormSkeleton = () => {
-    return ( 
+    return (
         <div>
             <h2>My Details.</h2>
             <p className="small centred">Loading...</p>
         </div>
     );
-}
+};
 
 const DetailsForm = () => {
     const { user } = useAuthContext();
@@ -50,23 +49,22 @@ const DetailsForm = () => {
                 setMessage(`Your details were last updated at ${
                     new Date(data.updated_at || data.created_at).toLocaleString()
                 }.`);
-            } catch (err) {
+            } catch (_error) {
                 setError("Failed to fetch profile.");
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         fetchProfile();
     }, [ user, refreshFlag ]);
 
-
     const handleInputChange = useCallback((key) => (e) => {
-            const newValue = e.target.value;
-            setProfile(prev => ({ ...prev, [key]: newValue }));
-            setChangesPending(true);
-        },
-        []
+        const newValue = e.target.value;
+        setProfile(prev => ({ ...prev, [key]: newValue }));
+        setChangesPending(true);
+    },
+    []
     );
 
     const handleSubmit = async (e) => {
@@ -89,7 +87,7 @@ const DetailsForm = () => {
                     membershipNumber: profile?.membershipNumber,
                     sex: profile?.sex === "NOT_SET" ? null : profile?.sex,
                     yearOfBirth: profile?.yearOfBirth ? parseInt(profile?.yearOfBirth) : null,
-                    defaultBowstyle: profile?.defaultBowstyle === "NOT_SET" ? null : profile?.defaultBowstyle            
+                    defaultBowstyle: profile?.defaultBowstyle === "NOT_SET" ? null : profile?.defaultBowstyle
                 })
             });
 
@@ -102,16 +100,16 @@ const DetailsForm = () => {
             setChangesPending(false);
             setMessage("Your details have been updated successfully.");
 
-        } catch (err) {
+        } catch (_error) {
             setError("An error occurred while saving.");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     if (loading) return <DetailsFormSkeleton />;
 
-    return ( 
+    return (
         <div className={`${formStyles.formContainer} ${formStyles.fullWidth}`}>
             <h2>My Details.</h2>
 
@@ -144,7 +142,7 @@ const DetailsForm = () => {
                         <label>Archery GB Number:</label>
                         <input value={profile?.membershipNumber ?? ""} onChange={ handleInputChange("membershipNumber") } placeholder="1234567" />
                     </div>
-            
+
                 </div>
 
                 <div className={formStyles.row}>
@@ -195,10 +193,10 @@ const DetailsForm = () => {
             { !loading && message && (
                 <p className="small centred">{ message }</p>
             )}
-            
+
             {error && <p className="error-message">{ error }</p>}
         </div>
     );
-}
- 
+};
+
 export { DetailsFormSkeleton, DetailsForm };

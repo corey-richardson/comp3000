@@ -7,7 +7,6 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-
   margin-bottom: 2.5rem;
 }
 
@@ -29,7 +28,7 @@
   color: #fff;
   position: relative;
   z-index: 1;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 2px 8px rgb(0 0 0 / 70%);
   padding: 20px 0;
   max-width: 80%;
   text-align: center;

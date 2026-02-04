@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+
 import prisma from "../lib/prisma";
 
 interface JWTPayload {
@@ -13,8 +14,8 @@ export interface AuthRequest extends Request {
 }
 
 const requireAuth = async (
-    request: AuthRequest, 
-    response: Response, 
+    request: AuthRequest,
+    response: Response,
     next: NextFunction
 ) => {
     const { authorization } = request.headers;

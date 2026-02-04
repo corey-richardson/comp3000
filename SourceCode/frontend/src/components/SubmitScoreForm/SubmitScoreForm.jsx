@@ -1,9 +1,9 @@
-import calculateAgeCategory from "../../lib/calculateAgeCategory";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../../hooks/useAuthContext";
-import EnumMap from "../../lib/enumMap";
 
+import { useAuthContext } from "../../hooks/useAuthContext";
+import calculateAgeCategory from "../../lib/calculateAgeCategory";
+import EnumMap from "../../lib/enumMap";
 import formStyles from "../../styles/Forms.module.css";
 
 const TODAY = new Date();
@@ -15,7 +15,7 @@ const SubmitScoreForm = () => {
     // STATE
 
     const [ isLoading, setIsLoading ] = useState(false);
-    const [ error, setError ] = useState(null)
+    const [ error, setError ] = useState(null);
 
     const [allRounds, setAllRounds] = useState(null);
     const [ isLoadingRounds, setIsLoadingRounds ] = useState(false);
@@ -47,14 +47,12 @@ const SubmitScoreForm = () => {
         { value: "OTHER", label: EnumMap["OTHER"] }
     ], []);
 
-
     const competitionLevelOptions = useMemo(() => [
         { value: "PRACTICE", label: EnumMap["PRACTICE"] },
         { value: "CLUB_EVENT", label: EnumMap["CLUB_EVENT"] },
         { value: "OPEN_COMPETITION", label: EnumMap["OPEN_COMPETITION"] },
         { value: "RECORD_STATUS_COMPETITION", label: EnumMap["RECORD_STATUS_COMPETITION"] }
     ], []);
-
 
     const roundTypeOptions = useMemo(() => [
         { value: "INDOOR", label: EnumMap["INDOOR"] },
@@ -103,7 +101,7 @@ const SubmitScoreForm = () => {
                         sex: data.sex || "OPEN"
                     }));
 
-                } catch (error) {
+                } catch (_error) {
                     setError("Failed to fetch user data.");
                 }
             }
@@ -120,14 +118,13 @@ const SubmitScoreForm = () => {
             try {
                 const response = await fetch("/api/rounds");
                 const data = await response.json();
-                console.log(data);
                 setAllRounds(data);
-            } catch (error) {
+            } catch (_error) {
                 setError("Failed to fetch rounds.");
             } finally {
                 setIsLoadingRounds(false);
             }
-        }
+        };
         fetchAllRounds();
     }, []);
 
@@ -148,16 +145,16 @@ const SubmitScoreForm = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
+
         setFormData(prev => {
             const newData = { ...prev, [name]: value };
-            
+
             if (name === "venue") {
                 newData.roundNameSearch = "";
             } else if (name === "dateShot") {
                 newData.dateShot = new Date(value);
             }
-            
+
             return newData;
         });
     };
@@ -203,7 +200,7 @@ const SubmitScoreForm = () => {
             if (!response.ok) {
                 throw Error(data.error);
             }
-                
+
             navigate("/dashboard"); // TODO: CHANGE TO MY SCORES PAGE WHEN IMPLEMENTED
         } catch (error) {
             setError("Failed to submit score.");
@@ -211,9 +208,9 @@ const SubmitScoreForm = () => {
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
-    return ( 
+    return (
         <form className={`${formStyles.formContainer} ${formStyles.fullWidth}`} onSubmit={handleSubmit}>
             <div className={formStyles.row}>
 
@@ -268,14 +265,14 @@ const SubmitScoreForm = () => {
 
                 <div className={formStyles.fieldGroup}>
                     <label>*Bowstyle:</label>
-                    <select 
-                        value={formData.bowstyle ?? ""} 
-                        name="bowstyle" 
-                        onChange={handleChange} 
+                    <select
+                        value={formData.bowstyle ?? ""}
+                        name="bowstyle"
+                        onChange={handleChange}
                         required
                     >
-                        <option 
-                            disabled 
+                        <option
+                            disabled
                             value=""
                         >Please Select</option>
 
@@ -304,67 +301,67 @@ const SubmitScoreForm = () => {
 
                 <div className={formStyles.fieldGroup}>
                     <label>*Score{selectedRoundData && ` (Max: ${selectedRoundData.max_score})`}:</label>
-                    <input 
-                        type="number" 
+                    <input
+                        type="number"
                         step="1"
                         min="0"
                         max={selectedRoundData?.max_score}
-                        value={formData.score} 
-                        name="score" 
-                        onChange={handleChange} 
+                        value={formData.score}
+                        name="score"
+                        onChange={handleChange}
                         required
                     />
                 </div>
 
                 <div className={formStyles.fieldGroup}>
                     <label>Xs:</label>
-                    <input 
-                        type="number" 
+                    <input
+                        type="number"
                         step="1"
                         min="0"
                         max={selectedRoundData?.num_arrows}
                         value={formData.xs}
                         name="xs"
-                        onChange={handleChange} 
+                        onChange={handleChange}
                     />
                 </div>
 
                 <div className={formStyles.fieldGroup}>
                     <label>Xs + Tens:</label>
-                    <input 
-                        type="number" 
+                    <input
+                        type="number"
                         step="1"
                         min="0"
                         max={selectedRoundData?.num_arrows}
                         value={formData.tens}
                         name="tens"
-                        onChange={handleChange} 
+                        onChange={handleChange}
                     />
                 </div>
 
                 <div className={formStyles.fieldGroup}>
                     <label>Nines:</label>
-                    <input 
-                        type="number" 
+                    <input
+                        type="number"
                         step="1"
                         min="0"
                         max={selectedRoundData?.num_arrows}
                         value={formData.nines}
                         name="nines"
-                        onChange={handleChange} 
+                        onChange={handleChange}
                     />
                 </div>
 
                 <div className={formStyles.fieldGroup}>
                     <label>Hits{selectedRoundData && ` (Max: ${selectedRoundData.num_arrows})`}:</label>
-                    <input 
-                        type="number" 
+                    <input
+                        type="number"
                         step="1"
                         min="0"
                         max={selectedRoundData?.num_arrows}
                         value={formData.hits}
                         name="hits"
-                        onChange={handleChange} 
+                        onChange={handleChange}
                     />
                 </div>
             </div>
@@ -373,20 +370,20 @@ const SubmitScoreForm = () => {
 
                 <div className={formStyles.fieldGroup}>
                     <label>Notes:</label>
-                    <textarea 
+                    <textarea
                         value={formData.notes}
                         name="notes"
-                        onChange={handleChange} 
+                        onChange={handleChange}
                         placeholder="Add any extra details about the score here, such as the location of the shoot, the name of the competition or the IANSEO link. These notes are visible to club administrators.">
                     </textarea>
                 </div>
 
                 <div className={formStyles.fieldGroup}>
                     <label>Journal:</label>
-                    <textarea 
+                    <textarea
                         value={formData.journal}
                         name="journal"
-                        onChange={handleChange} 
+                        onChange={handleChange}
                         placeholder="Add a reflection on your shooting here. How did your technique feel? How was your mental state during the shoot? Is there anything you believe needs working on with a coach? These notes are only visible to you and your club's coaches.">
                     </textarea>
                 </div>
@@ -398,6 +395,6 @@ const SubmitScoreForm = () => {
             { error && <p className="error-message">{error}</p> }
         </form>
     );
-}
- 
+};
+
 export default SubmitScoreForm;

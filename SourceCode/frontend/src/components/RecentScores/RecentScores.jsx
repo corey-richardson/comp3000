@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
+
 import { useAuthContext } from "../../hooks/useAuthContext";
-import dashboardStyles from "../../styles/Dashboard.module.css";
 import EnumMap from "../../lib/enumMap";
+import dashboardStyles from "../../styles/Dashboard.module.css";
 
 const RecentScoresSkeleton = () => {
-    return ( 
+    return (
         <div>
             <h2>Recent Scores.</h2>
             <p className="small centred">Loading...</p>
         </div>
     );
-}
- 
+};
+
 const RecentScores = () => {
     const { user } = useAuthContext();
 
@@ -45,8 +46,7 @@ const RecentScores = () => {
         fetchLatestScores();
     }, [user.id, user.token]);
 
-
-    return ( 
+    return (
         <div className={dashboardStyles.dashboardContainer}>
             <h2>Recent Scores.</h2>
 
@@ -63,6 +63,6 @@ const RecentScores = () => {
             { error && <p className="error-message">{error}</p> }
         </div>
     );
-}
- 
+};
+
 export { RecentScoresSkeleton, RecentScores };

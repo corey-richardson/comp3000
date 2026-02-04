@@ -47,12 +47,12 @@
 
 .navLink:hover {
   color: var(--primary-color);
-  background-color: rgba(53, 109, 241, 0.1);
+  background-color: rgb(53 109 241 / 10%);
 }
 
 .active {
   color: var(--primary-color);
-  background-color: rgba(53, 109, 241, 0.1);
+  background-color: rgb(53 109 241 / 10%);
   font-weight: bold;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .burger:hover {
-  background-color: rgba(53, 109, 241, 0.1);
+  background-color: rgb(53 109 241 / 10%);
 }
 
 .burgerIcon {
@@ -85,7 +85,7 @@
 }
 
 /* Desktop links */
-@media (min-width: 1167px) {
+@media (width >= 1167px) {
   .links,
   .linksOpen {
     display: flex !important;

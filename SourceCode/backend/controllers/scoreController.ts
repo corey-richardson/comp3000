@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
-import prisma from "../lib/prisma";
 import { Bowstyle, CompetitionStatus, Venue } from "@prisma/client";
+import { Request, Response } from "express";
+
+import prisma from "../lib/prisma";
 import { toPrismaAge, toPrismaSex, toPythonAge, toPythonSex } from "../utils/enumAdapter";
 import { requireRoleInClub, requireRoleInSharedClubOrDataOwnership } from "../utils/serverUtils";
 
@@ -8,7 +9,7 @@ export const createScore = async (request: Request, response: Response) => {
     const requestingUser = (request as any).user;
 
     try {
-        const { 
+        const {
             dateShot,
             roundName,
             roundCodeName,
@@ -32,7 +33,7 @@ export const createScore = async (request: Request, response: Response) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                score, 
+                score,
                 roundCodeName,
                 bowstyle,
                 sex: toPythonSex(prismaSex),
@@ -46,7 +47,7 @@ export const createScore = async (request: Request, response: Response) => {
         if (!pythonServiceResponse.ok) {
             return response.status(pythonServiceResponse.status).json({
                 error: pythonServiceData.error || "Metrics Calculation Service Error"
-            });      
+            });
         }
         const newScore = await prisma.score.create({
             data: {
@@ -63,11 +64,11 @@ export const createScore = async (request: Request, response: Response) => {
                 venue: venue as Venue,
                 competition: competition as CompetitionStatus,
                 bowstyle: bowstyle as Bowstyle,
-                
+
                 score: Number(score),
                 xs: xs ? Number(xs) : null,
-                tens: tens ? Number(tens) : null, 
-                nines: nines ? Number(nines) : null, 
+                tens: tens ? Number(tens) : null,
+                nines: nines ? Number(nines) : null,
                 hits: hits ? Number(hits) : null,
 
                 sex: prismaSex,
@@ -75,7 +76,7 @@ export const createScore = async (request: Request, response: Response) => {
 
                 notes,
                 journal,
-                
+
                 maxScore: pythonServiceData.max_score,
                 numArrows: pythonServiceData.num_arrows,
             }
@@ -86,8 +87,7 @@ export const createScore = async (request: Request, response: Response) => {
     } catch (error: any) {
         response.status(500).json({ error: "Internal Server Error: " + error.message });
     }
-}
-
+};
 
 export const getScoresByUser = async (request: Request, response: Response) => {
     const { userId: targetUserId } = request.params as { userId: string };
@@ -116,11 +116,10 @@ export const getScoresByUser = async (request: Request, response: Response) => {
         });
 
         return response.status(200).json(scores);
-    } catch (error: any) {
+    } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }
-}
-
+};
 
 export const getScoresByClub = async (request: Request, response: Response) => {
     const { clubId } = request.params as { clubId: string };
@@ -142,7 +141,7 @@ export const getScoresByClub = async (request: Request, response: Response) => {
         }
 
         const scores = await prisma.score.findMany({
-            where: { 
+            where: {
                 profile: {
                     memberOf: {
                         some: { clubId, ended_at: null }
@@ -150,12 +149,12 @@ export const getScoresByClub = async (request: Request, response: Response) => {
                 }
             },
             include: {
-                profile: { 
-                    select: { 
-                        firstName: true, 
-                        lastName: true, 
-                        username: true 
-                    } 
+                profile: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        username: true
+                    }
                 }
             },
             orderBy: { dateShot: "desc" },
@@ -164,7 +163,7 @@ export const getScoresByClub = async (request: Request, response: Response) => {
         });
 
         return response.status(200).json(scores);
-    } catch (error: any) {
+    } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }
-}
+};

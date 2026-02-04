@@ -1,6 +1,6 @@
 import { useState } from "react";
-import useSignup from "../../hooks/useSignup";
 
+import useSignup from "../../hooks/useSignup";
 import formStyles from "../../styles/Forms.module.css";
 
 const SignUpForm = () => {
@@ -16,49 +16,49 @@ const SignUpForm = () => {
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-        await signup( username, email, password, confirmPassword, firstName, lastName )
+        await signup( username, email, password, confirmPassword, firstName, lastName );
     };
 
-    return ( 
+    return (
         <div className={formStyles.formContainer}>
             <h2>Sign Up</h2>
             <form onSubmit={handleSubmit}>
 
                 <div className={formStyles.row}>
-                    <input 
+                    <input
                         type="text"
                         placeholder="First Name"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        required 
+                        required
                     />
 
-                    <input 
+                    <input
                         type="text"
                         placeholder="Last Name"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        required 
+                        required
                     />
                 </div>
 
-                <input 
+                <input
                     type="text"
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    required 
+                    required
                 />
 
-                <input 
-                    type="email" 
+                <input
+                    type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                 />
 
-                <input 
+                <input
                     type="password"
                     placeholder="Password"
                     value={password}
@@ -66,7 +66,7 @@ const SignUpForm = () => {
                     required
                 />
 
-                <input 
+                <input
                     type="password"
                     placeholder="Confirm Password"
                     value={confirmPassword}
@@ -85,6 +85,6 @@ const SignUpForm = () => {
             </form>
         </div>
     );
-}
- 
+};
+
 export default SignUpForm;

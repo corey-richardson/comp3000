@@ -1,6 +1,5 @@
-import { APP_NAME } from "../../lib/constants";
-
 import bannerStyles from "./Banner.module.css";
+import { APP_NAME } from "../../lib/constants";
 
 const Banner = () => {
     return (
@@ -16,6 +15,6 @@ const Banner = () => {
             <p className="small">&copy; corey-richardson 2025, Photo by Jonathon Yau via Archery GB</p>
         </div>
     );
-}
+};
 
 export default Banner;

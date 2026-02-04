@@ -1,12 +1,12 @@
 import "dotenv/config";
 
-import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import express, { Request, Response, NextFunction } from "express";
 
-import userRoutes from "./routes/userRoutes";
 import profileRoutes from "./routes/profileRoutes";
-import scoreRoutes from "./routes/scoreRoutes";
 import roundRoutes from "./routes/roundRoutes";
+import scoreRoutes from "./routes/scoreRoutes";
+import userRoutes from "./routes/userRoutes";
 
 // Express App
 const app = express();
@@ -20,6 +20,7 @@ app.use(express.json());
 
 // Request Logging
 app.use((request: Request, response: Response, next: NextFunction) => {
+    // eslint-disable-next-line no-console
     console.log(`${request.method} ${request.path}`);
     next();
 });
@@ -41,7 +42,8 @@ app.use((request: Request, response: Response) => {
     response.status(404).json({ error: "Route Not Found!" });
 });
 
-app.use((error: Error, request: Request, response: Response, next: NextFunction) => {
+app.use((error: Error, request: Request, response: Response) => {
+    // eslint-disable-next-line no-console
     console.error(error);
     response.status(500).json({ error: "Internal Server Error" });
 });
@@ -49,5 +51,6 @@ app.use((error: Error, request: Request, response: Response, next: NextFunction)
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
     console.log(`Listening on port ${PORT}.`);
 });

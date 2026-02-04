@@ -1,6 +1,6 @@
 import { useState } from "react";
-import useLogin from "../../hooks/useLogin";
 
+import useLogin from "../../hooks/useLogin";
 import formStyles from "../../styles/Forms.module.css";
 
 const LoginForm = () => {
@@ -12,21 +12,21 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await login(email, password);
-    }
+    };
 
     return (
         <div className={formStyles.formContainer}>
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
-                <input 
-                    type="email" 
+                <input
+                    type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                 />
 
-                <input 
+                <input
                     type="password"
                     placeholder="Password"
                     value={password}
@@ -41,7 +41,7 @@ const LoginForm = () => {
                 { error && <p className="error-message">{ error }</p>}
             </form>
         </div>
-    )
-}
- 
+    );
+};
+
 export default LoginForm;

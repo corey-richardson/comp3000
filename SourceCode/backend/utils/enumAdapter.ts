@@ -10,7 +10,7 @@ export function toPrismaAge(age: string): AgeCategories {
         case "50_PLUS":
         case "OVER_FIFTY":
             return AgeCategories.OVER_FIFTY;
-            
+
         default:
             throw new Error(`Invalid age category: ${age}`);
     }

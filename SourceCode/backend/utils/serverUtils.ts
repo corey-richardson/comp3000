@@ -1,4 +1,5 @@
 import { Role } from "@prisma/client";
+
 import prisma from "../lib/prisma";
 
 export async function getEmailForUserId(userId: string) {
@@ -10,10 +11,9 @@ export async function getEmailForUserId(userId: string) {
     return user?.email || null;
 }
 
-
 export async function requireRoleInClub(
-    requestingUserId: string, 
-    clubId: string, 
+    requestingUserId: string,
+    clubId: string,
     requiredRoles: Role[]
 ) {
     const membership = await prisma.membership.findFirst({
@@ -29,10 +29,9 @@ export async function requireRoleInClub(
     return Boolean(membership);
 }
 
-
 export async function requireRoleInSharedClub(
-    requestingUserId: string, 
-    targetUserId: string, 
+    requestingUserId: string,
+    targetUserId: string,
     requiredRoles: Role[]
 ) {
     const hasRoleInSharedClub = await prisma.membership.findFirst({
@@ -42,8 +41,8 @@ export async function requireRoleInSharedClub(
             roles: { hasSome: requiredRoles },
             club: {
                 members: {
-                    some: { 
-                        userId: targetUserId, 
+                    some: {
+                        userId: targetUserId,
                         ended_at: null,
                     },
                 }
@@ -55,21 +54,19 @@ export async function requireRoleInSharedClub(
     return Boolean(hasRoleInSharedClub);
 }
 
-
 export async function requireRoleInSharedClubOrDataOwnership(
-    requestingUserId: string, 
-    targetUserId: string, 
+    requestingUserId: string,
+    targetUserId: string,
     requiredRoles: Role[]
 ) {
     if (requestingUserId === targetUserId) return true;
     return await requireRoleInSharedClub(requestingUserId, targetUserId, requiredRoles);
 }
 
-
 export async function requireRoleInSpecificClubOrDataOwnership(
-    requestingUserId: string, 
-    targetUserId: string, 
-    clubId: string, 
+    requestingUserId: string,
+    targetUserId: string,
+    clubId: string,
     requiredRoles: Role[]
 ) {
     if (targetUserId === requestingUserId) return true;
@@ -81,7 +78,7 @@ export async function requireRoleInSpecificClubOrDataOwnership(
             ended_at: null,
             roles: { hasSome: requiredRoles, }
         },
-        select: { id: true 
+        select: { id: true
         },
     });
 

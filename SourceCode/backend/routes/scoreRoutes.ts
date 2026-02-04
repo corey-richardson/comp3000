@@ -1,7 +1,7 @@
 import { Router } from "express";
-import requireAuth from "../middleware/requireAuth";
 
 import { createScore, getScoresByClub, getScoresByUser } from "../controllers/scoreController";
+import requireAuth from "../middleware/requireAuth";
 
 const router = Router();
 

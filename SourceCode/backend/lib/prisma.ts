@@ -1,20 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 
 declare global {
-    var prisma: PrismaClient | undefined;
+
+    var _prisma: PrismaClient | undefined;
 }
 
 let prisma: PrismaClient;
 
-console.log("Database URL Check:", process.env.DATABASE_URL?.split('@')[1]);
-
 if (process.env.NODE_ENV === "production") {
     prisma = new PrismaClient();
 } else {
-    if (!global.prisma) {
-        global.prisma = new PrismaClient();
+    if (!globalThis._prisma) {
+        globalThis._prisma = new PrismaClient();
     }
-    prisma = global.prisma;
+    prisma = globalThis._prisma;
 }
 
 export default prisma;

@@ -8,4 +8,4 @@ export const getRoundsList = async (request: Request, response: Response) => {
     } catch (error: any) {
         response.status(500).json({ error: "Internal Server Error: " + error.message });
     }
-}
+};
