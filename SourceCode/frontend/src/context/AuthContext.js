@@ -22,12 +22,37 @@ export const AuthContextProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user) {
-            dispatch({ type: "LOGIN", payload: user });
-        }
+        const authHandshake = async () => {
+            const storedUser = JSON.parse(localStorage.getItem("user"));
 
-        dispatch({ type: "AUTH_READY" });
+            if (!storedUser || !storedUser.token) {
+                dispatch({ type: "AUTH_READY" });
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/auth/handshake", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${storedUser.token}`
+
+                    }
+                });
+
+                if (response.ok) {
+                    dispatch({ type: "LOGIN", payload: storedUser });
+                } else {
+                    localStorage.removeItem("user");
+                    dispatch({ type: "LOGOUT" });
+                }
+            } catch (error) {
+                console.log("Auth Handshake Failed: ",error);
+            } finally {
+                dispatch({ type: "AUTH_READY" });
+            }
+        };
+
+        authHandshake();
     }, []);
 
     return (

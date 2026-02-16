@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import calculateAgeCategory from "../../lib/calculateAgeCategory.js";
 import EnumMap from "../../lib/enumMap.js";
@@ -15,7 +16,8 @@ const DetailsFormSkeleton = () => {
 };
 
 const DetailsForm = () => {
-    const { user } = useAuthContext();
+    const { user, authIsReady } = useAuthContext();
+    const { makeApiCall } = useApi();
 
     const [ profile, setProfile ] = useState(null);
     const [ refreshFlag, setRefreshFlag ] = useState(false); // to be used in handleSubmit
@@ -25,47 +27,47 @@ const DetailsForm = () => {
     const [ error, setError ] = useState("");
     const [ message, setMessage ] = useState("");
 
+    const displayAgeCategory = useMemo(() => {
+        const year = parseInt(profile?.yearOfBirth);
+        if (isNaN(year)) return "Please set year.";
+        return calculateAgeCategory(year, true);
+    }, [ profile?.yearOfBirth]);
+
     useEffect(() => {
         const fetchProfile = async () => {
-            if (!user?.id) return;
+            if (!authIsReady || !user?.id) return;
+
+            setLoading(true);
             try {
-                const response = await fetch(`/api/profiles/${user.id}`, {
-                    headers: {
-                        "Authorization": `Bearer ${user.token}` // Add JWT Header
-                    }
-                });
+                const response = await makeApiCall(`/api/profiles/${user.id}`);
+                if (!response) return; // 401
 
                 const data = await response.json();
 
                 if (!response.ok) {
                     setError(data.error);
-                    setLoading(false);
                     return;
                 }
 
                 setProfile(data);
-                setLoading(false);
-
                 setMessage(`Your details were last updated at ${
                     new Date(data.updated_at || data.created_at).toLocaleString()
                 }.`);
             } catch (_error) {
-                setError("Failed to fetch profile.");
+                setError(_error.message, "Failed to fetch profile.");
             } finally {
                 setLoading(false);
             }
         };
 
         fetchProfile();
-    }, [ user, refreshFlag ]);
+    }, [ user?.id, refreshFlag, makeApiCall, authIsReady ]);
 
     const handleInputChange = useCallback((key) => (e) => {
         const newValue = e.target.value;
         setProfile(prev => ({ ...prev, [key]: newValue }));
         setChangesPending(true);
-    },
-    []
-    );
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -73,12 +75,8 @@ const DetailsForm = () => {
         setError(null);
 
         try {
-            const response = await fetch(`/api/profiles/${user.id}`, {
+            const response = await makeApiCall(`/api/profiles/${user.id}`, {
                 method: "PATCH",
-                headers: {
-                    "Authorization": `Bearer ${user.token}`,
-                    "Content-Type": "application/json"
-                },
                 body: JSON.stringify({
                     firstName: profile?.firstName,
                     lastName: profile?.lastName,
@@ -90,6 +88,7 @@ const DetailsForm = () => {
                     defaultBowstyle: profile?.defaultBowstyle === "NOT_SET" ? null : profile?.defaultBowstyle
                 })
             });
+            if (!response) return; // 401
 
             if (!response.ok) {
                 const data = await response.json();
@@ -107,7 +106,7 @@ const DetailsForm = () => {
         }
     };
 
-    if (loading) return <DetailsFormSkeleton />;
+    // if (loading) return <DetailsFormSkeleton />;
 
     return (
         <div className={`${formStyles.formContainer} ${formStyles.fullWidth}`}>
@@ -181,7 +180,7 @@ const DetailsForm = () => {
 
                     <div className={formStyles.fieldGroup}>
                         <label>Age Category:</label>
-                        <input disabled value={calculateAgeCategory(parseInt(profile?.yearOfBirth ?? "") ?? EnumMap["SENIOR"], true) } />
+                        <input disabled value={displayAgeCategory} />
                     </div>
                 </div>
 

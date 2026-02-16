@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import EnumMap from "../../lib/enumMap";
 import dashboardStyles from "../../styles/Dashboard.module.css";
@@ -14,7 +15,8 @@ const RecentScoresSkeleton = () => {
 };
 
 const RecentScores = () => {
-    const { user } = useAuthContext();
+    const { user, authIsReady } = useAuthContext();
+    const { makeApiCall } = useApi();
 
     const [ scores, setScores ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
@@ -22,15 +24,14 @@ const RecentScores = () => {
 
     useEffect(() => {
         const fetchLatestScores = async () => {
+            if (!authIsReady || !user?.id) return;
+
             setError(null);
             setIsLoading(true);
 
             try {
-                const response = await fetch(`/api/scores/user/${user.id}?limit=5`, {
-                    headers: {
-                        "Authorization": `Bearer ${user.token}`
-                    }
-                });
+                const response = await makeApiCall(`/api/scores/user/${user.id}?limit=5`);
+                if (!response) return; // 401
 
                 const data = await response.json();
                 if (response.ok) {
@@ -44,7 +45,7 @@ const RecentScores = () => {
         };
 
         fetchLatestScores();
-    }, [user.id, user.token]);
+    }, [user.id, user.token, makeApiCall, authIsReady]);
 
     return (
         <div className={dashboardStyles.dashboardContainer}>

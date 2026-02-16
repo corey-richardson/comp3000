@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import calculateAgeCategory from "../../lib/calculateAgeCategory";
 import EnumMap from "../../lib/enumMap";
@@ -9,7 +10,9 @@ import formStyles from "../../styles/Forms.module.css";
 const TODAY = new Date();
 
 const SubmitScoreForm = () => {
-    const { user } = useAuthContext();
+    const { user, authIsReady } = useAuthContext();
+    const { makeApiCall } = useApi();
+
     const navigate = useNavigate();
 
     // STATE
@@ -64,6 +67,8 @@ const SubmitScoreForm = () => {
     const userDataRef = useRef(null);
     useEffect(() => {
         const fetchUser = async () => {
+            if (!authIsReady || !user?.id) return;
+
             if (userDataRef.current) {
                 setFormData(prev => ({
                     ...prev,
@@ -74,41 +79,37 @@ const SubmitScoreForm = () => {
                 return;
             }
 
-            if (user?.id) {
-                try {
-                    const response = await fetch(`/api/profiles/${user.id}`, {
-                        headers: {
-                            "Authorization": `Bearer ${user.token}`
-                        }
-                    });
-                    const data = await response.json();
-                    if (!response.ok) {
-                        throw Error(data.error);
-                    }
+            try {
+                const response = await makeApiCall(`/api/profiles/${user.id}`);
+                if (!response) return; // 401
 
-                    const calculatedAgeCategory = calculateAgeCategory(data.yearOfBirth);
-
-                    userDataRef.current = {
-                        defaultBowstyle: data.defaultBowstyle,
-                        ageCategory: calculatedAgeCategory,
-                        sex: data.sex
-                    };
-
-                    setFormData(prev => ({
-                        ...prev,
-                        bowstyle: data.defaultBowstyle || "",
-                        ageCategory: calculatedAgeCategory || "SENIOR",
-                        sex: data.sex || "OPEN"
-                    }));
-
-                } catch (_error) {
-                    setError("Failed to fetch user data.");
+                const data = await response.json();
+                if (!response.ok) {
+                    throw Error(data.error);
                 }
+
+                const calculatedAgeCategory = calculateAgeCategory(data.yearOfBirth);
+
+                userDataRef.current = {
+                    defaultBowstyle: data.defaultBowstyle,
+                    ageCategory: calculatedAgeCategory,
+                    sex: data.sex
+                };
+
+                setFormData(prev => ({
+                    ...prev,
+                    bowstyle: data.defaultBowstyle || "",
+                    ageCategory: calculatedAgeCategory || "SENIOR",
+                    sex: data.sex || "OPEN"
+                }));
+
+            } catch (_error) {
+                setError("Failed to fetch user data.");
             }
         };
 
         fetchUser();
-    }, [ user ]);
+    }, [ user, authIsReady, makeApiCall ]);
 
     // FETCH ROUNDS LIST
 
@@ -116,7 +117,9 @@ const SubmitScoreForm = () => {
         const fetchAllRounds = async () => {
             setIsLoadingRounds(true);
             try {
-                const response = await fetch("/api/rounds");
+                const response = await makeApiCall("/api/rounds");
+                if (!response) return; // 401
+
                 const data = await response.json();
                 setAllRounds(data);
             } catch (_error) {
@@ -126,7 +129,7 @@ const SubmitScoreForm = () => {
             }
         };
         fetchAllRounds();
-    }, []);
+    }, [makeApiCall]);
 
     // ENFORCE AND VALIDATE ROUND SELECTION
 
@@ -178,12 +181,8 @@ const SubmitScoreForm = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch("/api/scores", {
+            const response = await makeApiCall("/api/scores", {
                 method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${user.token}`,
-                    "Content-Type": "application/json"
-                },
                 body: JSON.stringify({
                     ...formData,
                     roundName: selectedRoundData.name,

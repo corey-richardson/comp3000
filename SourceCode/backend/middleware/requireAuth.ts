@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 
 import prisma from "../lib/prisma";
 
@@ -35,13 +35,23 @@ const requireAuth = async (
         });
 
         if (!user) {
+            request.user = undefined;
             return response.status(404).json({ error: "User not found." });
         }
 
         request.user = user;
         next();
 
-    } catch {
+    } catch (error) {
+        request.user = undefined;
+
+        if (error instanceof TokenExpiredError) {
+            return response.status(401).json({
+                error: "Token expired.",
+                code: "TOKEN_EXPIRED"
+            });
+        }
+
         return response.status(401).json({ error: "Request not authorized." });
     }
 

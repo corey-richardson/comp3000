@@ -3,6 +3,7 @@ import "dotenv/config";
 import cors from "cors";
 import express, { Request, Response, NextFunction } from "express";
 
+import authRoutes from "./routes/auth";
 import profileRoutes from "./routes/profileRoutes";
 import roundRoutes from "./routes/roundRoutes";
 import scoreRoutes from "./routes/scoreRoutes";
@@ -33,6 +34,7 @@ app.get("/smoke-test", (request: Request, response: Response) => {
 });
 
 // Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/scores", scoreRoutes);
