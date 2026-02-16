@@ -1,0 +1,61 @@
+.contactCard {
+    border-bottom: 1px solid #ccc;
+    padding: 1rem 0;
+}
+
+.cardHeader {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.cardHeader span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cardHeader strong {
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+.updateForm {
+    margin-top: 1.5rem;
+    padding: 1rem;
+
+    /* background-color: var(--light-gray); */
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.buttonGroup button {
+    flex: 1;
+}
+
+.deleteBtn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.deleteBtn:hover {
+    background-color: #c82333;
+}
+
+.lastUpdated {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    text-align: center;
+    width: 100%;
+    display: block;
+}

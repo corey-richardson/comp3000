@@ -46,7 +46,8 @@ export const AuthContextProvider = ({ children }) => {
                     dispatch({ type: "LOGOUT" });
                 }
             } catch (error) {
-                console.log("Auth Handshake Failed: ",error);
+                // eslint-disable-next-line no-console
+                console.log("Auth Handshake Failed: ", error);
             } finally {
                 dispatch({ type: "AUTH_READY" });
             }

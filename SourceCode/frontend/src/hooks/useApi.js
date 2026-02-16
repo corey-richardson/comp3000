@@ -15,8 +15,6 @@ export const useApi = () => {
             }
         });
 
-        console.log("API status:", response.status);
-
         if (response.status === 401) {
             localStorage.removeItem("user");
             dispatch({ type: "LOGOUT" });

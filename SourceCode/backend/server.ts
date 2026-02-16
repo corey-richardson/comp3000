@@ -4,6 +4,7 @@ import cors from "cors";
 import express, { Request, Response, NextFunction } from "express";
 
 import authRoutes from "./routes/auth";
+import contactsRoutes from "./routes/contactsRoutes";
 import profileRoutes from "./routes/profileRoutes";
 import roundRoutes from "./routes/roundRoutes";
 import scoreRoutes from "./routes/scoreRoutes";
@@ -39,6 +40,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/scores", scoreRoutes);
 app.use("/api/rounds", roundRoutes);
+app.use("/api/contacts", contactsRoutes);
 
 app.use((request: Request, response: Response) => {
     response.status(404).json({ error: "Route Not Found!" });
