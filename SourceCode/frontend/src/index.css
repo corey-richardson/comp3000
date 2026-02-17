@@ -33,7 +33,7 @@ html, body {
 
 .subheader {
   text-align: center;
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .error-message {

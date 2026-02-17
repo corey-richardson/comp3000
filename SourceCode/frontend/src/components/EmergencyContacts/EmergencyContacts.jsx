@@ -212,86 +212,88 @@ const EmergencyContacts = () => {
                 </button>
             </form>
 
-            <div className={styles.existingContacts}>
-                <h3 className="subheader">Existing Emergency Contacts.</h3>
+            { contacts && contacts.length > 0 && (
+                <div className={styles.existingContacts}>
+                    <h3 className="subheader">Existing Emergency Contacts.</h3>
 
-                {contacts.map((contact, index) => (
-                    <div key={contact.id} className={styles.contactCard}>
-                        <div onClick={() => toggleContact(index)} className={styles.cardHeader}>
-                            <strong>{contact.name} ({EnumMap[contact.relationshipToUser] || "Contact"})</strong>
-                            <span>{openContactIndex === index ? (
-                                <>Hide Details <ChevronUp size={20} /></>
-                            ) : (
-                                <>Show Details <ChevronDown size={20} /></>
-                            )}</span>
-                        </div>
+                    {contacts.map((contact, index) => (
+                        <div key={contact.id} className={styles.contactCard}>
+                            <div onClick={() => toggleContact(index)} className={styles.cardHeader}>
+                                <strong>{contact.name} ({EnumMap[contact.relationshipToUser] || "Contact"})</strong>
+                                <span>{openContactIndex === index ? (
+                                    <>Hide Details <ChevronUp size={20} /></>
+                                ) : (
+                                    <>Show Details <ChevronDown size={20} /></>
+                                )}</span>
+                            </div>
 
-                        {openContactIndex === index && (
-                            <form onSubmit={(e) => handleUpdateExistingContact(e, contact)} className={styles.updateForm}>
-                                <div className={formStyles.row}>
-                                    <div className={formStyles.fieldGroup}>
-                                        <label>*Name:</label>
-                                        <input
-                                            value={contact.name}
-                                            onChange={(e) => handleExistingContactChange(index, "name", e.target.value)}
-                                            required
-                                        />
+                            {openContactIndex === index && (
+                                <form onSubmit={(e) => handleUpdateExistingContact(e, contact)} className={styles.updateForm}>
+                                    <div className={formStyles.row}>
+                                        <div className={formStyles.fieldGroup}>
+                                            <label>*Name:</label>
+                                            <input
+                                                value={contact.name}
+                                                onChange={(e) => handleExistingContactChange(index, "name", e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className={formStyles.fieldGroup}>
+                                            <label>Relationship:</label>
+                                            <select
+                                                value={contact.relationshipToUser}
+                                                onChange={(e) => handleExistingContactChange(index, "relationshipToUser", e.target.value)}
+                                            >
+                                                <option value="NOT_SET" disabled>Please Select</option>
+                                                <option value="PARENT">{ EnumMap["PARENT"] }</option>
+                                                <option value="GRANDPARENT">{ EnumMap["GRANDPARENT"] }</option>
+                                                <option value="GUARDIAN">{ EnumMap["GUARDIAN"] }</option>
+                                                <option value="SPOUSE">{ EnumMap["SPOUSE"] }</option>
+                                                <option value="SIBLING">{ EnumMap["SIBLING"] }</option>
+                                                <option value="FRIEND">{ EnumMap["FRIEND"] }</option>
+                                                <option value="OTHER">{ EnumMap["OTHER"] }</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div className={formStyles.fieldGroup}>
-                                        <label>Relationship:</label>
-                                        <select
-                                            value={contact.relationshipToUser}
-                                            onChange={(e) => handleExistingContactChange(index, "relationshipToUser", e.target.value)}
+
+                                    <div className={formStyles.row}>
+                                        <div className={formStyles.fieldGroup}>
+                                            <label>Phone Number</label>
+                                            <input
+                                                value={contact.phoneNumber}
+                                                type="tel"
+                                                onChange={(e) => handleExistingContactChange(index, "phoneNumber", e.target.value)}
+                                            />
+                                        </div>
+                                        <div className={formStyles.fieldGroup}>
+                                            <label>Email:</label>
+                                            <input
+                                                value={contact.emailAddress}
+                                                type="email"
+                                                onChange={(e) => handleExistingContactChange(index, "emailAddress", e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.buttonGroup}>
+                                        <button type="submit" disabled={!changesPending.includes(contact.id) || loading}>
+                                            Update Contact
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={styles.deleteBtn}
+                                            onClick={() => handleDeleteExistingContact(contact.id)}
                                         >
-                                            <option value="NOT_SET" disabled>Please Select</option>
-                                            <option value="PARENT">{ EnumMap["PARENT"] }</option>
-                                            <option value="GRANDPARENT">{ EnumMap["GRANDPARENT"] }</option>
-                                            <option value="GUARDIAN">{ EnumMap["GUARDIAN"] }</option>
-                                            <option value="SPOUSE">{ EnumMap["SPOUSE"] }</option>
-                                            <option value="SIBLING">{ EnumMap["SIBLING"] }</option>
-                                            <option value="FRIEND">{ EnumMap["FRIEND"] }</option>
-                                            <option value="OTHER">{ EnumMap["OTHER"] }</option>
-                                        </select>
+                                            Delete
+                                        </button>
                                     </div>
-                                </div>
-
-                                <div className={formStyles.row}>
-                                    <div className={formStyles.fieldGroup}>
-                                        <label>Phone Number</label>
-                                        <input
-                                            value={contact.phoneNumber}
-                                            type="tel"
-                                            onChange={(e) => handleExistingContactChange(index, "phoneNumber", e.target.value)}
-                                        />
-                                    </div>
-                                    <div className={formStyles.fieldGroup}>
-                                        <label>Email:</label>
-                                        <input
-                                            value={contact.emailAddress}
-                                            type="email"
-                                            onChange={(e) => handleExistingContactChange(index, "emailAddress", e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className={styles.buttonGroup}>
-                                    <button type="submit" disabled={!changesPending.includes(contact.id) || loading}>
-                                        Update Contact
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={styles.deleteBtn}
-                                        onClick={() => handleDeleteExistingContact(contact.id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                                <p className={styles.lastUpdated}>Last updated: {new Date(contact.updated_at).toLocaleString()}</p>
-                            </form>
-                        )}
-                    </div>
-                ))}
-            </div>
+                                    <p className={styles.lastUpdated}>Last updated: {new Date(contact.updated_at).toLocaleString()}</p>
+                                </form>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {error && <p className="error">{error}</p>}
         </div>
