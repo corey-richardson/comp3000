@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
+import RecentScoreItem from "./RecentScoreItem";
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import dashboardStyles from "../../styles/Dashboard.module.css";
-import RecentScoreItem from "./RecentScoreItem";
 
 const RecentScoresSkeleton = () => {
     return (
@@ -35,7 +35,7 @@ const RecentScores = () => {
 
                 const data = await response.json();
                 if (response.ok) {
-                    setScores(data);
+                    setScores(data.scores);
                 }
             } catch (error) {
                 setError(error.message);

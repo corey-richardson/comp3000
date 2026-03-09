@@ -93,9 +93,9 @@ export const getScoresByUser = async (request: Request, response: Response) => {
     const { userId: targetUserId } = request.params as { userId: string };
     const requestingUserId = (request as any).user.id;
 
-    const limit = request.query.limit ? parseInt(request.query.limit as string) : undefined;
+    const limit = request.query.limit ? parseInt(request.query.limit as string) : 10;
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
-    const skip = limit ? (page - 1) * limit : undefined;
+    const skip = (page - 1) * limit;
 
     try {
         const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
@@ -108,14 +108,29 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
-        const scores = await prisma.score.findMany({
-            where: { userId: targetUserId },
-            orderBy: { dateShot: "desc" },
-            take: limit,
-            skip: skip,
-        });
+        const [scores, totalCount] = await Promise.all ([
+            prisma.score.findMany({
+                where: { userId: targetUserId },
+                orderBy: { dateShot: "desc" },
+                take: limit,
+                skip: skip,
+            }),
+            prisma.score.count({
+                where: { userId: targetUserId }
+            })
+        ]);
 
-        return response.status(200).json(scores);
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return response.status(200).json({
+            scores,
+            pagination: {
+                totalCount,
+                totalPages,
+                currentPage: page,
+                limit
+            }
+        });
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }
