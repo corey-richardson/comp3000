@@ -26,7 +26,7 @@ const RecentScoreItem = ({ score }) => {
             <div className={styles.mainInfo}>
                 <div className={styles.roundDetails}>
                     <h3>{ score.roundName }</h3>
-                    <p>{ EnumMap[score.bowstyle] }, { EnumMap[score.competition] }</p>
+                    <p>{ EnumMap[score.bowstyle] } { EnumMap[score.ageCategory] } { EnumMap[score.sex] }, { EnumMap[score.competition] }</p>
                 </div>
                 <div className={styles.scoreDisplay}>
                     <span className={styles.actualScore}>{score.score}</span>
