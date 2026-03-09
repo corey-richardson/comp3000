@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import EnumMap from "../../lib/enumMap";
 import dashboardStyles from "../../styles/Dashboard.module.css";
+import RecentScoreItem from "./RecentScoreItem";
 
 const RecentScoresSkeleton = () => {
     return (
@@ -53,9 +53,7 @@ const RecentScores = () => {
 
             { scores && scores.length > 0 && (
                 scores.map(score => (
-                    <div className={dashboardStyles.recentScoreItem} key={score.id}>
-                        <p>{score.roundName}: {score.score}/{score.maxScore} | {EnumMap[score.classification]} (H/C: {score.handicap}) ({new Date(score.dateShot).toLocaleDateString()})</p>
-                    </div>
+                    <RecentScoreItem score={score} key={score.id} />
                 ))
             )}
 

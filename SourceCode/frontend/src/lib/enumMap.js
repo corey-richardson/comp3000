@@ -64,7 +64,7 @@ const EnumMap = {
     NC: "Not Classified",
     // Competition Statuses
     PRACTICE: "Club Practice",
-    CLUB_EVENT: "Club Event / Target Day",
+    CLUB_EVENT: "Club Event or Target Day",
     OPEN_COMPETITION: "Open Competition",
     RECORD_STATUS_COMPETITION: "Record Status Competition",
     // Invite Statuses
