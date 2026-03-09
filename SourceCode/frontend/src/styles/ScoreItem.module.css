@@ -4,9 +4,9 @@
     flex-direction: column;
 }
 
-.recentScoreItem {
+.scoreItem {
     background-color: #fff;
-    padding: 1.25rem;
+    padding: 2rem 1.25rem;
     margin-bottom: 0;
     box-shadow: none;
     display: flex;
@@ -17,15 +17,16 @@
     transition: all 0.2s ease-in-out;
 }
 
-.recentScoreItem:not(:last-child) {
-    border-bottom: 1px solid var(--border-color);
+.scoreItem:not(:last-child) {
+    border-bottom: 2px solid var(--border-color);
 }
 
-.recentScoreItem:hover {
+.scoreItem:hover {
     background-color: var(--light-gray);
     border-color: var(--primary-color);
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
+    border-width: 4px;
 }
 
 .topRow {
@@ -42,8 +43,24 @@
     letter-spacing: 0.025em;
 }
 
-.venueBadge {
+.badgeGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badge {
     font-size: 0.75rem;
+}
+
+.badge a {
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.2s;
+}
+
+.badge a:hover {
+    color: var(--primary-color);
 }
 
 .mainInfo {
@@ -84,6 +101,50 @@
     margin-left: 0.25rem;
 }
 
+.statsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 0.75rem;
+}
+
+.notesGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.statBlock, .notesBlock {
+    display: flex;
+    flex-direction: column;
+}
+
+.statBlock {
+    align-items: center;
+}
+
+.statBlock label, .notesBlock label {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.statBlock span {
+    font-weight: bold;
+}
+
+.notesBlock:only-child {
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+.notesBlock {
+    line-height: 1.2;
+    color: var(--text-color);
+    overflow-wrap: break-word;
+}
+
 .footerRow {
     display: flex;
     align-items: center;
@@ -118,9 +179,4 @@
     font-size: 0.85rem;
     color: var(--light-text-color);
     font-weight: 500;
-}
-
-.verifiedCheck {
-    margin-left: auto;
-    font-size: 1rem;
 }

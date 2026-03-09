@@ -1,16 +1,26 @@
+import { Check, Sun, Warehouse, X } from "lucide-react";
+
 import EnumMap from "../../lib/enumMap";
-import { Sun, Warehouse } from "lucide-react";
-import styles from "../../styles/ScoreItem.module.css";
 import getClassificationClass from "../../lib/getClassificationClass";
+import styles from "../../styles/ScoreItem.module.css";
 
 const RecentScoreItem = ({ score }) => {
     const formattedDate = new Date(score.dateShot).toLocaleDateString();
 
-    return ( 
-        <div className={styles.recentScoreItem}>
+    return (
+        <div className={styles.scoreItem}>
             <div className={styles.topRow}>
                 <span className={styles.date}>{ formattedDate }</span>
-                <span className={styles.venueBadge} title={ EnumMap[score.venue] }>{ score.venue === "INDOOR" ?  <Warehouse /> : <Sun />}</span>
+
+                <div className={styles.badgeGroup}>
+                    <span className={styles.badge} title={score.verifiedAt ? "Processed by Records Officer" : "Unprocessed by Records Officer"}>
+                        { score.verifiedAt ? <Check /> : <X /> }
+                    </span>
+
+                    <span className={styles.badge} title={ EnumMap[score.venue] }>
+                        { score.venue === "INDOOR" ? <Warehouse /> : <Sun /> }
+                    </span>
+                </div>
             </div>
 
             <div className={styles.mainInfo}>
@@ -33,6 +43,6 @@ const RecentScoreItem = ({ score }) => {
             </div>
         </div>
     );
-}
- 
+};
+
 export default RecentScoreItem;
