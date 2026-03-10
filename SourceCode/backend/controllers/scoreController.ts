@@ -216,3 +216,41 @@ export const getScoresByClub = async (request: Request, response: Response) => {
         return response.status(500).json({ error: "Internal Server Error." });
     }
 };
+
+export const getScoreById = async (request: Request, response: Response) => {
+    const { scoreId } = request.params as { scoreId: string };
+    const requestingUserId = (request as any).user.id;
+
+    try {
+        const score = await prisma.score.findUnique({
+            where: { id: scoreId },
+            // include: {
+            //     profile: {
+            //         select: {
+            //             firstName: true,
+            //             lastName: true,
+            //             username: true
+            //         }
+            //     }
+            // }
+        });
+
+        if (!score) {
+            return response.status(404).json({ error: "Score not found." });
+        }
+
+        const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
+            requestingUserId,
+            score.userId,
+            ["ADMIN", "CAPTAIN", "RECORDS", "COACH"]
+        );
+
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
+        return response.status(200).json(score);
+    } catch (_error: any) {
+        return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
