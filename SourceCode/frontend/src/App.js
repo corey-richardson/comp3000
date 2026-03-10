@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import { useAuthContext } from "./hooks/useAuthContext";
 import Dashboard from "./pages/Dashboard";
+import EditScore from "./pages/EditScore";
 import LandingPage from "./pages/LandingPage";
 import MyScores from "./pages/MyScores";
 import SubmitScore from "./pages/SubmitScore";
@@ -31,6 +32,12 @@ function App() {
                             <Route
                                 path="/my-scores"
                                 element={user ? <MyScores /> : <Navigate to="/" />}
+                            />
+
+                            <Route path="/my-scores/edit" element={<Navigate to="/my-scores" replace />} />
+                            <Route
+                                path="/my-scores/edit/:id"
+                                element={user ? <EditScore /> : <Navigate to="/" />}
                             />
 
                             <Route
