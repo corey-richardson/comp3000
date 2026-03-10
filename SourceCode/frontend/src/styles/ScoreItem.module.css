@@ -12,7 +12,6 @@
     box-shadow: none;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
     width: 100%;
     box-sizing: border-box;
     transition: all 0.2s ease-in-out;
@@ -173,6 +172,7 @@
     align-items: center;
     gap: 1rem;
     padding-top: 0.25rem;
+    margin-top: 0.5rem;
 }
 
 .classificationBadge {

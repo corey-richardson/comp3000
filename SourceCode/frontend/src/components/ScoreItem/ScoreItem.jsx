@@ -14,6 +14,7 @@ const ScoreItem = ({ score, onDelete }) => {
     const [ error, setError ] = useState(null);
 
     const formattedDate = new Date(score.dateShot).toLocaleDateString();
+    const verificationDate = score.verified_at ? new Date(score.verified_at) : null;
 
     const handleDelete = async () => {
         setIsDeleting(true);
@@ -39,17 +40,17 @@ const ScoreItem = ({ score, onDelete }) => {
                 <span className={styles.date}>{ formattedDate }</span>
 
                 <div className={styles.badgeGroup}>
-                    <span className={styles.badge} title={score.verifiedAt
-                        ? `Processed by Records Officer at ${new Date(score.verifiedAt).toLocaleDateString()}`
-                        : "Unprocessed by Records Officer"}>
-                        { score.verifiedAt ? <Check /> : <X /> }
+                    <span className={styles.badge} title={verificationDate
+                        ? `Verified by Records Officer on ${verificationDate.toLocaleDateString()} at ${verificationDate.toLocaleTimeString()}`
+                        : "Unverified by Records Officer"}>
+                        { score.verified_at ? <Check /> : <X /> }
                     </span>
 
                     <span className={styles.badge} title={ EnumMap[score.venue] }>
                         { score.venue === "INDOOR" ? <Warehouse /> : <Sun /> }
                     </span>
 
-                    {!score.verifiedAt && (
+                    {!score.verified_at && (
                         <span className={styles.badge} title="Edit Score (inop)">
                             <Link to={`./edit/${score.id}`}><Pencil /></Link>
                         </span>
