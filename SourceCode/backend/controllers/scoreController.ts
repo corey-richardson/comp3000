@@ -89,6 +89,40 @@ export const createScore = async (request: Request, response: Response) => {
     }
 };
 
+export const deleteScore = async (request: Request, response: Response) => {
+    const { scoreId } = request.params as { scoreId: string };
+    const requestingUserId = (request as any).user.id;
+
+    try {
+        const score = await prisma.score.findUnique({
+            where: { id: scoreId },
+        });
+
+        if (!score) {
+            return response.status(404).json({ error: "Score not found." });
+        }
+
+        const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
+            requestingUserId,
+            score.userId,
+            ["ADMIN", "RECORDS"]
+        );
+
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
+        await prisma.score.delete({
+            where: { id: scoreId },
+        });
+
+        return response.status(204).send();
+
+    } catch (_error: any) {
+        return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
+
 export const getScoresByUser = async (request: Request, response: Response) => {
     const { userId: targetUserId } = request.params as { userId: string };
     const requestingUserId = (request as any).user.id;

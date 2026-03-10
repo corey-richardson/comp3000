@@ -1,12 +1,37 @@
-import { Check, Pencil, Sun, Trash, Warehouse, X } from "lucide-react";
+import { AlertTriangle, Check, Pencil, Sun, Trash, Warehouse, X } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useApi } from "../../hooks/useApi";
 import EnumMap from "../../lib/enumMap";
 import getClassificationClass from "../../lib/getClassificationClass";
 import styles from "../../styles/ScoreItem.module.css";
 
-const ScoreItem = ({ score }) => {
+const ScoreItem = ({ score, onDelete }) => {
+    const { makeApiCall } = useApi();
+    const [ isDeleting, setIsDeleting ] = useState(false);
+    const [ isPending, setIsPending ] = useState(false);
+    const [ error, setError ] = useState(null);
+
     const formattedDate = new Date(score.dateShot).toLocaleDateString();
+
+    const handleDelete = async () => {
+        setIsDeleting(true);
+        setError(null);
+
+        try {
+            const response = await makeApiCall(`/api/scores/${score.id}`, { method: "DELETE" });
+            if (!response) return; // 401
+
+            if (response.ok) {
+                onDelete(score.id); // Notify parent page to filter local state
+            }
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setIsPending(false);
+        }
+    };
 
     return (
         <div className={styles.scoreItem}>
@@ -30,8 +55,13 @@ const ScoreItem = ({ score }) => {
                         </span>
                     )}
 
-                    <span className={styles.badge} title="Delete Score (inop)">
-                        <Link to=""><Trash /></Link>
+                    <span className={styles.badge} title="Delete">
+                        <button
+                            onClick={() => setIsDeleting(true)}
+                            className={styles.invisibleButton}
+                        >
+                            <Trash />
+                        </button>
                     </span>
                 </div>
             </div>
@@ -90,6 +120,32 @@ const ScoreItem = ({ score }) => {
 
                 <span className={styles.handicap}>Handicap: { score.handicap }</span>
             </div>
+
+            {isDeleting && (
+                <div className={styles.deleteOverlay}>
+                    <AlertTriangle size={24} />
+                    <span>Are you sure you want to delete this score?</span>
+
+                    <div className={styles.overlayButtons}>
+                        <button
+                            onClick={handleDelete}
+                            disabled={isPending}
+                            className={styles.confirmButton}
+                        >
+                            { isPending ? "Deleting..." : "Delete" }
+                        </button>
+
+                        <button
+                            onClick={() => setIsDeleting(false)}
+                            className={styles.cancelButton}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            <span>{error}</span>
         </div>
     );
 };

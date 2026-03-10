@@ -47,6 +47,10 @@ const MyScores = () => {
         fetchScores(currentPage);
     }, [ currentPage, scoresPerPage, fetchScores ]);
 
+    const handleDeletion = (id) => {
+        setScores(prev => prev.filter(score => score.id !== id));
+    };
+
     const handleNext = () => setCurrentPage(prev => prev + 1);
     const handlePrev = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
@@ -64,7 +68,7 @@ const MyScores = () => {
                 <>
                     <div className={styles.scoreList}>
                         { scores.length > 0 ? (
-                            scores.map(score => <ScoreItem score={score} key={score.id} />)
+                            scores.map(score => <ScoreItem score={score} onDelete={handleDeletion} key={score.id} />)
                         ) : (
                             <p className="small centred">No scores to display. Submit one <Link to="../submit-score">here</Link>.</p>
                         )}
@@ -85,7 +89,7 @@ const MyScores = () => {
 
                 <button
                     onClick={ handleNext }
-                    disabled={ scores.length < scoresPerPage || isLoading }
+                    disabled={ currentPage === totalPages || isLoading }
                     className={ paginationStyles.button }
                 >
                     <ChevronRight size={16} />

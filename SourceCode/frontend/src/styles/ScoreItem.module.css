@@ -5,6 +5,7 @@
 }
 
 .scoreItem {
+    position: relative;
     background-color: #fff;
     padding: 2rem 1.25rem;
     margin-bottom: 0;
@@ -25,7 +26,7 @@
     background-color: var(--light-gray);
     border-color: var(--primary-color);
     transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
+    box-shadow: 0 4px 6px var(--shadow);
     border-width: 4px;
 }
 
@@ -39,7 +40,6 @@
     font-size: 0.8rem;
     color: var(--text-color);
     font-weight: 500;
-    text-transform: uppercase;
     letter-spacing: 0.025em;
 }
 
@@ -50,17 +50,40 @@
 }
 
 .badge {
-    font-size: 0.75rem;
-}
-
-.badge a {
-    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    background: transparent;
+    border-radius: 6px;
     color: var(--text-color);
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
 }
 
-.badge a:hover {
+.badge:has(a):hover, 
+.badge:has(button):hover {
     color: var(--primary-color);
+    cursor: pointer;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--blue-shadow);
+}
+
+.badge:has(.deleteIcon):hover {
+    border-color: red;
+    color: red;
+}
+
+.badge a, 
+.invisibleButton {
+    display: flex;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 }
 
 .mainInfo {
@@ -179,4 +202,47 @@
     font-size: 0.85rem;
     color: var(--light-text-color);
     font-weight: 500;
+}
+
+.deleteOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(255 255 255 / 80%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    gap: 0.5rem;
+    border-radius: var(--border-radius);
+    animation: fadeIn 0.2s ease;
+}
+
+.overlayButtons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.confirmButton, .cancelButton {
+    padding: 0.8rem 1.6rem;
+    border-color: var(--border-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.confirmButton:hover, .cancelButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--blue-shadow);
+}
+
+.confirmButton {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+
+.cancelButton {
+    border-color: var(--border-color);
+    color: var(--text-color);
 }

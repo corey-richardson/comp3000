@@ -1,7 +1,7 @@
 .formContainer {
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    box-shadow: 0 4px 12px rgb(0 0 0 / 5%);
+    box-shadow: 0 4px 12px var(--shadow);
     width: 100%;
     padding: 2rem;
     display: flex;
@@ -73,12 +73,12 @@
 .formContainer textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgb(53 109 241 / 10%);
+    box-shadow: 0 0 0 3px var(--shadow);
 }
 
 .formContainer button {
   width: 100%;
-  background-color: var(--primary-color, #356df1);
+  background-color: var(--primary-color);
   color: #fff;
   border: none;
   padding: 14px 20px;
@@ -93,7 +93,7 @@
 .formContainer button:hover:not(:disabled) {
   background-color: #2554d6;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgb(53 109 241 / 30%);
+  box-shadow: 0 4px 12px var(--blue-shadow);
 }
 
 .formContainer button:disabled {
