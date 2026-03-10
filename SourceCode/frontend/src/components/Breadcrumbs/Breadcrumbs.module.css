@@ -1,0 +1,51 @@
+.nav {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    text-transform: capitalize;
+}
+
+.disabledText {
+    color: var(--light-text-color);
+    cursor: default;
+}
+
+.homeIcon, .separator {
+    display: flex;
+    align-items: center;
+    transform: translateY(1px);
+}
+
+.homeIcon, .link {
+    text-decoration: none;
+    color: var(--light-text-color);
+    transition: color 0.2s;
+}
+
+.homeIcon:hover, .link:hover {
+    color: var(--primary-color);
+}
+
+.separator {
+    color: var(--light-text-color);
+    margin: 0 0.25rem;
+}
+
+.current {
+    color: var(--text-color);
+    font-weight: bold;
+}

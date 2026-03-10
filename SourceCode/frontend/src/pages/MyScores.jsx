@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import Breadcrumbs from "../components/Breadcrumbs/Breadcrumbs";
 import ScoreItem from "../components/ScoreItem/ScoreItem";
 import { useApi } from "../hooks/useApi";
 import { useAuthContext } from "../hooks/useAuthContext";
@@ -14,7 +15,7 @@ const MyScores = () => {
 
     const [ scores, setScores ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
-    const [ error, setError ] = useState(null);
+    const [ _error, setError ] = useState(null);
 
     const [ currentPage, setCurrentPage ] = useState(1);
     const [ totalPages, setTotalPages ] = useState(1);
@@ -56,6 +57,8 @@ const MyScores = () => {
 
     return (
         <div className="content">
+            <Breadcrumbs />
+
             <header className={ styles.pageHeader }>
                 <h2>My Scores.</h2>
             </header>
