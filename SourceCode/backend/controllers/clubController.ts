@@ -2,10 +2,11 @@ import { Role } from "@prisma/client";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
+import { requireRoleInClub } from "../utils/serverUtils";
 
 // POST /api/clubs
 export const createClub = async (request: Request, response: Response) => {
-    const { name } = request.body();
+    const { clubName: name } = request.body;
     const requestingUserId = (request as any).user.id;
 
     if (!name) {
@@ -38,5 +39,72 @@ export const createClub = async (request: Request, response: Response) => {
         }
 
         return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
+
+// GET /api/clubs/:id
+export const getClubById = async (request: Request, response: Response) => {
+    const { clubId } = request.params as { clubId: string };
+    const requestingUserId = (request as any).user.id;
+
+    try {
+        const isMember = await requireRoleInClub(requestingUserId, clubId, [Role.MEMBER, Role.COACH, Role.RECORDS, Role.CAPTAIN, Role.ADMIN]);
+        if (!isMember) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
+        const [isAdmin, isCaptain, isRecords] = await Promise.all([
+            requireRoleInClub(requestingUserId, clubId, [Role.ADMIN]),
+            requireRoleInClub(requestingUserId, clubId, [Role.CAPTAIN]),
+            requireRoleInClub(requestingUserId, clubId, [Role.RECORDS]),
+        ]);
+
+        const club = await prisma.club.findUnique({
+            where: { id: clubId },
+            include: {
+                members: {
+                    where: {
+                        ended_at: null,
+                    },
+                    include: {
+                        profile: {
+                            include: {
+                                emergencyContacts: true,
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!club) {
+            return response.status(404).json({ error: "Club not found." });
+        }
+
+        const memberCount = club.members.length;
+
+        const stripMemberPii = club.members.map((member) => {
+            const isOwner = member.userId === requestingUserId;
+
+            return {
+                id: member.id,
+                firstName: member.profile.firstName,
+                lastName: member.profile.lastName,
+                username: member.profile.username,
+                roles: member.roles,
+
+                email: (isAdmin || isOwner) ? member.profile.email : null,
+                emergencyContacts: (isAdmin || isCaptain || isOwner) ? member.profile.emergencyContacts : null,
+                membershipNumber: (isAdmin || isCaptain || isRecords || isOwner) ? member.profile.membershipNumber : null,
+            };
+        });
+
+        return response.status(200).json({
+            ...club,
+            memberCount,
+            members: stripMemberPii,
+        });
+    } catch (_error: any) {
+        return response.status(500).json({ error: "Internal Server Error" });
     }
 };

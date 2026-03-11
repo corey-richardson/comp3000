@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { createClub, getClubById } from "../controllers/clubController";
 import requireAuth from "../middleware/requireAuth";
 
 const router = Router();
@@ -9,6 +10,7 @@ const router = Router();
 // Middleware
 router.use(requireAuth);
 // Protected Routes
-router.post("/", () => {});
+router.post("/", createClub);
+router.get("/:clubId", getClubById);
 
 export default router;
