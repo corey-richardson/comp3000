@@ -14,7 +14,26 @@ const CreateClubForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({ clubName });
+        setIsPending(true);
+
+        try {
+            const response = await makeApiCall("/api/clubs", {
+                method: "POST",
+                body: JSON.stringify({ clubName }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                navigate(`/clubs/${data.id}`);
+            } else {
+                setError(data.error || "Failed to create club.");
+            }
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setIsPending(false);
+        }
     };
 
     return (
@@ -41,6 +60,7 @@ const CreateClubForm = () => {
                 Create Club
             </button>
 
+            { error && <p className="error-message">{error}</p> }
         </form>
     );
 };

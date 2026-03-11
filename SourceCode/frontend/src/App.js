@@ -2,10 +2,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 import { useAuthContext } from "./hooks/useAuthContext";
+import Clubs from "./pages/Clubs";
 import CreateClub from "./pages/CreateClub";
 import Dashboard from "./pages/Dashboard";
 import EditScore from "./pages/EditScore";
 import LandingPage from "./pages/LandingPage";
+import ManageClub from "./pages/ManageClub";
 import MyScores from "./pages/MyScores";
 import SubmitScore from "./pages/SubmitScore";
 
@@ -47,8 +49,18 @@ function App() {
                             />
 
                             <Route
+                                path="/clubs"
+                                element={user ? <Clubs /> : <Navigate to="/" />}
+                            />
+
+                            <Route
                                 path="/clubs/create"
                                 element={user ? <CreateClub /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/clubs/:id"
+                                element={user ? <ManageClub /> : <Navigate to="/" />}
                             />
                         </Routes>
                     )}
