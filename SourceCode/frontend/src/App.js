@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 import { useAuthContext } from "./hooks/useAuthContext";
+import CreateClub from "./pages/CreateClub";
 import Dashboard from "./pages/Dashboard";
 import EditScore from "./pages/EditScore";
 import LandingPage from "./pages/LandingPage";
@@ -43,6 +44,11 @@ function App() {
                             <Route
                                 path="/submit-score"
                                 element={user ? <SubmitScore /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/clubs/create"
+                                element={user ? <CreateClub /> : <Navigate to="/" />}
                             />
                         </Routes>
                     )}

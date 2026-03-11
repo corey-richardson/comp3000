@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Menu, ChevronDown, BowArrow, CirclePlus, LogOut, UserRound } from "lucide-react";
+import { Menu, ChevronDown, BowArrow, CirclePlus, LogOut, User, Users } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -10,7 +10,8 @@ import { APP_NAME } from "../../lib/constants";
 
 const NAVIGATION_LINKS = [
     { href: "/dashboard", label: <><BowArrow size={20} />&nbsp; Dashboard</> },
-    { href: "/my-scores", label: <><UserRound size={20} />&nbsp; My Scores</> },
+    { href: "/my-scores", label: <><User size={20} />&nbsp; My Scores</> },
+    { href: "/clubs", label: <><Users size={20} />&nbsp; My Clubs</> },
     { href: "/submit-score", label: <><CirclePlus size={20} />&nbsp; Submit a Score</> },
 ];
 
