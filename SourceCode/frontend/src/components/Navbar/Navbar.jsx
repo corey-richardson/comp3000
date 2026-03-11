@@ -10,9 +10,9 @@ import { APP_NAME } from "../../lib/constants";
 
 const NAVIGATION_LINKS = [
     { href: "/dashboard", label: <><BowArrow size={20} />&nbsp; Dashboard</> },
-    { href: "/my-scores", label: <><User size={20} />&nbsp; My Scores</> },
+    { href: "/scores", label: <><User size={20} />&nbsp; My Scores</> },
     { href: "/clubs", label: <><Users size={20} />&nbsp; My Clubs</> },
-    { href: "/submit-score", label: <><CirclePlus size={20} />&nbsp; Submit a Score</> },
+    { href: "/scores/submit", label: <><CirclePlus size={20} />&nbsp; Submit a Score</> },
 ];
 
 const Navbar = () => {

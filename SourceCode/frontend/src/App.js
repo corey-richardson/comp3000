@@ -31,18 +31,18 @@ function App() {
                             />
 
                             <Route
-                                path="/my-scores"
+                                path="/scores"
                                 element={user ? <MyScores /> : <Navigate to="/" />}
                             />
 
-                            <Route path="/my-scores/edit" element={<Navigate to="/my-scores" replace />} />
+                            <Route path="/scores/edit" element={<Navigate to="/scores" replace />} />
                             <Route
-                                path="/my-scores/edit/:id"
+                                path="/scores/edit/:id"
                                 element={user ? <EditScore /> : <Navigate to="/" />}
                             />
 
                             <Route
-                                path="/submit-score"
+                                path="/scores/submit"
                                 element={user ? <SubmitScore /> : <Navigate to="/" />}
                             />
 
