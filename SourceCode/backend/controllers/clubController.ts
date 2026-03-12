@@ -113,6 +113,14 @@ export const getClubById = async (request: Request, response: Response) => {
 export const getMyClubs = async (request: Request, response: Response) => {
     const requestingUserId = (request as any).user.id;
 
+    const roleSortOrder: Record<Role, number> = {
+        [Role.ADMIN]: 1,
+        [Role.CAPTAIN]: 2,
+        [Role.RECORDS]: 3,
+        [Role.COACH]: 4,
+        [Role.MEMBER]: 5,
+    };
+
     try {
         const memberships = await prisma.membership.findMany({
             where: { userId: requestingUserId, ended_at: null },
@@ -136,6 +144,17 @@ export const getMyClubs = async (request: Request, response: Response) => {
             ...m,
             memberCount: m.club._count.members
         }));
+
+        result.sort((a, b) => {
+            const priorityA = Math.min(...a.roles.map(r => roleSortOrder[r] || 99));
+            const priorityB = Math.min(...b.roles.map(r => roleSortOrder[r] || 99));
+
+            if (priorityA !== priorityB) {
+                return priorityA - priorityB;
+            }
+
+            return a.club.name.localeCompare(b.club.name);
+        });
 
         return response.status(200).json(result);
     } catch (error: any) {
