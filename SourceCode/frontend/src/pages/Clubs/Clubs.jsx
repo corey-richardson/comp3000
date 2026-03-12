@@ -23,7 +23,7 @@ const Clubs = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setClubs(data);
+                    setClubs(data.memberships);
                 }
             } catch (error) {
                 setError(error.message);

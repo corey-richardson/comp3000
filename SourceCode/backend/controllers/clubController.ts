@@ -112,6 +112,7 @@ export const getClubById = async (request: Request, response: Response) => {
 // GET /api/clubs/my-clubs
 export const getMyClubs = async (request: Request, response: Response) => {
     const requestingUserId = (request as any).user.id;
+    const limit = request.query.limit ? parseInt(request.query.limit as string) : 10;
 
     const roleSortOrder: Record<Role, number> = {
         [Role.ADMIN]: 1,
@@ -140,7 +141,7 @@ export const getMyClubs = async (request: Request, response: Response) => {
             return response.status(404).json({ error: "No clubs found." });
         }
 
-        const result = memberships.map(m => ({
+        let result = memberships.map(m => ({
             ...m,
             memberCount: m.club._count.members
         }));
@@ -156,7 +157,16 @@ export const getMyClubs = async (request: Request, response: Response) => {
             return a.club.name.localeCompare(b.club.name);
         });
 
-        return response.status(200).json(result);
+        const totalCount = result.length;
+
+        if (limit && limit > 0) {
+            result = result.slice(0, limit);
+        }
+
+        return response.status(200).json({
+            memberships: result,
+            totalCount
+        });
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }

@@ -11,6 +11,8 @@ const ClubCards = () => {
     const { makeApiCall } = useApi();
 
     const [ clubs, setClubs ] = useState([]);
+    const [ totalCount, setTotalCount ] = useState(0);
+
     const [ isLoading, setIsLoading ] = useState(false);
     const [ error, setError ] = useState(null);
 
@@ -20,12 +22,13 @@ const ClubCards = () => {
             setError(null);
 
             try {
-                const response = await makeApiCall("/api/clubs/my-clubs");
+                const response = await makeApiCall("/api/clubs/my-clubs?limit=3");
                 if (!response) return; // 401
 
                 if (response.ok) {
                     const data = await response.json();
-                    setClubs(data);
+                    setClubs(data.memberships);
+                    setTotalCount(data.totalCount);
                 }
             } catch (error) {
                 setError(error.message);
@@ -43,9 +46,6 @@ const ClubCards = () => {
         <div className={dashboardStyles.dashboardContainer}>
             <h2>My Clubs.</h2>
 
-            { isLoading && <p className="small centred">Loading clubs...</p> }
-            { error && <p className="error-message">{ error }</p> }
-
             <div className={dashboardStyles.clubList}>
                 {!isLoading && clubs.length > 0 ? (
                     <>
@@ -53,12 +53,15 @@ const ClubCards = () => {
                             <ClubCard membership={membership} key={membership.club.id} />
                         )) }
 
-                        <p className="centred">See all of the clubs you are a member of on the <Link to="../clubs">My Clubs</Link> page.</p>
+                        <p className="centred">Displaying { clubs.length } of { totalCount } clubs. See all of the clubs you are a member of on the <Link to="../clubs">My Clubs</Link> page.</p>
                     </>
                 ) : (
                     <p className="small centred">No clubs to display.</p>
                 )}
             </div>
+
+            { isLoading && <p className="small centred">Loading clubs...</p> }
+            { error && <p className="error-message">{ error }</p> }
         </div>
     );
 };
