@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import Breadcrumbs from "../components/Breadcrumbs/Breadcrumbs";
-import { useApi } from "../hooks/useApi";
+import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import { useApi } from "../../hooks/useApi";
 
 const ManageClub = () => {
     const { id: clubId } = useParams();

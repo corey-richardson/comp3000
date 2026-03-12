@@ -2,12 +2,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import Breadcrumbs from "../components/Breadcrumbs/Breadcrumbs";
-import ScoreItem from "../components/ScoreItem/ScoreItem";
-import { useApi } from "../hooks/useApi";
-import { useAuthContext } from "../hooks/useAuthContext";
-import paginationStyles from "../styles/Pagination.module.css";
-import styles from "../styles/ScoreItem.module.css";
+import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import ScoreItem from "../../components/ScoreItem/ScoreItem";
+import { useApi } from "../../hooks/useApi";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import paginationStyles from "../../styles/Pagination.module.css";
+import styles from "../../styles/ScoreItem.module.css";
 
 const MyScores = () => {
     const { user, authIsReady } = useAuthContext();

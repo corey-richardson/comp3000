@@ -1,5 +1,5 @@
-import Breadcrumbs from "../components/Breadcrumbs/Breadcrumbs";
-import CreateClubForm from "../components/CreateClubForm/CreateClubForm";
+import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import CreateClubForm from "../../components/CreateClubForm/CreateClubForm";
 
 const CreateClub = () => {
 

@@ -2,14 +2,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 import { useAuthContext } from "./hooks/useAuthContext";
-import Clubs from "./pages/Clubs";
-import CreateClub from "./pages/CreateClub";
+import Clubs from "./pages/Clubs/Clubs";
+import CreateClub from "./pages/Clubs/CreateClub";
+import ManageClub from "./pages/Clubs/ManageClub";
 import Dashboard from "./pages/Dashboard";
-import EditScore from "./pages/EditScore";
 import LandingPage from "./pages/LandingPage";
-import ManageClub from "./pages/ManageClub";
-import MyScores from "./pages/MyScores";
-import SubmitScore from "./pages/SubmitScore";
+import EditScore from "./pages/Scores/EditScore";
+import MyScores from "./pages/Scores/MyScores";
+import SubmitScore from "./pages/Scores/SubmitScore";
 
 function App() {
     const { user, authIsReady } = useAuthContext();
