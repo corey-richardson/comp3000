@@ -73,7 +73,7 @@ const MyScores = () => {
                         { scores.length > 0 ? (
                             scores.map(score => <ScoreItem score={score} onDelete={handleDeletion} key={score.id} />)
                         ) : (
-                            <p className="small centred">No scores to display. Submit one <Link to="../submit-score">here</Link>.</p>
+                            <p className="small centred">No scores to display. Submit one <Link to="../scores/submit">here</Link>.</p>
                         )}
                     </div>
                 </>
