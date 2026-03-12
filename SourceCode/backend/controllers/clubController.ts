@@ -2,7 +2,7 @@ import { Role } from "@prisma/client";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
-import { requireRoleInClub } from "../utils/serverUtils";
+import { requireRoleInClub, requireRoleInSpecificClubOrDataOwnership } from "../utils/serverUtils";
 
 // POST /api/clubs
 export const createClub = async (request: Request, response: Response) => {
@@ -160,4 +160,60 @@ export const getMyClubs = async (request: Request, response: Response) => {
     } catch (error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }
+};
+
+// DELETE /api/clubs/memberships/:membershipId
+export const deleteMembership = async (request: Request, response: Response) => {
+    const { membershipId } = request.params as { membershipId: string };
+    const requestingUserId = (request as any).user.id;
+
+    try {
+        const membership = await prisma.membership.findUnique({
+            where: { id: membershipId },
+        });
+
+        if (!membership) {
+            return response.status(404).json({ error: "Membership not found." });
+        }
+
+        const isAuthorised = await requireRoleInSpecificClubOrDataOwnership(
+            requestingUserId,
+            membership.userId,
+            membership.clubId,
+            [Role.ADMIN],
+        );
+
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
+        if (membership.roles.includes(Role.ADMIN)) {
+            const adminCount = await prisma.membership.count({
+                where: {
+                    clubId: membership.clubId,
+                    ended_at: null,
+                    roles: { has: Role.ADMIN },
+                }
+            });
+
+            if (adminCount <= 1) {
+                return response.status(400).json({
+                    error: "Cannot remove the last Admin. Please appoint another Admin first, or instead delete the club."
+                });
+            }
+        }
+
+        await prisma.membership.update({
+            where: { id: membershipId },
+            data: {
+                ended_at: new Date(),
+                roles: []
+            },
+        });
+
+        return response.status(200).json({ message: "Membership deleted." });
+    } catch (error: any) {
+        return response.status(500).json({ error: "Internal Server Error." });
+    }
+
 };

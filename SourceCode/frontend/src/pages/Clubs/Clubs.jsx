@@ -35,6 +35,19 @@ const Clubs = () => {
         fetchClubs();
     }, [ makeApiCall ]);
 
+    const onLeave = async (membershipId) => {
+        const response = await makeApiCall(`/api/clubs/memberships/${membershipId}`, {
+            method: "DELETE",
+        });
+
+        if (response.ok) {
+            setClubs(clubs.filter(membership => membership.id !== membershipId));
+        } else {
+            const data = await response.json();
+            throw new Error(data.error);
+        }
+    };
+
     return (
         <div className="content">
             <Breadcrumbs />
@@ -50,7 +63,7 @@ const Clubs = () => {
             )}
 
             { !isLoading && clubs.map((membership) => (
-                <ClubCard membership={membership} key={membership.club.id} />
+                <ClubCard membership={membership} onLeave={onLeave} key={membership.club.id} />
             ))}
         </div>
     );

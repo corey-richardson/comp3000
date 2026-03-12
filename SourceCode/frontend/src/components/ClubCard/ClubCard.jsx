@@ -1,18 +1,44 @@
-import { ArrowRight, Settings, Users } from "lucide-react";
+import { AlertTriangle, ArrowRight, Settings, Users, UserRoundMinus } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import styles from "./ClubCard.module.css";
 import EnumMap from "../../lib/enumMap";
 
-const ClubCard = ({ membership }) => {
+const ClubCard = ({ membership, onLeave }) => {
     const { club, roles, joined_at, memberCount } = membership;
+
+    const [ isLeaving, setIsLeaving ] = useState(false);
+    const [ isPending, setIsPending ] = useState(false);
+    const [ error, setError ] = useState(null);
+
     const formattedDate = new Date(joined_at).toLocaleDateString();
 
     const isElevated = roles.some(role =>
         ["ADMIN", "CAPTAIN", "RECORDS", "COACH"].includes(role)
     );
 
-    console.log(membership);
+    const handleLeaveClub = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setError(null);
+        setIsLeaving(true);
+    };
+
+    const confirmLeave = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsPending(true);
+
+        try {
+            await onLeave(membership.id);
+        } catch (error) {
+            setIsPending(false);
+            setError(error.message);
+        } finally {
+            setIsLeaving(false);
+        }
+    };
 
     const commonCardContent = (
         <>
@@ -29,6 +55,17 @@ const ClubCard = ({ membership }) => {
                     { isElevated && (
                         <span className={styles.badge} title="Manage Club">
                             <Settings />
+                        </span>
+                    )}
+
+                    { onLeave && (
+                        <span className={styles.badge} title="Leave Club">
+                            <button
+                                className={styles.invisibleButton}
+                                onClick={handleLeaveClub}
+                            >
+                                <UserRoundMinus />
+                            </button>
                         </span>
                     )}
 
@@ -63,6 +100,36 @@ const ClubCard = ({ membership }) => {
                     {isElevated ? "Elevated Member" : "Standard Member"}
                 </span>
             </div>
+
+            { onLeave && isLeaving && (
+                <div className={styles.overlay}>
+                    <AlertTriangle size={24} />
+                    <span>Are you sure you want to leave this club?</span>
+
+                    <div className={styles.overlayButtons}>
+                        <button
+                            onClick={confirmLeave}
+                            disabled={isPending}
+                            className={styles.confirmButton}
+                        >
+                            { isPending ? "Leaving..." : "Leave" }
+                        </button>
+
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setIsLeaving(false);
+                            }}
+                            className={styles.cancelButton}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            { error && <p className={"centred error-message"}>{ error }</p>}
         </>
     );
 

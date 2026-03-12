@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { createClub, getClubById, getMyClubs } from "../controllers/clubController";
+import { createClub, deleteMembership, getClubById, getMyClubs } from "../controllers/clubController";
 import requireAuth from "../middleware/requireAuth";
 
 const router = Router();
@@ -13,5 +13,6 @@ router.use(requireAuth);
 router.post("/", createClub);
 router.get("/my-clubs", getMyClubs);
 router.get("/:clubId", getClubById);
+router.delete("/memberships/:membershipId", deleteMembership);
 
 export default router;
