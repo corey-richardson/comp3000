@@ -44,6 +44,8 @@ const EditScore = () => {
             ) : (
                 <h1>Edit {`${score?.roundName} (${new Date(score?.dateShot).toLocaleDateString()})`}</h1>
             )}
+
+            { error && <p className={"centred error-message"}>{ error }</p>}
         </div>
     );
 };

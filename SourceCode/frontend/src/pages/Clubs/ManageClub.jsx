@@ -47,6 +47,8 @@ const ManageClub = () => {
                     <p>{ club?.memberCount }</p>
                 </>
             )}
+
+            { error && <p className={"centred error-message"}>{ error }</p>}
         </div>
     );
 };

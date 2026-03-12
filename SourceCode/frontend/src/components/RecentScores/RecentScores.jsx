@@ -62,7 +62,7 @@ const RecentScores = () => {
                 </>
             )}
 
-            { scores && scores.length === 0 && <p className="small centred">No scores to display.</p> }
+            { !isLoading && scores && scores.length === 0 && <p className="small centred">No scores to display.</p> }
 
             { isLoading && <p className="small centred">Loading...</p> }
             { error && <p className="error-message">{error}</p> }

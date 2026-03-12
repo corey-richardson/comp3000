@@ -79,25 +79,27 @@ const MyScores = () => {
                 </>
             )}
 
-            <div className={paginationStyles.paginationFooter}>
-                <button
-                    onClick={ handlePrev }
-                    disabled={ currentPage === 1 || isLoading }
-                    className={ paginationStyles.button }
-                >
-                    <ChevronLeft size={16} />
-                </button>
+            { !isLoading && (
+                <div className={paginationStyles.paginationFooter}>
+                    <button
+                        onClick={ handlePrev }
+                        disabled={ currentPage === 1 || isLoading }
+                        className={ paginationStyles.button }
+                    >
+                        <ChevronLeft size={16} />
+                    </button>
 
-                <span className={paginationStyles.pageInfo}>Viewing Page { currentPage } of { totalPages }</span>
+                    <span className={paginationStyles.pageInfo}>Viewing Page { currentPage } of { totalPages }</span>
 
-                <button
-                    onClick={ handleNext }
-                    disabled={ currentPage === totalPages || isLoading }
-                    className={ paginationStyles.button }
-                >
-                    <ChevronRight size={16} />
-                </button>
-            </div>
+                    <button
+                        onClick={ handleNext }
+                        disabled={ currentPage === totalPages || isLoading }
+                        className={ paginationStyles.button }
+                    >
+                        <ChevronRight size={16} />
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

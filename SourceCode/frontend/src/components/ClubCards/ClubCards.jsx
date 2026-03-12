@@ -42,10 +42,12 @@ const ClubCards = () => {
     return (
         <div className={dashboardStyles.dashboardContainer}>
             <h2>My Clubs.</h2>
+
+            { isLoading && <p className="small centred">Loading clubs...</p> }
             { error && <p className="error-message">{ error }</p> }
 
             <div className={dashboardStyles.clubList}>
-                {clubs.length > 0 ? (
+                {!isLoading && clubs.length > 0 ? (
                     <>
                         { clubs.map((membership) => (
                             <ClubCard membership={membership} key={membership.club.id} />

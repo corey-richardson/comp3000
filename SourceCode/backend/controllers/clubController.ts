@@ -157,7 +157,7 @@ export const getMyClubs = async (request: Request, response: Response) => {
         });
 
         return response.status(200).json(result);
-    } catch (error: any) {
+    } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }
 };
@@ -212,7 +212,7 @@ export const deleteMembership = async (request: Request, response: Response) => 
         });
 
         return response.status(200).json({ message: "Membership deleted." });
-    } catch (error: any) {
+    } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }
 
