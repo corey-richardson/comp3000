@@ -1,8 +1,39 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import { useApi } from "../../hooks/useApi";
 
 const Clubs = () => {
+    const { makeApiCall } = useApi();
+
+    const [ clubs, setClubs ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(false);
+    const [ error, setError ] = useState(null);
+
+    useEffect(() => {
+        const fetchClubs = async () => {
+            setError(error);
+            setIsLoading(true);
+
+            try {
+                const response = await makeApiCall("/api/clubs/my-clubs");
+                if (!response) return; // 401
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setClubs(data);
+                }
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchClubs();
+    }, [ makeApiCall ]);
+
     return (
         <div className="content">
             <Breadcrumbs />

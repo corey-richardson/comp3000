@@ -108,3 +108,25 @@ export const getClubById = async (request: Request, response: Response) => {
         return response.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+// GET /api/clubs/my-clubs
+export const getMyClubs = async (request: Request, response: Response) => {
+    const requestingUserId = (request as any).user.id;
+
+    try {
+        const clubs = await prisma.membership.findMany({
+            where: { userId: requestingUserId },
+            include: {
+                club: true,
+            }
+        });
+
+        if (clubs.length === 0) {
+            return response.status(404).json({ error: "No clubs found." });
+        }
+
+        return response.status(200).json(clubs);
+    } catch (error: any) {
+        return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
