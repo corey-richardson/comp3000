@@ -37,3 +37,9 @@
     border-radius: var(--border-radius);
     padding: 1rem 2.71rem;
 }
+
+.clubList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}

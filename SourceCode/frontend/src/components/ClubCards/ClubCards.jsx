@@ -1,25 +1,64 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import dashboardStyles from "../../styles/Dashboard.module.css";
-
-const ClubCardsSkeleton = () => {
-    return (
-        <div>
-            <h2>My Clubs.</h2>
-            <p className="small centred">Loading...</p>
-        </div>
-    );
-};
+import ClubCard from "../ClubCard/ClubCard";
 
 const ClubCards = () => {
     const { user } = useAuthContext();
+    const { makeApiCall } = useApi();
+
+    const [ clubs, setClubs ] = useState([]);
+    const [ isLoading, setIsLoading ] = useState(false);
+    const [ error, setError ] = useState(null);
+
+    useEffect(() => {
+        const fetchClubs = async () => {
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                const response = await makeApiCall("/api/clubs/my-clubs");
+                if (!response) return; // 401
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setClubs(data);
+                }
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (user) {
+            fetchClubs();
+        }
+    },  [ user, makeApiCall ]);
 
     return (
         <div className={dashboardStyles.dashboardContainer}>
             <h2>My Clubs.</h2>
-            <p>{user?.username}</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            { error && <p className="error-message">{ error }</p> }
+
+            <div className={dashboardStyles.clubList}>
+                {clubs.length > 0 ? (
+                    <>
+                        { clubs.map((membership) => (
+                            <ClubCard membership={membership} key={membership.club.id} />
+                        )) }
+
+                        <p className="centred">See all of the clubs you are a member of on the <Link to="../clubs">My Clubs</Link> page.</p>
+                    </>
+                ) : (
+                    <p className="small centred">No clubs to display.</p>
+                )}
+            </div>
         </div>
     );
 };
 
-export { ClubCardsSkeleton, ClubCards };
+export { ClubCards };

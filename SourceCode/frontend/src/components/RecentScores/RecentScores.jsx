@@ -53,13 +53,16 @@ const RecentScores = () => {
             <h2>Recent Scores.</h2>
 
             { scores && scores.length > 0 && (
-                scores.map(score => (
-                    <RecentScoreItem score={score} key={score.id} />
-                ))
+                <>
+                    { scores.map(score => (
+                        <RecentScoreItem score={score} key={score.id} />
+                    )) }
+
+                    <p>See all of your scores on the <Link to="../scores">My Scores</Link> page.</p>
+                </>
             )}
 
             { scores && scores.length === 0 && <p className="small centred">No scores to display.</p> }
-            { scores && scores.length > 0 && <p>See all of your scores on the <Link to="../scores">My Scores</Link> page.</p>}
 
             { isLoading && <p className="small centred">Loading...</p> }
             { error && <p className="error-message">{error}</p> }
