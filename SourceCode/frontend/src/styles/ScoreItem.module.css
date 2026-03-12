@@ -6,7 +6,7 @@
 
 .scoreItem {
     position: relative;
-    background-color: #fff;
+    background-color: white;
     padding: 2rem 1.25rem;
     margin-bottom: 0;
     box-shadow: none;
@@ -66,11 +66,6 @@
     cursor: pointer;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px var(--blue-shadow);
-}
-
-.badge:has(.deleteIcon):hover {
-    border-color: red;
-    color: red;
 }
 
 .badge a, 
