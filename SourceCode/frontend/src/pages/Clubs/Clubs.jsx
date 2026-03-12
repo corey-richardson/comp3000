@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import ClubCard from "../../components/ClubCard/ClubCard";
 import { useApi } from "../../hooks/useApi";
 
 const Clubs = () => {
@@ -13,7 +14,7 @@ const Clubs = () => {
 
     useEffect(() => {
         const fetchClubs = async () => {
-            setError(error);
+            setError(null);
             setIsLoading(true);
 
             try {
@@ -29,7 +30,7 @@ const Clubs = () => {
             } finally {
                 setIsLoading(false);
             }
-        }
+        };
 
         fetchClubs();
     }, [ makeApiCall ]);
@@ -39,7 +40,18 @@ const Clubs = () => {
             <Breadcrumbs />
 
             <h2>Clubs.</h2>
-            <Link to="./create">Create a New Club</Link>
+            <Link to="./create" className="centred">Create a New Club</Link>
+
+            { isLoading && <p className="small centred">Loading clubs...</p> }
+            { error && <p className="error-message">{ error }</p> }
+
+            { !isLoading && clubs.length === 0 && (
+                <p className="small centred">No clubs to display.</p>
+            )}
+
+            { !isLoading && clubs.map((membership) => (
+                <ClubCard membership={membership} key={membership.club.id} />
+            ))}
         </div>
     );
 };
