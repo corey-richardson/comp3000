@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowRight, Settings, Users, UserRoundMinus } from "lucide-react";
+import { AlertTriangle, ArrowRight, Settings, Users, Unlink } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -64,7 +64,7 @@ const ClubCard = ({ membership, onLeave }) => {
                                 className={styles.invisibleButton}
                                 onClick={handleLeaveClub}
                             >
-                                <UserRoundMinus />
+                                <Unlink />
                             </button>
                         </span>
                     )}
