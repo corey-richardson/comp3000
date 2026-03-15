@@ -1,0 +1,7 @@
+The system is for archery club committee officers and members, and provides interfaces for score submissions, classification and handicap calculations, and club member management.
+
+The previous process for score recording at the University of Plymouth's Archery Club was to manually collect scores and scoresheets on paper, and transfer this information over into an Microsoft Excel spreadsheet before performing lookups for classification and handicap levels; a time consuming, labourious, and error-prone process.
+
+The Archery Scorekeeper and Club Management system is a online score and club management system that makes the process of archery club Records Officers collecting scores from their club members and processing the data simpler than traditional methods.
+
+The project uses a multi-language, microservice architecture, orchestrated via Docker. The application uses a PERN stack (PostgreSQL, Express.js, React, Node.js). The Prisma ORM is used to manage type-safe data models and communications between the database and the Node.js backend. There is a Python Flask microservice which handles the domain-specific classification and handicap calculation logic, using the `archeryutils` library.
