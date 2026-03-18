@@ -11,7 +11,6 @@ const TODAY = new Date();
 const SubmitScoreForm = () => {
     const { user, authIsReady } = useAuthContext();
     const { makeApiCall } = useApi();
-
     const navigate = useNavigate();
 
     // STATE
@@ -104,6 +103,7 @@ const SubmitScoreForm = () => {
         }
 
         setIsLoading(true);
+        setError(null);
 
         try {
             const response = await makeApiCall("/api/scores", {
@@ -121,14 +121,14 @@ const SubmitScoreForm = () => {
             });
 
             const data = await response.json();
+
             if (!response.ok) {
                 throw Error(data.error);
             }
 
             navigate("/scores");
-        } catch (error) {
+        } catch (_error) {
             setError("Failed to submit score.");
-            setError(error.message);
         } finally {
             setIsLoading(false);
         }
@@ -139,6 +139,7 @@ const SubmitScoreForm = () => {
             formData={formData}
             setFormData={setFormData}
             handleSubmit={handlePost}
+            isLoading={isLoading}
             buttonText="Submit Score"
             error={error}
         />

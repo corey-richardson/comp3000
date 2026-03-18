@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import EditScoreForm from "../../components/EditScoreForm/EditScoreForm";
 import { useApi } from "../../hooks/useApi";
 
 const EditScore = () => {
@@ -42,7 +43,7 @@ const EditScore = () => {
             {isLoading ? (
                 <p>Loading score...</p>
             ) : (
-                <h1>Edit {`${score?.roundName} (${new Date(score?.dateShot).toLocaleDateString()})`}</h1>
+                <EditScoreForm score={ score } />
             )}
 
             { error && <p className={"centred error-message"}>{ error }</p>}

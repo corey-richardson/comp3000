@@ -27,7 +27,7 @@ export const createScore = async (request: Request, response: Response) => {
         const prismaAge = toPrismaAge(ageCategory);
         const prismaSex = toPrismaSex(sex);
 
-        const pythonServiceResponse = await fetch(process.env.FLASK_ARCHERYUTILS_SERVICE_URL + "/calculate", {
+        const flaskServiceResponse = await fetch(process.env.FLASK_ARCHERYUTILS_SERVICE_URL + "/calculate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -42,21 +42,24 @@ export const createScore = async (request: Request, response: Response) => {
             }),
         });
 
-        const pythonServiceData = await pythonServiceResponse.json();
+        const flaskServiceData = await flaskServiceResponse.json();
 
-        if (!pythonServiceResponse.ok) {
-            return response.status(pythonServiceResponse.status).json({
-                error: pythonServiceData.error || "Metrics Calculation Service Error"
+        if (!flaskServiceResponse.ok) {
+            return response.status(flaskServiceResponse.status).json({
+                error: flaskServiceData.error || "Metrics Calculation Service Error"
             });
         }
+
         const newScore = await prisma.score.create({
             data: {
                 profile: {
                     connect: { id: requestingUser.id }
                 },
 
-                handicap: pythonServiceData.handicap,
-                classification: pythonServiceData.classification,
+                handicap: flaskServiceData.handicap,
+                classification: flaskServiceData.classification,
+                maxScore: flaskServiceData.max_score,
+                numArrows: flaskServiceData.num_arrows,
 
                 dateShot: new Date(dateShot),
                 roundName,
@@ -76,17 +79,120 @@ export const createScore = async (request: Request, response: Response) => {
 
                 notes,
                 journal,
-
-                maxScore: pythonServiceData.max_score,
-                numArrows: pythonServiceData.num_arrows,
             }
         });
 
-        response.status(201).json(newScore);
+        return response.status(201).json(newScore);
 
     } catch (error: any) {
-        response.status(500).json({ error: "Internal Server Error: " + error.message });
+        return response.status(500).json({ error: "Internal Server Error: " + error.message });
     }
+};
+
+export const updateScore = async (request: Request, response: Response) => {
+    const { scoreId } = request.params as { scoreId: string };
+    const requestingUserId = (request as any).user.id;
+
+    try {
+        const {
+            dateShot,
+            roundName,
+            roundCodeName,
+            venue,
+            competition,
+            bowstyle,
+            score,
+            xs, tens, nines, hits,
+            sex,
+            ageCategory,
+            notes,
+            journal
+        } = request.body;
+
+        const existingScore = await prisma.score.findUnique({
+            where: { id: scoreId }
+        });
+
+        if (!existingScore) {
+            return response.status(404).json({ error: "Score not found." });
+        }
+
+        const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
+            requestingUserId,
+            existingScore.userId,
+            ["ADMIN", "RECORDS"]
+        );
+
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
+        if (existingScore?.verified_at || existingScore?.verifiedById) {
+            return response.status(400).json({ error: "Score already verified and is immutable." });
+        }
+
+        const prismaAge = toPrismaAge(ageCategory);
+        const prismaSex = toPrismaSex(sex);
+
+        const flaskServiceResponse = await fetch(process.env.FLASK_ARCHERYUTILS_SERVICE_URL + "/calculate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                score,
+                roundCodeName,
+                bowstyle,
+                sex: toPythonSex(prismaSex),
+                ageCategory: toPythonAge(prismaAge),
+                venue
+            }),
+        });
+
+        const flaskServiceData = await flaskServiceResponse.json();
+
+        if (!flaskServiceResponse.ok) {
+            return response.status(flaskServiceResponse.status).json({
+                error: flaskServiceData.error || "Metrics Calculation Service Error"
+            });
+        }
+
+        const updatedScore = await prisma.score.update({
+            where: { id: scoreId },
+            data: {
+                // Flask Service values
+                handicap: flaskServiceData.handicap,
+                classification: flaskServiceData.classification,
+                maxScore: flaskServiceData.max_score,
+                numArrows: flaskServiceData.num_arrows,
+
+                dateShot: new Date(dateShot),
+                roundName,
+
+                venue: venue as Venue,
+                competition: competition as CompetitionStatus,
+                bowstyle: bowstyle as Bowstyle,
+
+                score: Number(score),
+                xs: xs ? Number(xs) : null,
+                tens: tens ? Number(tens) : null,
+                nines: nines ? Number(nines) : null,
+                hits: hits ? Number(hits) : null,
+
+                sex: prismaSex,
+                ageCategory: prismaAge,
+
+                notes,
+                journal,
+            }
+        });
+
+        return response.status(200).json(updatedScore);
+
+    } catch (error: any) {
+        return response.status(500).json({ error: "Internal Server Error: " + error.message });
+    }
+
 };
 
 export const deleteScore = async (request: Request, response: Response) => {
