@@ -7,22 +7,28 @@ import calculateAgeCategory from "../../lib/calculateAgeCategory";
 import EnumMap from "../../lib/enumMap";
 import styles from "../../styles/Tables.module.css";
 
-const MembershipTable = ({ members }) => {
+const MembershipTable = ({ members: initialMemberState = [] }) => {
 
+    const [ members, setMembers ] = useState(initialMemberState);
     const [ error, setError ] = useState(null);
 
     const { makeApiCall } = useApi();
     const { user } = useAuthContext();
 
-    console.log(user.id);
-
     const currentUserMembership = members.find(m => m.userId === user.id);
     const currentUserRoles = currentUserMembership?.roles || [];
+
+    if (!members || members.length === 0) {
+        return (
+            <div className="centred">
+                <p>No members to display, or you do not have access to this club.</p>
+            </div>
+        );
+    }
 
     const isAdmin = currentUserRoles.includes("ADMIN");
     const isCaptain = currentUserRoles.includes("CAPTAIN");
     const isRecords = currentUserRoles.includes("RECORDS");
-    // const isCoach = currentUserRoles.includes("COACH");
 
     const handleViewScores = (member) => {
         console.log(member);
@@ -37,7 +43,7 @@ const MembershipTable = ({ members }) => {
     };
 
     const handleRemoveMember = async (member) => {
-        const confirmation = window.confirm(`Are you sure you want to remove ${member.firstName} ${member.lastName}?`);
+        const confirmation = window.confirm(`Are you sure you want to remove ${member.firstName} ${member.lastName} from this Club?`);
 
         if (!confirmation) {
             return;
@@ -55,7 +61,7 @@ const MembershipTable = ({ members }) => {
                 throw new Error(data.error);
             }
 
-            members.filter(m => m.id !== member.id);
+            setMembers(prev => prev.filter(m => m.id !== member.id));
 
         } catch (error) {
             setError(`Failed to remove member ${member.firstName} ${member.lastName}: ${error.message}`);
