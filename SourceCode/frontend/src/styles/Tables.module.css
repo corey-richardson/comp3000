@@ -1,0 +1,112 @@
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 3rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    text-align: center;
+}
+
+.table thead tr {
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table th {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.table th:not(:last-child), .table td:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+
+.table th:last-child, .table td:last-child {
+    border-right: none;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: var(--light-gray);
+}
+
+.table tbody tr:hover {
+    background-color: var(--border-color);
+    box-shadow: 0 4px 12px var(--blue-shadow);
+}
+
+.table td {
+    padding: 1rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    vertical-align: middle;
+}
+
+.actionCell {
+    padding: 1rem 0.5rem;
+    vertical-align: center;
+    text-align: center;
+}
+
+.actionBadges {
+    display: inline-grid;
+    grid-template-columns: repeat(2, min-content);
+    gap: 0.3rem;
+    padding: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (width >= 1720px) {
+    .actionBadges {
+        display: inline-flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    .badge {
+        padding: 0.8rem;
+    }
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    background: transparent;
+    border-radius: 6px;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.badge:has(.invisibleButton):hover {
+    color: var(--primary-color);
+    cursor: pointer;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--blue-shadow);
+}
+
+.dangerBadge:has(.invisibleButton):hover {
+    color: red
+}
+
+.invisibleButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}

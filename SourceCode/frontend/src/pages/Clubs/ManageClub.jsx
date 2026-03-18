@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import MembershipTable from "../../components/MembershipTable/MembershipTable";
 import { useApi } from "../../hooks/useApi";
 
 const ManageClub = () => {
@@ -24,6 +25,7 @@ const ManageClub = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setClub(data);
+                    console.log(data);
                 }
             } catch (error) {
                 setError(error.message);
@@ -45,6 +47,8 @@ const ManageClub = () => {
                 <>
                     <h2>Manage {club?.name}.</h2>
                     <p>{ club?.memberCount }</p>
+
+                    <MembershipTable members={club?.members} />
                 </>
             )}
 

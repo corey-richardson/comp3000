@@ -88,6 +88,7 @@ export const getClubById = async (request: Request, response: Response) => {
 
             return {
                 id: member.id,
+                userId: member.userId,
                 firstName: member.profile.firstName,
                 lastName: member.profile.lastName,
                 username: member.profile.username,
@@ -96,6 +97,8 @@ export const getClubById = async (request: Request, response: Response) => {
                 email: (isAdmin || isOwner) ? member.profile.email : null,
                 emergencyContacts: (isAdmin || isCaptain || isOwner) ? member.profile.emergencyContacts : null,
                 membershipNumber: (isAdmin || isCaptain || isRecords || isOwner) ? member.profile.membershipNumber : null,
+                sex: (isAdmin || isCaptain || isRecords || isOwner) ? member.profile.sex : null,
+                yearOfBirth: (isAdmin || isCaptain || isRecords || isOwner) ? member.profile.yearOfBirth : null,
             };
         });
 
