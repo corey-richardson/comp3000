@@ -89,6 +89,8 @@ export const getClubById = async (request: Request, response: Response) => {
             return {
                 id: member.id,
                 userId: member.userId,
+                clubId: member.clubId,
+
                 firstName: member.profile.firstName,
                 lastName: member.profile.lastName,
                 username: member.profile.username,

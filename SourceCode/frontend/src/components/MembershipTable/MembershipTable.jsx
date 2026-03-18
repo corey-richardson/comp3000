@@ -1,5 +1,6 @@
 import { Info, Siren, Pencil, Unlink } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
@@ -7,7 +8,7 @@ import calculateAgeCategory from "../../lib/calculateAgeCategory";
 import EnumMap from "../../lib/enumMap";
 import styles from "../../styles/Tables.module.css";
 
-const MembershipTable = ({ members: initialMemberState = [] }) => {
+const MembershipTable = ({ members: initialMemberState = [], clubName }) => {
 
     const [ members, setMembers ] = useState(initialMemberState);
     const [ error, setError ] = useState(null);
@@ -29,18 +30,6 @@ const MembershipTable = ({ members: initialMemberState = [] }) => {
     const isAdmin = currentUserRoles.includes("ADMIN");
     const isCaptain = currentUserRoles.includes("CAPTAIN");
     const isRecords = currentUserRoles.includes("RECORDS");
-
-    const handleViewScores = (member) => {
-        console.log(member);
-    };
-
-    const handleViewContacts = (member) => {
-        console.log(member.emergencyContacts);
-    };
-
-    const handleEditMember = (member) => {
-        console.log(member);
-    };
 
     const handleRemoveMember = async (member) => {
         const confirmation = window.confirm(`Are you sure you want to remove ${member.firstName} ${member.lastName} from this Club?`);
@@ -117,25 +106,37 @@ const MembershipTable = ({ members: initialMemberState = [] }) => {
                             <td className={styles.actionCell}>
                                 <div className={styles.actionBadges}>
                                     <div className={styles.badge} title="View Scores">
-                                        <button onClick={() => handleViewScores(member)} className={styles.invisibleButton}>
+                                        <Link
+                                            to={`/clubs/members/${member.userId}`}
+                                            state={{ fromClub: member.clubId, clubName }}
+                                            className={styles.invisibleButton}
+                                        >
                                             <Info />
-                                        </button>
+                                        </Link>
                                     </div>
 
                                     {(isAdmin || isCaptain) && (
                                         <div className={styles.badge}  title="View Emergency Contacts">
-                                            <button onClick={() => handleViewContacts(member)} className={styles.invisibleButton}>
+                                            <Link
+                                                to={`/clubs/members/emergency-contacts/${member.userId}`}
+                                                state={{ fromClub: member.clubId, clubName }}
+                                                className={styles.invisibleButton}
+                                            >
                                                 <Siren />
-                                            </button>
+                                            </Link>
                                         </div>
                                     )}
 
                                     {( isAdmin ) && (
                                         <>
                                             <div className={styles.badge} title="Edit User Information">
-                                                <button onClick={() => handleEditMember(member)} className={styles.invisibleButton}>
+                                                <Link
+                                                    to={`/clubs/members/edit/${member.userId}`}
+                                                    state={{ fromClub: member.clubId, clubName }}
+                                                    className={styles.invisibleButton}
+                                                >
                                                     <Pencil />
-                                                </button>
+                                                </Link>
                                             </div>
 
                                             <div className={`${styles.badge} ${styles.dangerBadge}`} title="End Membership">

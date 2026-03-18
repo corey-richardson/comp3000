@@ -48,7 +48,7 @@ const ManageClub = () => {
                     <h2>Manage {club?.name}.</h2>
                     <p>{ club?.memberCount }</p>
 
-                    <MembershipTable members={club?.members} />
+                    <MembershipTable members={club?.members} clubName={club?.name} />
                 </>
             )}
 
