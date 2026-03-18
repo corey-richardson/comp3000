@@ -28,7 +28,7 @@ const Breadcrumbs = ({ customLabel }) => {
                     let to = `/${pathnames.slice(0, index + 1).join("/")}`;
                     let label = (isLast && customLabel) ? customLabel : value.replace(/-/g, " ");
                     // MEMORY STATE FROM LINK
-                    if (value === "members" && fromClub) {
+                    if (fromClub && value === "members" || value === fromClub) {
                         to = `/clubs/${fromClub}`;
                         label = clubName || "Club";
                     }

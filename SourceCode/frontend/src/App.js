@@ -4,7 +4,9 @@ import Navbar from "./components/Navbar/Navbar";
 import { useAuthContext } from "./hooks/useAuthContext";
 import Clubs from "./pages/Clubs/Clubs";
 import CreateClub from "./pages/Clubs/CreateClub";
+import InviteManagement from "./pages/Clubs/InviteManagement";
 import ManageClub from "./pages/Clubs/ManageClub";
+import RecordsManagement from "./pages/Clubs/RecordManagement";
 import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
 import MemberEdit from "./pages/Members/Edit";
@@ -74,6 +76,16 @@ function App() {
                             <Route
                                 path="/clubs/members/:userId"
                                 element={user ? <MemberScores /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/clubs/:id/records"
+                                element={user ? <RecordsManagement /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/clubs/:id/invites"
+                                element={user ? <InviteManagement /> : <Navigate to="/" />}
                             />
 
                             <Route
