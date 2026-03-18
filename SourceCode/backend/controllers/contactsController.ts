@@ -50,12 +50,32 @@ export const getContactsByUser = async (request: Request, response: Response) =>
             return response.status(403).json({ error: "Forbidden." });
         };
 
-        const contacts = await prisma.emergencyContact.findMany({
-            where: { userId: targetUserId },
-            orderBy: { name: "asc" }
-        });
+        const [ user, contacts ] = await Promise.all([
+            prisma.profile.findUnique({
+                where: { id: targetUserId },
+                select: {
+                    firstName: true,
+                    lastName: true,
+                }
+            }),
+            prisma.emergencyContact.findMany({
+                where: { userId: targetUserId },
+                orderBy: { name: "asc" },
+                include: {
+                    profile: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                        }
+                    }
+                }
+            })
+        ]);
 
-        return response.status(200).json(contacts);
+        return response.status(200).json({
+            user,
+            contacts
+        });
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }

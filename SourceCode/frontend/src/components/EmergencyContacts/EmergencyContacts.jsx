@@ -52,7 +52,7 @@ const EmergencyContacts = () => {
                 setError(data.error);
                 return;
             }
-            setContacts(data);
+            setContacts(data.contacts);
         } catch (_error) {
             setError("Could not load contacts.");
         } finally {
