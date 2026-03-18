@@ -7,7 +7,9 @@ const Breadcrumbs = ({ customLabel }) => {
     const location = useLocation();
     const pathnames = location.pathname.split("/").filter(Boolean);
 
-    const explicitDisabled = ["edit"];
+    const { fromClub, clubName } = location.state || {};
+
+    const explicitDisabled = ["edit", "emergency-contacts"];
 
     return (
         <nav className={styles.nav} aria-label="Breadcrumbs">
@@ -22,8 +24,14 @@ const Breadcrumbs = ({ customLabel }) => {
                     const isLast = index === pathnames.length - 1;
                     const isClickable = !explicitDisabled.includes(value) && !isLast;
 
-                    const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-                    const label = (isLast && customLabel) ? customLabel : value.replace(/-/g, " ");
+                    // DEFAULTS
+                    let to = `/${pathnames.slice(0, index + 1).join("/")}`;
+                    let label = (isLast && customLabel) ? customLabel : value.replace(/-/g, " ");
+                    // MEMORY STATE FROM LINK
+                    if (value === "members" && fromClub) {
+                        to = `/clubs/${fromClub}`;
+                        label = clubName || "Club";
+                    }
 
                     return (
                         <li key={to} className={styles.item}>
