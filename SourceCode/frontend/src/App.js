@@ -7,6 +7,9 @@ import CreateClub from "./pages/Clubs/CreateClub";
 import ManageClub from "./pages/Clubs/ManageClub";
 import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
+import MemberEdit from "./pages/Members/Edit";
+import MemberEmergencyContacts from "./pages/Members/EmergencyContacts";
+import MemberScores from "./pages/Members/Scores";
 import EditScore from "./pages/Scores/EditScore";
 import MyScores from "./pages/Scores/MyScores";
 import SubmitScore from "./pages/Scores/SubmitScore";
@@ -56,6 +59,21 @@ function App() {
                             <Route
                                 path="/clubs/create"
                                 element={user ? <CreateClub /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/clubs/members/emergency-contacts/:userId"
+                                element={user ? <MemberEmergencyContacts /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/clubs/members/edit/:userId"
+                                element={user ? <MemberEdit /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/clubs/members/:userId"
+                                element={user ? <MemberScores /> : <Navigate to="/" />}
                             />
 
                             <Route
