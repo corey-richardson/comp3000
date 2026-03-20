@@ -86,6 +86,8 @@ export const updateContact = async (request: Request, response: Response) => {
     const { id } = request.params as { id: string };
     const requestingUserId = (request as any).user.id;
 
+    const { name, phoneNumber, emailAddress, relationshipToUser } = request.body.contact;
+
     try {
         const contact = await prisma.emergencyContact.findUnique({
             where: { id },
@@ -108,7 +110,10 @@ export const updateContact = async (request: Request, response: Response) => {
         const updatedContact = await prisma.emergencyContact.update({
             where: { id },
             data: {
-                ...request.body.contact,
+                name,
+                phoneNumber,
+                emailAddress,
+                relationshipToUser,
                 updated_at: new Date(),
             },
         });
