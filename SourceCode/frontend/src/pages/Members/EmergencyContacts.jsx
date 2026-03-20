@@ -48,8 +48,6 @@ const MemberEmergencyContacts = () => {
         );
     }
 
-    console.log(contacts);
-
     return (
         <div className="content">
             <Breadcrumbs customLabel={`${user?.firstName} ${user?.lastName}`} />

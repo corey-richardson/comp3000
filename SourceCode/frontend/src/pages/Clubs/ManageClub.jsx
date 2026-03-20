@@ -27,7 +27,6 @@ const ManageClub = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setClub(data);
-                    console.log(data);
                 }
             } catch (error) {
                 setError(error.message);

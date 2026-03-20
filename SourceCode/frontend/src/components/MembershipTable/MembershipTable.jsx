@@ -40,7 +40,6 @@ const MembershipTable = ({ members: initialMemberState = [], clubName }) => {
 
         try {
             setError(null);
-            console.log(member.membershipId);
             const response = await makeApiCall(`/api/clubs/memberships/${member.id}`, {
                 method: "DELETE",
             });
