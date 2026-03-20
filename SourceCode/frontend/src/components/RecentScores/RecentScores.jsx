@@ -6,15 +6,6 @@ import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import dashboardStyles from "../../styles/Dashboard.module.css";
 
-const RecentScoresSkeleton = () => {
-    return (
-        <div>
-            <h2>Recent Scores.</h2>
-            <p className="small centred">Loading...</p>
-        </div>
-    );
-};
-
 const RecentScores = () => {
     const { user, authIsReady } = useAuthContext();
     const { makeApiCall } = useApi();
@@ -70,4 +61,4 @@ const RecentScores = () => {
     );
 };
 
-export { RecentScoresSkeleton, RecentScores };
+export { RecentScores };

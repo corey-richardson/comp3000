@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import { EmergencyContactsReadOnly } from "../../components/EmergencyContacts/EmergencyContactsReadOnly";
 import { useApi } from "../../hooks/useApi";
 
 const MemberEmergencyContacts = () => {
@@ -47,12 +48,16 @@ const MemberEmergencyContacts = () => {
         );
     }
 
+    console.log(contacts);
+
     return (
         <div className="content">
             <Breadcrumbs customLabel={`${user?.firstName} ${user?.lastName}`} />
 
             <h2>Emergency Contacts for {`${user?.firstName} ${user?.lastName}`}</h2>
             <p className="small">{contacts.length} contacts to display.</p>
+
+            <EmergencyContactsReadOnly contacts={contacts} />
 
             { error && <p className="error-message">{ error }</p>}
         </div>

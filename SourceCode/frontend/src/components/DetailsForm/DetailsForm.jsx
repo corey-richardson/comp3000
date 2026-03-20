@@ -6,15 +6,6 @@ import calculateAgeCategory from "../../lib/calculateAgeCategory.js";
 import EnumMap from "../../lib/enumMap.js";
 import formStyles from "../../styles/Forms.module.css";
 
-const DetailsFormSkeleton = () => {
-    return (
-        <div>
-            <h2>My Details.</h2>
-            <p className="small centred">Loading...</p>
-        </div>
-    );
-};
-
 const DetailsForm = () => {
     const { user, authIsReady } = useAuthContext();
     const { makeApiCall } = useApi();
@@ -106,8 +97,6 @@ const DetailsForm = () => {
         }
     };
 
-    // if (loading) return <DetailsFormSkeleton />;
-
     return (
         <div className={`${formStyles.formContainer} ${formStyles.fullWidth}`}>
             <h2>My Details.</h2>
@@ -198,4 +187,4 @@ const DetailsForm = () => {
     );
 };
 
-export { DetailsFormSkeleton, DetailsForm };
+export { DetailsForm };
