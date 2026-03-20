@@ -7,15 +7,6 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import EnumMap from "../../lib/enumMap.js";
 import formStyles from "../../styles/Forms.module.css";
 
-const EmergencyContactsSkeleton = () => {
-    return (
-        <div className={formStyles.formContainer}>
-            <h2>Emergency Contact Details.</h2>
-            <p className="small centred">Loading...</p>
-        </div>
-    );
-};
-
 const EmergencyContacts = () => {
     /* CONTEXT / HOOKS */
     const { user, authIsReady } = useAuthContext();
@@ -300,4 +291,4 @@ const EmergencyContacts = () => {
     );
 };
 
-export { EmergencyContactsSkeleton, EmergencyContacts };
+export { EmergencyContacts };

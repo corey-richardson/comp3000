@@ -59,3 +59,64 @@
     width: 100%;
     display: block;
 }
+
+/* READ ONLY ADMIN DASHBOARD CARD STYLES */
+
+.readOnlyGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.staticCard {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.staticCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--blue-shadow);
+}
+
+.staticCardHeader {
+    background-color: var(--light-gray);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+.staticCardHeader strong {
+    color: var(--text-color);
+}
+
+.staticCardBody {
+    padding: 1rem;
+    flex-grow: 1;
+}
+
+.staticCardBody p {
+    margin: 0.5rem 0;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+}
+
+.staticCardFooter {
+    padding: 0.5rem 1rem;
+    border-top: 1px dashed var(--border-color);
+}
+
+.staticCardFooter p {
+    margin: 0;
+    color: var(--light-text-color);
+    font-style: italic;
+    font-size: 0.8rem !important;
+}
