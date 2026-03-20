@@ -1,10 +1,7 @@
 import styles from "./EmergencyContacts.module.css";
 import EnumMap from "../../lib/enumMap";
-import formStyles from "../../styles/Forms.module.css";
 
 const EmergencyContactsReadOnly = ({ contacts = [] }) => {
-
-    console.log(contacts);
 
     if (!contacts || contacts.length === 0) {
         return <p className="small centred">No emergency contacts to display.</p>;
