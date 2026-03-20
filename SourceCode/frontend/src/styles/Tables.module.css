@@ -44,9 +44,12 @@
 
 .table td {
     padding: 1rem 0.5rem;
-    border-bottom: 1px solid var(--border-color);
     color: var(--text-color);
     vertical-align: middle;
+}
+
+.table td:not(:nth-last-child) {
+    border-bottom: 1px solid var(--border-color);
 }
 
 .actionCell {
