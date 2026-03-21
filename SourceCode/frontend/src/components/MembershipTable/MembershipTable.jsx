@@ -55,6 +55,8 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
 
             setMembers(prev => prev.filter(m => m.id !== member.id));
             setMemberToDelete(null);
+            decrementMemberCount();
+
         } catch (error) {
             setError(`Failed to remove member ${member.firstName} ${member.lastName}: ${error.message}`);
         } finally {

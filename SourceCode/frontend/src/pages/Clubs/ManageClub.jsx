@@ -38,6 +38,10 @@ const ManageClub = () => {
         fetchClub();
     }, [ clubId, makeApiCall ]);
 
+    const decrementMemberCount = () => {
+        setClub(prev => ({ ...prev, memberCount: club.memberCount - 1 }));
+    };
+
     return (
         <div className="content">
             <Breadcrumbs customLabel={club?.name} />
@@ -71,7 +75,7 @@ const ManageClub = () => {
                         </span>
                     </div>
 
-                    <MembershipTable members={club?.members} clubName={club?.name} />
+                    <MembershipTable members={club?.members} clubName={club?.name} decrementMemberCount={decrementMemberCount} />
                 </>
             )}
 
