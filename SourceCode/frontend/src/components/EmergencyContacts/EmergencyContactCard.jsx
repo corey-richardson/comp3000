@@ -1,10 +1,10 @@
-import { AlertTriangle, ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import styles from "./EmergencyContacts.module.css";
 import EnumMap from "../../lib/enumMap.js";
-import deleteOverlayStyles from "../../styles/DeleteOverlay.module.css";
 import formStyles from "../../styles/Forms.module.css";
+import DeleteOverlay from "../DeleteOverlay/DeleteOverlay.jsx";
 
 const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSHIP_OPTIONS }) => {
     const [ isOpen, setIsOpen ] = useState(false);
@@ -130,27 +130,12 @@ const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSH
             )}
 
             {isDeleting && (
-                <div className={deleteOverlayStyles.overlay}>
-                    <AlertTriangle size={24} />
-                    <span className={deleteOverlayStyles.message}>Are you sure you want to delete this contact?</span>
-
-                    <div className={deleteOverlayStyles.buttonGroup}>
-                        <button
-                            onClick={confirmDeletion}
-                            disabled={isPendingDeletion}
-                            className={deleteOverlayStyles.confirmButton}
-                        >
-                            { isPendingDeletion ? "Deleting..." : "Delete" }
-                        </button>
-
-                        <button
-                            onClick={() => setIsDeleting(false)}
-                            className={deleteOverlayStyles.cancelButton}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+                <DeleteOverlay
+                    message="Are you sure you want to delete this contact?"
+                    onConfirm={confirmDeletion}
+                    onCancel={() => setIsDeleting(false)}
+                    isPending={isPendingDeletion}
+                />
             )}
 
             { error && <p className={"centred error-message"}>{ error }</p>}

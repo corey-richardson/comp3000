@@ -1,10 +1,10 @@
-import { AlertTriangle, ArrowRight, Settings, Users, Unlink } from "lucide-react";
+import { ArrowRight, Settings, Users, Unlink } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import styles from "./ClubCard.module.css";
 import EnumMap from "../../lib/enumMap";
-import deleteOverlayStyles from "../../styles/DeleteOverlay.module.css";
+import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
 const ClubCard = ({ membership, onLeave }) => {
     const { club, roles, joined_at, memberCount } = membership;
@@ -103,31 +103,14 @@ const ClubCard = ({ membership, onLeave }) => {
             </div>
 
             { onLeave && isLeaving && (
-                <div className={deleteOverlayStyles.overlay}>
-                    <AlertTriangle size={24} />
-                    <span className={deleteOverlayStyles.message}>Are you sure you want to leave this club?</span>
-
-                    <div className={deleteOverlayStyles.buttonGroup}>
-                        <button
-                            onClick={confirmLeave}
-                            disabled={isPending}
-                            className={deleteOverlayStyles.confirmButton}
-                        >
-                            { isPending ? "Leaving..." : "Leave" }
-                        </button>
-
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setIsLeaving(false);
-                            }}
-                            className={deleteOverlayStyles.cancelButton}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+                <DeleteOverlay
+                    message="Are you sure you want to leave this club?"
+                    onConfirm={confirmLeave}
+                    onCancel={() => setIsLeaving(false)}
+                    isPending={isPending}
+                    confirmButtonText="Leave"
+                    confirmButtonTextAction="Leaving"
+                />
             )}
 
             { error && <p className={"centred error-message"}>{ error }</p>}
