@@ -1,12 +1,17 @@
-.overlay {
+.cardOverlay,
+.rowOverlay {
     position: absolute;
     inset: 0;
     background: rgb(255 255 255 / 80%);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 10;
+    animation: fadeIn 0.2s ease;
+}
+
+.cardOverlay {
+    flex-direction: column;
     gap: 0.5rem;
     border-radius: var(--border-radius);
     animation: fadeIn 0.2s ease;
@@ -14,11 +19,24 @@
     padding: 1rem;
 }
 
+.rowOverlay {
+    flex-direction: row;
+    gap: 1.5rem;
+}
+
 .message {
     color: var(--text-color);
     text-align: center;
     font-size: 1.1rem;
     font-weight: 600;
+}
+
+.rowOverlay .message {
+    font-size: 0.9rem;
+}
+
+.rowOverlay .buttonGroup {
+    max-width: 250px;
 }
 
 .buttonGroup {
@@ -32,7 +50,6 @@
 .buttonGroup .confirmButton, 
 .buttonGroup .cancelButton {
     flex: 1; 
-    margin-top: 10px;
     width: auto !important;
     padding: 0.8rem 1.6rem !important;
     border: none;

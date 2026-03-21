@@ -1,6 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 
-import styles from "../../styles/DeleteOverlay.module.css";
+import styles from "./DeleteOverlay.module.css";
 
 const DeleteOverlay = ({
     message,
@@ -8,12 +8,24 @@ const DeleteOverlay = ({
     onCancel,
     isPending,
     confirmButtonText = "Delete",
-    confirmButtonTextAction = "Deleting"
+    confirmButtonTextAction = "Deleting",
+    type = "card"
 }) => {
-    return (
-        <div className={styles.overlay}>
 
-            <AlertTriangle size={24} />
+    let overlayClass;
+
+    switch (type) {
+        case "row":
+            overlayClass = styles.rowOverlay;
+            break;
+        default:
+            overlayClass = styles.cardOverlay;
+    }
+
+    return (
+        <div className={overlayClass}>
+
+            <AlertTriangle />
             <span className={styles.message}>{ message }</span>
 
             <div className={styles.buttonGroup}>

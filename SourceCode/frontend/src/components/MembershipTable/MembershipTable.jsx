@@ -7,11 +7,15 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import calculateAgeCategory from "../../lib/calculateAgeCategory";
 import EnumMap from "../../lib/enumMap";
 import styles from "../../styles/Tables.module.css";
+import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
-const MembershipTable = ({ members: initialMemberState = [], clubName }) => {
+const MembershipTable = ({ members: initialMemberState = [], clubName, decrementMemberCount }) => {
 
     const [ members, setMembers ] = useState(initialMemberState);
     const [ error, setError ] = useState(null);
+
+    const [ memberToDelete, setMemberToDelete ] = useState(null);
+    const [ isPendingDeletion, setIsPendingDeletion ] = useState(false);
 
     const { makeApiCall } = useApi();
     const { user } = useAuthContext();
@@ -31,16 +35,16 @@ const MembershipTable = ({ members: initialMemberState = [], clubName }) => {
     const isCaptain = currentUserRoles.includes("CAPTAIN");
     const isRecords = currentUserRoles.includes("RECORDS");
 
-    const handleRemoveMember = async (member) => {
-        const confirmation = window.confirm(`Are you sure you want to remove ${member.firstName} ${member.lastName} from this Club?`);
-
-        if (!confirmation) {
+    const confirmDeletion = async (member) => {
+        if (!memberToDelete) {
             return;
         }
 
         try {
+            setIsPendingDeletion(true);
             setError(null);
-            const response = await makeApiCall(`/api/clubs/memberships/${member.id}`, {
+
+            const response = await makeApiCall(`/api/clubs/memberships/${memberToDelete.id}`, {
                 method: "DELETE",
             });
 
@@ -50,9 +54,11 @@ const MembershipTable = ({ members: initialMemberState = [], clubName }) => {
             }
 
             setMembers(prev => prev.filter(m => m.id !== member.id));
-
+            setMemberToDelete(null);
         } catch (error) {
             setError(`Failed to remove member ${member.firstName} ${member.lastName}: ${error.message}`);
+        } finally {
+            setIsPendingDeletion(false);
         }
 
     };
@@ -84,7 +90,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName }) => {
 
                 <tbody>
                     { members.map((member) => (
-                        <tr key={member.id}>
+                        <tr key={member.id} style={{ position: "relative" }}>
                             <td>{ `${member.firstName} ${member.lastName}` }</td>
 
                             {(isAdmin || isCaptain) && (
@@ -126,7 +132,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName }) => {
                                         </div>
                                     )}
 
-                                    {( isAdmin ) && (
+                                    {isAdmin && (
                                         <>
                                             <div className={styles.badge} title="Edit User Information">
                                                 <Link
@@ -139,13 +145,30 @@ const MembershipTable = ({ members: initialMemberState = [], clubName }) => {
                                             </div>
 
                                             <div className={`${styles.badge} ${styles.dangerBadge}`} title="End Membership">
-                                                <button onClick={() => handleRemoveMember(member)} className={styles.invisibleButton}>
+                                                <button
+                                                    onClick={() => setMemberToDelete(member)}
+                                                    className={styles.invisibleButton}
+                                                >
                                                     <Unlink />
                                                 </button>
                                             </div>
                                         </>
                                     )}
                                 </div>
+
+                                { memberToDelete?.id === member.id && (
+                                    <DeleteOverlay
+                                        type="row"
+                                        message={`Are you sure you want to remove ${member.firstName} ${member.lastName} from this club?`}
+                                        onConfirm={() => confirmDeletion(member)}
+                                        onCancel={() => setMemberToDelete(null)}
+                                        isPending={isPendingDeletion}
+                                        confirmButtonText="Remove"
+                                        confirmButtonTextAction="Removing"
+
+                                    />
+                                )}
+
                             </td>
                         </tr>
                     ))}
