@@ -24,9 +24,9 @@
 .scoreItem:hover {
     background-color: var(--light-gray);
     border-color: var(--primary-color);
+    border-width: 4px;
     transform: translateY(-2px);
     box-shadow: 0 4px 6px var(--shadow);
-    border-width: 4px;
 }
 
 .topRow {

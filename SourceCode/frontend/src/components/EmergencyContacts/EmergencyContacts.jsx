@@ -119,7 +119,6 @@ const EmergencyContacts = () => {
     };
 
     const handleDelete = async (contactId) => {
-        if (!window.confirm("Are you sure?")) return;
         setLoading(true);
 
         try {

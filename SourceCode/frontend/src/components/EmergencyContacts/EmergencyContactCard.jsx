@@ -1,15 +1,19 @@
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { AlertTriangle, ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import styles from "./EmergencyContacts.module.css";
 import EnumMap from "../../lib/enumMap.js";
+import deleteOverlayStyles from "../../styles/DeleteOverlay.module.css";
 import formStyles from "../../styles/Forms.module.css";
-import clubCardStyles from "../ClubCard/ClubCard.module.css";
 
 const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSHIP_OPTIONS }) => {
     const [ isOpen, setIsOpen ] = useState(false);
     const [ formData, setFormData ] = useState({ ...contact });
     const [ isChanged, setIsChanged ] = useState(false);
+
+    const [ isDeleting, setIsDeleting ] = useState(false);
+    const [ isPendingDeletion, setIsPendingDeletion ] = useState(false);
+    const [ error, setError ] = useState(null);
 
     const handleChange = async (field, value) => {
         await setFormData(prev => ({ ...prev, [field]: value }));
@@ -21,6 +25,22 @@ const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSH
         const success = await onUpdate(formData);
         if (success) {
             setIsChanged(false);
+        }
+    };
+
+    const confirmDeletion = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setError(null);
+        setIsPendingDeletion(true);
+
+        try {
+            await onDelete(contact.id);
+        } catch (error) {
+            setIsPendingDeletion(false);
+            setError(error.message);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -99,8 +119,7 @@ const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSH
 
                         <button
                             type="button"
-                            className={styles.deleteBtn}
-                            onClick={() => onDelete(contact.id)}
+                            onClick={() => setIsDeleting(true)}
                         >
                             Delete
                         </button>
@@ -109,6 +128,32 @@ const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSH
                     <p className={styles.lastUpdated}>Last updated: {new Date(contact.updated_at).toLocaleString()}</p>
                 </form>
             )}
+
+            {isDeleting && (
+                <div className={deleteOverlayStyles.overlay}>
+                    <AlertTriangle size={24} />
+                    <span className={deleteOverlayStyles.message}>Are you sure you want to delete this contact?</span>
+
+                    <div className={deleteOverlayStyles.buttonGroup}>
+                        <button
+                            onClick={confirmDeletion}
+                            disabled={isPendingDeletion}
+                            className={deleteOverlayStyles.confirmButton}
+                        >
+                            { isPendingDeletion ? "Deleting..." : "Delete" }
+                        </button>
+
+                        <button
+                            onClick={() => setIsDeleting(false)}
+                            className={deleteOverlayStyles.cancelButton}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            { error && <p className={"centred error-message"}>{ error }</p>}
         </div>
     );
 };

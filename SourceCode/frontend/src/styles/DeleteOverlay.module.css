@@ -15,44 +15,56 @@
 }
 
 .message {
-    font-weight: bold;
     color: var(--text-color);
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .buttonGroup {
     display: flex;
     gap: 1rem;
-    margin-top: 0.5rem;
+    width: 100%;
+    max-width: 380px;
+    justify-content: center;
 }
 
-.confirmButton, 
-.cancelButton {
-    padding: 0.8rem 1.6rem;
-    border-color: var(--border-color);
+.buttonGroup .confirmButton, 
+.buttonGroup .cancelButton {
+    flex: 1; 
+    margin-top: 10px;
+    width: auto !important;
+    padding: 0.8rem 1.6rem !important;
+    border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
+    transition: all 0.3s ease !important;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.confirmButton {
-    background-color: red;
+.buttonGroup .confirmButton {
+    background-color: red !important;
     color: white;
     font-weight: bold;
 }
 
-.cancelButton {
+.buttonGroup .cancelButton {
+    background-color: var(--light-gray) !important;
     border-color: var(--border-color);
     color: var(--text-color);
 }
 
-
-.confirmButton:hover, 
-.cancelButton:hover {
-    transform: translateY(-1px);
+.buttonGroup .confirmButton:hover, 
+.buttonGroup .cancelButton:hover {
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px var(--blue-shadow);
 }
 
-.confirmButton:disabled {
-    background-color: var(--light-gray);
+.buttonGroup .confirmButton:disabled {
+    background-color: var(--light-gray) !important;
     color: var(--text-color);
     cursor: not-allowed;
     transform: none;

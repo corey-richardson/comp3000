@@ -1,6 +1,21 @@
 .contactCard {
-    border-bottom: 1px solid #ccc;
+    position: relative;
+    overflow: hidden;
     padding: 1rem 0;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* .contactCard:not(:last-child) {
+    border-bottom: 2px solid var(--border-color);
+} */
+
+.contactCard:hover {
+    background-color: var(--light-gray);
+    border-color: var(--primary-color);
+    border-width: 3px;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px var(--shadow);
+    color: var(--primary-color) !important;
 }
 
 .cardHeader {
@@ -19,7 +34,7 @@
 
 .cardHeader strong {
     font-size: 1rem;
-    color: var(--primary-color);
+    color: var(--text-color);
 }
 
 .updateForm {
@@ -40,15 +55,6 @@
 
 .buttonGroup button {
     flex: 1;
-}
-
-.deleteBtn {
-    background-color: #dc3545;
-    color: white;
-}
-
-.deleteBtn:hover {
-    background-color: #c82333;
 }
 
 .lastUpdated {
