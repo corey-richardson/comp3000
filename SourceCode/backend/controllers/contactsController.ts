@@ -88,6 +88,10 @@ export const updateContact = async (request: Request, response: Response) => {
 
     const { name, phoneNumber, emailAddress, relationshipToUser } = request.body.contact;
 
+    if (!name?.trim() || !phoneNumber?.trim()) {
+        return response.status(400).json({ error: "Name and Phone Number fields are required." });
+    }
+
     try {
         const contact = await prisma.emergencyContact.findUnique({
             where: { id },
@@ -117,6 +121,8 @@ export const updateContact = async (request: Request, response: Response) => {
                 updated_at: new Date(),
             },
         });
+
+        console.log(updatedContact);
 
         return response.status(200).json(updatedContact);
     } catch (_error: any) {
