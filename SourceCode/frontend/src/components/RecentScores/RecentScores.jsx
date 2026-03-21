@@ -22,7 +22,7 @@ const RecentScores = () => {
             setIsLoading(true);
 
             try {
-                const response = await makeApiCall(`/api/scores/user/${user.id}?limit=5`);
+                const response = await makeApiCall(`/api/scores/user/${user.id}?limit=3`);
                 if (!response) return; // 401
 
                 const data = await response.json();
