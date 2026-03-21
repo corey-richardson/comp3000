@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "./EmergencyContacts.module.css";
 import EnumMap from "../../lib/enumMap.js";
 import formStyles from "../../styles/Forms.module.css";
+import clubCardStyles from "../ClubCard/ClubCard.module.css";
 
 const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSHIP_OPTIONS }) => {
     const [ isOpen, setIsOpen ] = useState(false);

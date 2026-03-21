@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useApi } from "../../hooks/useApi";
 import EnumMap from "../../lib/enumMap";
 import getClassificationClass from "../../lib/getClassificationClass";
+import deleteOverlayStyles from "../../styles/DeleteOverlay.module.css";
 import styles from "../../styles/ScoreItem.module.css";
 
 const ScoreItem = ({ score, onDelete }) => {
@@ -123,22 +124,22 @@ const ScoreItem = ({ score, onDelete }) => {
             </div>
 
             {isDeleting && (
-                <div className={styles.deleteOverlay}>
+                <div className={deleteOverlayStyles.overlay}>
                     <AlertTriangle size={24} />
-                    <span>Are you sure you want to delete this score?</span>
+                    <span className={deleteOverlayStyles.message}>Are you sure you want to delete this score?</span>
 
-                    <div className={styles.overlayButtons}>
+                    <div className={deleteOverlayStyles.buttonGroup}>
                         <button
                             onClick={handleDelete}
                             disabled={isPending}
-                            className={styles.confirmButton}
+                            className={deleteOverlayStyles.confirmButton}
                         >
                             { isPending ? "Deleting..." : "Delete" }
                         </button>
 
                         <button
                             onClick={() => setIsDeleting(false)}
-                            className={styles.cancelButton}
+                            className={deleteOverlayStyles.cancelButton}
                         >
                             Cancel
                         </button>

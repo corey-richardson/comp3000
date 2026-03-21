@@ -122,8 +122,6 @@ export const updateContact = async (request: Request, response: Response) => {
             },
         });
 
-        console.log(updatedContact);
-
         return response.status(200).json(updatedContact);
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });

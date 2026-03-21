@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import styles from "./ClubCard.module.css";
 import EnumMap from "../../lib/enumMap";
+import deleteOverlayStyles from "../../styles/DeleteOverlay.module.css";
 
 const ClubCard = ({ membership, onLeave }) => {
     const { club, roles, joined_at, memberCount } = membership;
@@ -102,15 +103,15 @@ const ClubCard = ({ membership, onLeave }) => {
             </div>
 
             { onLeave && isLeaving && (
-                <div className={styles.overlay}>
+                <div className={deleteOverlayStyles.overlay}>
                     <AlertTriangle size={24} />
-                    <span>Are you sure you want to leave this club?</span>
+                    <span className={deleteOverlayStyles.message}>Are you sure you want to leave this club?</span>
 
-                    <div className={styles.overlayButtons}>
+                    <div className={deleteOverlayStyles.buttonGroup}>
                         <button
                             onClick={confirmLeave}
                             disabled={isPending}
-                            className={styles.confirmButton}
+                            className={deleteOverlayStyles.confirmButton}
                         >
                             { isPending ? "Leaving..." : "Leave" }
                         </button>
@@ -121,7 +122,7 @@ const ClubCard = ({ membership, onLeave }) => {
                                 e.stopPropagation();
                                 setIsLeaving(false);
                             }}
-                            className={styles.cancelButton}
+                            className={deleteOverlayStyles.cancelButton}
                         >
                             Cancel
                         </button>
