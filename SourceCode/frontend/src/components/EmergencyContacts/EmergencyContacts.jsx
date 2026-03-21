@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { EmergencyContactCard } from "./EmergencyContactCard";
+import EmergencyContactCard from "./EmergencyContactCard";
 import styles from "./EmergencyContacts.module.css";
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
@@ -214,4 +214,4 @@ const EmergencyContacts = () => {
     );
 };
 
-export { EmergencyContacts };
+export default EmergencyContacts;

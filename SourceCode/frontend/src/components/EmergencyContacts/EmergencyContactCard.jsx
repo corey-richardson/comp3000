@@ -158,4 +158,4 @@ const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSH
     );
 };
 
-export { EmergencyContactCard };
+export default EmergencyContactCard;

@@ -66,4 +66,4 @@ const ClubCards = () => {
     );
 };
 
-export { ClubCards };
+export default ClubCards;

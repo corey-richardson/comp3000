@@ -13,4 +13,4 @@ const CurrentClassificationsAndHandicaps = () => {
     );
 };
 
-export { CurrentClassificationsAndHandicaps };
+export default CurrentClassificationsAndHandicaps;

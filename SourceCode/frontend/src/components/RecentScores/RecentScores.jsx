@@ -61,4 +61,4 @@ const RecentScores = () => {
     );
 };
 
-export { RecentScores };
+export default RecentScores;

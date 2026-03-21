@@ -187,4 +187,4 @@ const DetailsForm = () => {
     );
 };
 
-export { DetailsForm };
+export default DetailsForm;

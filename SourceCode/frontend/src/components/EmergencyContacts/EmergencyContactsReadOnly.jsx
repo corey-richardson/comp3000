@@ -32,4 +32,4 @@ const EmergencyContactsReadOnly = ({ contacts = [] }) => {
     );
 };
 
-export { EmergencyContactsReadOnly };
+export default EmergencyContactsReadOnly;

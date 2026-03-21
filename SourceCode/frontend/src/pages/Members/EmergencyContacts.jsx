@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
-import { EmergencyContactsReadOnly } from "../../components/EmergencyContacts/EmergencyContactsReadOnly";
+import EmergencyContactsReadOnly from "../../components/EmergencyContacts/EmergencyContactsReadOnly";
 import { useApi } from "../../hooks/useApi";
 
 const MemberEmergencyContacts = () => {
