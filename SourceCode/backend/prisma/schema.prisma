@@ -142,8 +142,9 @@ model Score {
   verified_at  DateTime?
 
   // Metrics for Flask archeryutils
-  classification String?
-  handicap       Float?
+  classification         String?
+  uncappedClassification String?
+  handicap               Float?
 
   profile    Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
   verifiedBy Profile? @relation("VerifiedScores", fields: [verifiedById], references: [id])

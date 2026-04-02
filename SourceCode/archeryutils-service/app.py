@@ -20,6 +20,38 @@ all_rounds = {
 # fmt: on
 
 
+def cap_classification_level(calculated_classification, venue, competition_status):
+
+    if not calculated_classification or calculated_classification == "NC":
+        return calculated_classification
+
+    qualifies_mb = competition_status == "RECORD_STATUS_COMPETITION"
+    qualifies_b = competition_status in [
+        "CLUB_EVENT",
+        "OPEN_COMPETITION",
+        "RECORD_STATUS_COMPETITION",
+    ]
+
+    if venue == "INDOOR":
+        if "M" in calculated_classification:
+            if not qualifies_mb:
+                calculated_classification = "I-B1"
+
+        if "B" in calculated_classification:
+            if not qualifies_b:
+                calculated_classification = "I-A1"
+    else:  # Outdoor
+        if "M" in calculated_classification:
+            if not qualifies_mb:
+                calculated_classification = "B1"
+
+        if "B" in calculated_classification:
+            if not qualifies_b:
+                calculated_classification = "A1"
+
+    return calculated_classification
+
+
 @app.route("/calculate", methods=["POST"])
 def calculate_metrics():
     data = request.get_json()
@@ -36,6 +68,7 @@ def calculate_metrics():
             "AGE_" + data.get("ageCategory").upper()
         ]
 
+        competition_status = data.get("competition")
         venue = data.get("venue", "INDOOR").upper()
 
         round_object = all_rounds.get(round_codename)
@@ -51,24 +84,31 @@ def calculate_metrics():
 
         try:
             if venue == "INDOOR":
-                classification_value = (
+                uncapped_classification_value = (
                     classifications.calculate_agb_indoor_classification(
                         raw_score, round_codename, bowstyle, sex_category, age_category
                     )
                 )
             else:  # OUTDOOR
-                classification_value = (
+                uncapped_classification_value = (
                     classifications.calculate_agb_outdoor_classification(
                         raw_score, round_codename, bowstyle, sex_category, age_category
                     )
                 )
+
+            classification_value = cap_classification_level(
+                uncapped_classification_value, venue, competition_status
+            )
+
         except Exception:
             classification_value = "NC"
+            uncapped_classification_value = "NC"
 
         return jsonify(
             {
                 "handicap": int(handicap_value) if handicap_value is not None else None,
                 "classification": classification_value,
+                "uncapped_classification": uncapped_classification_value,
                 "max_score": round_object.max_score(),
                 "num_arrows": round_object.n_arrows,
             }
