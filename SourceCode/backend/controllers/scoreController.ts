@@ -201,9 +201,8 @@ export const updateScore = async (request: Request, response: Response) => {
 
         return response.status(200).json(updatedScore);
 
-    } catch (error: any) {
-        console.log(error);
-        return response.status(500).json({ error: "Internal Server Error: " + error.message });
+    } catch (_error: any) {
+        return response.status(500).json({ error: "Internal Server Error: " + _error.message });
     }
 
 };
@@ -444,7 +443,7 @@ export const getScoreById = async (request: Request, response: Response) => {
         );
 
         if (!canSeeJournal) {
-            const { journal, ...scoreWithoutJournal } = score;
+            const { journal: _journal, ...scoreWithoutJournal } = score;
             return response.status(200).json(scoreWithoutJournal);
         }
 

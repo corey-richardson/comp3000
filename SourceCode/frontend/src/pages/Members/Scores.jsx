@@ -44,8 +44,6 @@ const MemberScores = () => {
         setIsPendingAction(true);
         setError(null);
 
-        console.log(id, newStatus);
-
         try {
             const response = await makeApiCall(`/api/scores/${id}/status`, {
                 method: "PATCH",
