@@ -1,9 +1,17 @@
 import { Bowstyle, CompetitionStatus, Venue } from "@prisma/client";
+import { Score } from "@prisma/client";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
 import { toPrismaAge, toPrismaSex, toPythonAge, toPythonSex } from "../utils/enumAdapter";
 import { requireRoleInClub, requireRoleInSharedClubOrDataOwnership } from "../utils/serverUtils";
+
+const stripJournal = <T extends Score>(scores: T[]) => {
+    return scores.map(score => ({
+        ...score,
+        journal: null
+    }));
+};
 
 export const createScore = async (request: Request, response: Response) => {
     const requestingUser = (request as any).user;
@@ -38,7 +46,8 @@ export const createScore = async (request: Request, response: Response) => {
                 bowstyle,
                 sex: toPythonSex(prismaSex),
                 ageCategory: toPythonAge(prismaAge),
-                venue
+                venue,
+                competition
             }),
         });
 
@@ -58,6 +67,7 @@ export const createScore = async (request: Request, response: Response) => {
 
                 handicap: flaskServiceData.handicap,
                 classification: flaskServiceData.classification,
+                uncappedClassification: flaskServiceData.uncapped_classification,
                 maxScore: flaskServiceData.max_score,
                 numArrows: flaskServiceData.num_arrows,
 
@@ -77,8 +87,8 @@ export const createScore = async (request: Request, response: Response) => {
                 sex: prismaSex,
                 ageCategory: prismaAge,
 
-                notes,
-                journal,
+                notes: notes || null,
+                journal: journal || null,
             }
         });
 
@@ -145,7 +155,8 @@ export const updateScore = async (request: Request, response: Response) => {
                 bowstyle,
                 sex: toPythonSex(prismaSex),
                 ageCategory: toPythonAge(prismaAge),
-                venue
+                venue,
+                competition
             }),
         });
 
@@ -163,6 +174,7 @@ export const updateScore = async (request: Request, response: Response) => {
                 // Flask Service values
                 handicap: flaskServiceData.handicap,
                 classification: flaskServiceData.classification,
+                uncappedClassification: flaskServiceData.uncapped_classification,
                 maxScore: flaskServiceData.max_score,
                 numArrows: flaskServiceData.num_arrows,
 
@@ -190,9 +202,51 @@ export const updateScore = async (request: Request, response: Response) => {
         return response.status(200).json(updatedScore);
 
     } catch (error: any) {
+        console.log(error);
         return response.status(500).json({ error: "Internal Server Error: " + error.message });
     }
 
+};
+
+export const updateScoreStatus = async (request: Request, response: Response) => {
+    const { scoreId } = request.params as { scoreId: string };
+    const requestingUserId = (request as any).user.id;
+
+    const { status } = request.body;
+
+    try {
+        const existingScore = await prisma.score.findUnique({
+            where: { id: scoreId }
+        });
+
+        if (!existingScore) {
+            return response.status(404).json({ error: "Score not found." });
+        }
+
+        const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
+            requestingUserId,
+            existingScore.userId,
+            ["ADMIN", "RECORDS"]
+        );
+
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
+        const updatedScore = await prisma.score.update({
+            where: { id: scoreId },
+            data: {
+                status,
+                verified_at: status === "VERIFIED" ? new Date() : null,
+                verifiedById: status === "VERIFIED" ? requestingUserId : null,
+            }
+        });
+
+        return response.status(200).json(updatedScore);
+
+    } catch (error: any) {
+        return response.status(500).json({ error: "Internal Server Error: " + error.message });
+    }
 };
 
 export const deleteScore = async (request: Request, response: Response) => {
@@ -269,8 +323,18 @@ export const getScoresByUser = async (request: Request, response: Response) => {
 
         const totalPages = Math.ceil(totalCount / limit);
 
+        let filteredScores = scores;
+        const canSeeJournal = await requireRoleInSharedClubOrDataOwnership(
+            requestingUserId,
+            targetUserId,
+            ["COACH"]
+        );
+        if (!canSeeJournal) {
+            filteredScores = stripJournal(scores);
+        }
+
         return response.status(200).json({
-            scores,
+            scores: filteredScores,
             user: targetUser,
             pagination: {
                 totalCount,
@@ -325,7 +389,17 @@ export const getScoresByClub = async (request: Request, response: Response) => {
             skip: skip,
         });
 
-        return response.status(200).json(scores);
+        let filteredScores = scores;
+        const canSeeJournal = await requireRoleInClub(
+            clubId,
+            requestingUserId,
+            ["COACH"]
+        );
+        if (!canSeeJournal) {
+            filteredScores = stripJournal(scores);
+        }
+
+        return response.status(200).json(filteredScores);
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }
@@ -361,6 +435,17 @@ export const getScoreById = async (request: Request, response: Response) => {
 
         if (!isAuthorised) {
             return response.status(403).json({ error: "Forbidden." });
+        }
+
+        const canSeeJournal = await requireRoleInSharedClubOrDataOwnership(
+            requestingUserId,
+            score.userId,
+            ["COACH"]
+        );
+
+        if (!canSeeJournal) {
+            const { journal, ...scoreWithoutJournal } = score;
+            return response.status(200).json(scoreWithoutJournal);
         }
 
         return response.status(200).json(score);
