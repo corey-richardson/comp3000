@@ -1,4 +1,4 @@
-import { Check, Pencil, Sun, Trash, Warehouse, X } from "lucide-react";
+import { Check, Pencil, Sun, Target, Trash, Warehouse, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -16,6 +16,27 @@ const ScoreItem = ({ score, onDelete }) => {
 
     const formattedDate = new Date(score.dateShot).toLocaleDateString();
     const verificationDate = score.verified_at ? new Date(score.verified_at) : null;
+
+    const getStatusIcon = () => {
+        switch (score.status) {
+            case "VERIFIED":
+                return <Check />;
+            case "REJECTED":
+                return <X />;
+            default:
+                return <Target />;
+        }
+    };
+
+    const getStatusTitle = () => {
+        if (score.status === "VERIFIED" && verificationDate) {
+            return `Verified by Records Officer on ${verificationDate.toLocaleDateString()} at ${verificationDate.toLocaleTimeString()}`;
+        }
+        if (score.status === "REJECTED") {
+            return "Rejected by Records Officer";
+        }
+        return "Pending verification by Records Officer";
+    };
 
     const handleDelete = async () => {
         setIsDeleting(true);
@@ -41,10 +62,11 @@ const ScoreItem = ({ score, onDelete }) => {
                 <span className={styles.date}>{ formattedDate }</span>
 
                 <div className={styles.badgeGroup}>
-                    <span className={styles.badge} title={verificationDate
-                        ? `Verified by Records Officer on ${verificationDate.toLocaleDateString()} at ${verificationDate.toLocaleTimeString()}`
-                        : "Unverified by Records Officer"}>
-                        { score.verified_at ? <Check /> : <X /> }
+                    <span
+                        className={styles.badge}
+                        title={getStatusTitle()}
+                    >
+                        {getStatusIcon()}
                     </span>
 
                     <span className={styles.badge} title={ EnumMap[score.venue] }>
@@ -52,7 +74,7 @@ const ScoreItem = ({ score, onDelete }) => {
                     </span>
 
                     {!score.verified_at && (
-                        <span className={styles.badge} title="Edit Score (inop)">
+                        <span className={styles.badge} title="Edit Score">
                             <Link to={`./edit/${score.id}`}><Pencil /></Link>
                         </span>
                     )}
@@ -117,8 +139,14 @@ const ScoreItem = ({ score, onDelete }) => {
 
             <div className={styles.footerRow}>
                 <span className={`${styles.classificationBadge} ${getClassificationClass(score.classification)}`}>
-                    { EnumMap[score.classification] || "Unclassified"}
+                    Official Classification: { EnumMap[score.classification] || "Unclassified"}
                 </span>
+
+                { score.uncappedClassification && score.classification !== score.uncappedClassification && (
+                    <span className={`${styles.classificationBadge} ${getClassificationClass(score.uncappedClassification)}`}>
+                        Performance: { EnumMap[score.uncappedClassification] || "Unclassified"}
+                    </span>
+                )}
 
                 <span className={styles.handicap}>Handicap: { score.handicap }</span>
             </div>
