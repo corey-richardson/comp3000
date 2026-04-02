@@ -79,7 +79,7 @@ const MyScores = () => {
                 </>
             )}
 
-            { !isLoading && (
+            { !isLoading && totalPages >= 1 && (
                 <div className={paginationStyles.paginationFooter}>
                     <button
                         onClick={ handlePrev }
