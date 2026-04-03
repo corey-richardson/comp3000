@@ -123,6 +123,50 @@ export const updateProfile = async (request: Request, response: Response) => {
     }
 };
 
+// PATCH /api/profiles/:id/summary
+export const updateRecordsSummary = async (request: Request, response: Response) => {
+    const { id: userId } = request.params as { id: string };
+
+    const {
+        indoorClassification,
+        indoorClassificationBadgeGiven,
+        indoorHandicap,
+        outdoorClassification,
+        outdoorClassificationBadgeGiven,
+        outdoorHandicap,
+        notes
+    } = request.body;
+
+    try {
+        const summary = await prisma.recordsSummary.upsert({
+            where: { userId },
+            update: {
+                indoorClassification,
+                indoorClassificationBadgeGiven,
+                indoorHandicap: indoorHandicap !== null ? parseInt(indoorHandicap) : null,
+                outdoorClassification,
+                outdoorClassificationBadgeGiven,
+                outdoorHandicap: outdoorHandicap !== null ? parseInt(outdoorHandicap) : null,
+                notes
+            },
+            create: {
+                userId: userId,
+                indoorClassification: indoorClassification || "UNCLASSIFIED",
+                indoorClassificationBadgeGiven,
+                indoorHandicap: indoorHandicap !== null ? parseInt(indoorHandicap) : null,
+                outdoorClassification: outdoorClassification || "UNCLASSIFIED",
+                outdoorClassificationBadgeGiven,
+                outdoorHandicap: outdoorHandicap !== null ? parseInt(outdoorHandicap) : null,
+                notes
+            },
+        });
+
+        response.status(200).json(summary);
+    } catch (_error: any) {
+        response.status(500).json({ error: "Failed to save records summary." });
+    }
+};
+
 // DELETE:
 /** CASCADE:
  * - Memberships

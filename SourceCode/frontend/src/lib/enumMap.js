@@ -49,6 +49,15 @@ const EnumMap = {
     "I-B1": "Indoor Bowman 1st Class",
     "I-MB": "Indoor Master Bowman",
     "I-GMB": "Indoor Grand Master Bowman",
+    // Indoor Classifications (Prisma alternative)
+    "IA3": "Indoor Archer 3rd Class",
+    "IA2": "Indoor Archer 2nd Class",
+    "IA1": "Indoor Archer 1st Class",
+    "IB3": "Indoor Bowman 3rd Class",
+    "IB2": "Indoor Bowman 2nd Class",
+    "IB1": "Indoor Bowman 1st Class",
+    "IMB": "Indoor Master Bowman",
+    "IGMB": "Indoor Grand Master Bowman",
     // Outdoor Classifications
     "A3": "Archer 3rd Class",
     "A2": "Archer 2nd Class",

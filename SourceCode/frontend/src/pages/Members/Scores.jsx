@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 import EditableScoreItem from "../../components/EditableScoreItem/EditableScoreItem";
 import Pagination from "../../components/Pagination/Pagination";
+import RecordsSummaryEditor from "../../components/RecordsSummaryEditor/RecordsSummaryEditor";
 import ScoreFilterBar from "../../components/ScoreFilterBar/ScoreFilterBar";
 import { useApi } from "../../hooks/useApi";
 import { usePagination } from "../../hooks/usePagination";
@@ -15,6 +16,7 @@ const MemberScores = () => {
 
     const [ user, setUser ] = useState(null);
     const [ scores, setScores] = useState([]);
+    const [ summary, setSummary ] = useState(null);
 
     const [ isLoading, setIsLoading ] = useState(true);
     const [ isPendingAction, setIsPendingAction ] = useState(false);
@@ -43,6 +45,7 @@ const MemberScores = () => {
                 setUser(data.user);
                 setScores(data.scores);
                 setTotalPages(data.pagination.totalPages);
+                setSummary(data.summary);
             }
 
         } catch (error) {
@@ -50,11 +53,11 @@ const MemberScores = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [userId, makeApiCall, scoresPerPage]);
+    }, [userId, makeApiCall, scoresPerPage, setTotalPages]);
 
     useEffect(() => {
         fetchScores(currentPage);
-    }, [currentPage, scoresPerPage,fetchScores]);
+    }, [currentPage, scoresPerPage, fetchScores]);
 
     const handleStatusUpdate = async (id, newStatus) => {
         setIsPendingAction(true);
@@ -121,7 +124,7 @@ const MemberScores = () => {
 
             <div>
                 <h2>Scores for {`${user?.firstName} ${user?.lastName}`}</h2>
-
+                <RecordsSummaryEditor userId={userId} initialSummary={summary} />
                 <ScoreFilterBar filterBarProps={filterBarProps} />
 
                 <p className="small">{scores.length} scores to display. { scores.length !== filteredScores.length && <span>({filteredScores.length} displayed.)</span> }</p>

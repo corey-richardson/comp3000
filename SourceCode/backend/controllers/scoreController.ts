@@ -301,7 +301,7 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
-        const [scores, totalCount, targetUser ] = await Promise.all ([
+        const [scores, totalCount, targetUser, recordsSummary ] = await Promise.all ([
             prisma.score.findMany({
                 where: { userId: targetUserId },
                 orderBy: { dateShot: "desc" },
@@ -317,6 +317,9 @@ export const getScoresByUser = async (request: Request, response: Response) => {
                     firstName: true,
                     lastName: true,
                 }
+            }),
+            prisma.recordsSummary.findUnique({
+                where: { userId: targetUserId },
             })
         ]);
 
@@ -335,6 +338,7 @@ export const getScoresByUser = async (request: Request, response: Response) => {
         return response.status(200).json({
             scores: filteredScores,
             user: targetUser,
+            summary: recordsSummary,
             pagination: {
                 totalCount,
                 totalPages,

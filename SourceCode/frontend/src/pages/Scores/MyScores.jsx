@@ -47,7 +47,7 @@ const MyScores = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [ user?.id, authIsReady, makeApiCall, scoresPerPage ]);
+    }, [ user?.id, authIsReady, makeApiCall, scoresPerPage, setTotalPages ]);
 
     useEffect(() => {
         fetchScores(currentPage);
