@@ -1,0 +1,61 @@
+.filterContainer {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    background: var(--light-gray);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+}
+
+.searchInput {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.filterContainer select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: white;
+}
+
+.searchInput:focus, 
+.filterContainer select:focus,
+.dateGroup input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.dateGroup {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+}
+
+.inputWrapper {
+    display: flex;
+    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.inputWrapper label {
+    color: var(--light-text-color);
+    margin-bottom: 2px;
+}
+
+.dateGroup input {
+    border: none;
+    outline: none;
+    font-family: inherit;
+}
