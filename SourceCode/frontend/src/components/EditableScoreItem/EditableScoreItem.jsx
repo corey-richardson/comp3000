@@ -1,4 +1,4 @@
-import { Check, Trash, ShieldCheck, X } from "lucide-react";
+import { Check, Trash, X } from "lucide-react";
 import { useState } from "react";
 
 import EnumMap from "../../lib/enumMap";
@@ -117,13 +117,6 @@ const EditableScoreItem = ({ score, onDelete, onStatusUpdate, isPending }) => {
                 {score.handicap && (
                     <span className={styles.handicap}>
                         Handicap: <strong>{Math.round(score.handicap)}</strong>
-                    </span>
-                )}
-
-                {score.verifiedById && (
-                    <span className={styles.handicap}>
-                        <ShieldCheck />
-                        Verified
                     </span>
                 )}
             </div>
