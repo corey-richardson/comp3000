@@ -61,6 +61,22 @@
     font-family: inherit;
 }
 
+.clearButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.clearButton:hover:not(:disabled) {
+    background: var(--light-gray);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px var(--blue-shadow);
+}
 
 @media (width <= 1167px) {
     .filterContainer {
@@ -93,5 +109,10 @@
         height: auto;
         padding: 0.75rem;
         align-items: flex-start;
+    }
+
+    .clearButton {
+        flex: 1 1 100%;
+        justify-content: center;
     }
 }

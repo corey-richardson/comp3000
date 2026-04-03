@@ -1,8 +1,12 @@
+import { RotateCcw } from "lucide-react";
+
 import styles from "./FilterBar.module.css";
 
 const ScoreFilterBar = ({ filterBarProps }) => {
 
     const {
+        clearFilters,
+        hasActiveFilters,
         searchPhrase, setSearchPhrase,
         filterStatus, setFilterStatus,
         filterVenue, setFilterVenue,
@@ -68,6 +72,17 @@ const ScoreFilterBar = ({ filterBarProps }) => {
                     />
                 </div>
             </div>
+
+            { hasActiveFilters && (
+                <button
+                    className={styles.clearButton}
+                    onClick={clearFilters}
+                    title="Clear all filters"
+                >
+                    <RotateCcw />
+                    <span>Clear</span>
+                </button>
+            )}
         </div>
     );
 };

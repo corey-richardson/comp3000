@@ -11,10 +11,23 @@ export const useScoreFilters = (unfilteredScores) => {
     const [ startDate, setStartDate ] = useState("");
     const [ endDate, setEndDate ] = useState("");
 
+    const clearFilters = () => {
+        setSearchPhrase("");
+        setFilterStatus("ALL");
+        setFilterVenue("ALL");
+        setSortOrder("NEWEST");
+        setStartDate("");
+        setEndDate("");
+    };
+
+    const hasActiveFilters = searchPhrase !== "" ||
+        filterStatus !== "ALL" ||
+        filterVenue !== "ALL" ||
+        startDate !== "" ||
+        endDate !== "";
+
     const filteredScores = useMemo(() => {
         return unfilteredScores.filter(score => {
-
-            console.log(score);
             const matchesSearch = score.roundName.toLowerCase().includes(searchPhrase.toLowerCase());
             const matchesStatus = filterStatus === "ALL" || score.status === filterStatus;
             const matchesVenue = filterVenue === "ALL" || score.venue === filterVenue;
@@ -43,6 +56,8 @@ export const useScoreFilters = (unfilteredScores) => {
 
     return {
         filteredScores,
+        clearFilters,
+        hasActiveFilters,
         searchPhrase, setSearchPhrase,
         filterStatus, setFilterStatus,
         filterVenue, setFilterVenue,
