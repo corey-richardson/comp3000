@@ -6,6 +6,7 @@ import EditableScoreItem from "../../components/EditableScoreItem/EditableScoreI
 import Pagination from "../../components/Pagination/Pagination";
 import ScoreFilterBar from "../../components/ScoreFilterBar/ScoreFilterBar";
 import { useApi } from "../../hooks/useApi";
+import { usePagination } from "../../hooks/usePagination";
 import { useScoreFilters } from "../../hooks/useScoreFilters";
 
 const MemberScores = () => {
@@ -19,12 +20,12 @@ const MemberScores = () => {
     const [ isPendingAction, setIsPendingAction ] = useState(false);
     const [ error, setError ] = useState(null);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const scoresPerPage = 100;
-
     const filterBarProps = useScoreFilters(scores);
     const { filteredScores } = filterBarProps;
+
+    const paginationProps = usePagination();
+    const { currentPage, setTotalPages } = paginationProps;
+    const scoresPerPage = 100;
 
     const fetchScores = useCallback(async (page) => {
         setIsLoading(true);
@@ -53,7 +54,7 @@ const MemberScores = () => {
 
     useEffect(() => {
         fetchScores(currentPage);
-    }, [currentPage, fetchScores]);
+    }, [currentPage, scoresPerPage,fetchScores]);
 
     const handleStatusUpdate = async (id, newStatus) => {
         setIsPendingAction(true);
@@ -121,30 +122,22 @@ const MemberScores = () => {
             <div>
                 <h2>Scores for {`${user?.firstName} ${user?.lastName}`}</h2>
 
-                <ScoreFilterBar
-                    filterBarProps={filterBarProps}
-                />
+                <ScoreFilterBar filterBarProps={filterBarProps} />
 
                 <p className="small">{scores.length} scores to display. { scores.length !== filteredScores.length && <span>({filteredScores.length} displayed.)</span> }</p>
             </div>
 
-            <div>
-                { filteredScores.map(score => (
-                    <EditableScoreItem
-                        key={score.id}
-                        score={score}
-                        onDelete={handleDelete}
-                        onStatusUpdate={handleStatusUpdate}
-                        isPending={isPendingAction}
-                    />
-                ))}
-            </div>
+            { filteredScores.map(score => (
+                <EditableScoreItem
+                    key={score.id}
+                    score={score}
+                    onDelete={handleDelete}
+                    onStatusUpdate={handleStatusUpdate}
+                    isPending={isPendingAction}
+                />
+            ))}
 
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                setCurrentPage={setCurrentPage}
-            />
+            <Pagination paginationProps={paginationProps} />
 
             { error && <p className="error-message">{ error }</p>}
         </div>

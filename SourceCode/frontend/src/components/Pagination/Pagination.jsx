@@ -1,19 +1,18 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import styles from "../../styles/Pagination.module.css";
+import styles from "./Pagination.module.css";
 
-const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
+const Pagination = ({ paginationProps }) => {
+    const { currentPage, totalPages, prevPage, nextPage } = paginationProps;
+
     if (totalPages <= 1) {
         return null;
     }
 
-    const handlePrev = () => setCurrentPage(prev => Math.max(prev - 1, 1));
-    const handleNext = () => setCurrentPage(prev => prev + 1);
-
     return (
         <div className={styles.paginationFooter}>
             <button
-                onClick={handlePrev}
+                onClick={prevPage}
                 disabled={currentPage === 1}
                 className={styles.button}
             >
@@ -23,7 +22,7 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
             <span className={styles.pageInfo}>Page {currentPage} of {totalPages}</span>
 
             <button
-                onClick={handleNext}
+                onClick={nextPage}
                 disabled={currentPage === totalPages}
                 className={styles.button}
             >
