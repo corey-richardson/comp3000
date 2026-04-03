@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 
 export const usePagination = (initialPage = 1) => {
-    const [ currentPage, setCurrentPage ] = useState(1);
+    const [ currentPage, setCurrentPage ] = useState(initialPage);
     const [ totalPages, setTotalPages ] = useState(1);
 
     const prevPage = useCallback(() => {
