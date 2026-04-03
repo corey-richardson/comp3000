@@ -1,12 +1,11 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import Pagination from "../../components/Pagination/Pagination";
 import ScoreItem from "../../components/ScoreItem/ScoreItem";
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import paginationStyles from "../../styles/Pagination.module.css";
 import styles from "../../styles/ScoreItem.module.css";
 
 const MyScores = () => {
@@ -15,7 +14,7 @@ const MyScores = () => {
 
     const [ scores, setScores ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
-    const [ _error, setError ] = useState(null);
+    const [ error, setError ] = useState(null);
 
     const [ currentPage, setCurrentPage ] = useState(1);
     const [ totalPages, setTotalPages ] = useState(1);
@@ -52,9 +51,6 @@ const MyScores = () => {
         setScores(prev => prev.filter(score => score.id !== id));
     };
 
-    const handleNext = () => setCurrentPage(prev => prev + 1);
-    const handlePrev = () => setCurrentPage(prev => Math.max(prev - 1, 1));
-
     return (
         <div className="content">
             <Breadcrumbs />
@@ -79,27 +75,13 @@ const MyScores = () => {
                 </>
             )}
 
-            { !isLoading && totalPages >= 1 && (
-                <div className={paginationStyles.paginationFooter}>
-                    <button
-                        onClick={ handlePrev }
-                        disabled={ currentPage === 1 || isLoading }
-                        className={ paginationStyles.button }
-                    >
-                        <ChevronLeft size={16} />
-                    </button>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+            />
 
-                    <span className={paginationStyles.pageInfo}>Viewing Page { currentPage } of { totalPages }</span>
-
-                    <button
-                        onClick={ handleNext }
-                        disabled={ currentPage === totalPages || isLoading }
-                        className={ paginationStyles.button }
-                    >
-                        <ChevronRight size={16} />
-                    </button>
-                </div>
-            )}
+            { error && <p className="error-message">{ error }</p>}
         </div>
     );
 };
