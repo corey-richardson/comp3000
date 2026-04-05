@@ -15,7 +15,7 @@ const RecentScores = ({ scores, isLoading, error }) => {
                         <RecentScoreItem score={score} key={score.id} />
                     )) }
 
-                    <p>See all of your scores on the <Link to="../scores">My Scores</Link> page.</p>
+                    <p className="small centred">See all of your scores on the <Link to="../scores">My Scores</Link> page.</p>
                 </>
             )}
 

@@ -58,17 +58,16 @@ const Dashboard = () => {
                     error={error}
                 />
 
+                <ClubCards userId={userId} />
+
                 <CurrentClassificationsAndHandicaps
                     summary={summary}
                     isLoading={isLoading}
                     error={error}
                 />
-            </div>
 
-            <DetailsForm userId={userId} />
+                <DetailsForm userId={userId} />
 
-            <div className={dashboardStyles.dashboardGrid}>
-                <ClubCards userId={userId} />
                 <EmergencyContacts userId={userId}/>
             </div>
 

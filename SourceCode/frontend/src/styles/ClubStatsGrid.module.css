@@ -35,7 +35,7 @@ span.cell {
     border: 3px solid var(--primary-color);
 }
 
-@media (width <= 1066px) {
+@media (width <= 1166px) {
     .grid {
         grid-template-columns: 1fr 1fr;
     }

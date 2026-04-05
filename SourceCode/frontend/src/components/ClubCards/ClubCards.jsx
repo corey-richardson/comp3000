@@ -53,7 +53,7 @@ const ClubCards = () => {
                             <ClubCard membership={membership} key={membership.club.id} />
                         )) }
 
-                        <p className="centred">Displaying { clubs.length } of { totalCount } clubs. See all of the clubs you are a member of on the <Link to="../clubs">My Clubs</Link> page.</p>
+                        <p className="small centred">Displaying { clubs.length } of { totalCount } clubs. See all of the clubs you are a member of on the <Link to="../clubs">My Clubs</Link> page.</p>
                     </>
                 ) : (
                     <p className="small centred">No clubs to display.</p>

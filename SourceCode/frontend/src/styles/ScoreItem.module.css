@@ -17,6 +17,10 @@
     transition: all 0.2s ease-in-out;
 }
 
+.scoreItem:hover h3 {
+    color: var(--primary-color);
+}
+
 .scoreItem:not(:last-child) {
     border-bottom: 2px solid var(--border-color);
 }
