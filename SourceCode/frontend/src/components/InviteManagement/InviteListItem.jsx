@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "./InviteManagement.module.css";
 import { useApi } from "../../hooks/useApi";
 import EnumMap from "../../lib/enumMap";
+import badgeStyles from "../../styles/BadgeGroups.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
 const InviteListItem = ({ invite, onRevokeSuccess }) => {
@@ -64,7 +65,7 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
                 {invite.status === "PENDING" && (
                     <button
                         onClick={() => setIsRevoking(true)}
-                        className={styles.badge}
+                        className={badgeStyles.badge}
                         title="Revoke Invitation"
                     >
                         <CircleX />

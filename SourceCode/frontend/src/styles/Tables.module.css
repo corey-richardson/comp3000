@@ -73,29 +73,6 @@
         flex-direction: row;
         gap: 0.5rem;
     }
-
-    .badge {
-        padding: 0.8rem;
-    }
-}
-
-.badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem;
-    background: transparent;
-    border-radius: 6px;
-    color: var(--text-color);
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
-}
-
-.badge:has(.invisibleButton):hover {
-    color: var(--primary-color);
-    cursor: pointer;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px var(--blue-shadow);
 }
 
 .dangerBadge:has(.invisibleButton):hover {

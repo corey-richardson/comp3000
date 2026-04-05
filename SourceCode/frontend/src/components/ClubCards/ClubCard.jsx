@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import styles from "./ClubCard.module.css";
 import EnumMap from "../../lib/enumMap";
+import badgeStyles from "../../styles/BadgeGroups.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
 const ClubCard = ({ membership, onLeave }) => {
@@ -47,20 +48,20 @@ const ClubCard = ({ membership, onLeave }) => {
 
                 <span className={styles.date}>Since {formattedDate }</span>
 
-                <div className={styles.badgeGroup}>
-                    <span className={styles.badge} title="Member Count">
+                <div className={badgeStyles.group}>
+                    <span className={badgeStyles.infoBadge} title="Member Count">
                         <Users />
                         { memberCount }
                     </span>
 
                     { isElevated && (
-                        <span className={styles.badge} title="Manage Club">
+                        <span className={badgeStyles.badge} title="Manage Club">
                             <Settings />
                         </span>
                     )}
 
                     { onLeave && (
-                        <span className={styles.badge} title="Leave Club">
+                        <span className={badgeStyles.badge} title="Leave Club">
                             <button
                                 className={styles.invisibleButton}
                                 onClick={handleLeaveClub}

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useApi } from "../../hooks/useApi";
 import EnumMap from "../../lib/enumMap";
 import getClassificationClass from "../../lib/getClassificationClass";
+import badgeStyles from "../../styles/BadgeGroups.module.css";
 import styles from "../../styles/ScoreItem.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
@@ -61,15 +62,15 @@ const ScoreItem = ({ score, onDelete }) => {
             <div className={styles.topRow}>
                 <span className={styles.date}>{ formattedDate }</span>
 
-                <div className={styles.badgeGroup}>
+                <div className={badgeStyles.group}>
                     <span
-                        className={styles.infoBadge}
+                        className={badgeStyles.infoBadge}
                         title={getStatusTitle()}
                     >
                         {getStatusIcon()}
                     </span>
 
-                    <span className={styles.infoBadge} title={ EnumMap[score.venue] }>
+                    <span className={badgeStyles.infoBadge} title={ EnumMap[score.venue] }>
                         { score.venue === "INDOOR" ? <Warehouse /> : <Sun /> }
                     </span>
 
@@ -77,7 +78,7 @@ const ScoreItem = ({ score, onDelete }) => {
                         <Link
                             to={`./edit/${score.id}`}
                             title="Edit Score"
-                            className={styles.badge}
+                            className={badgeStyles.badge}
                         >
                             <Pencil />
                         </Link>
@@ -85,7 +86,7 @@ const ScoreItem = ({ score, onDelete }) => {
 
                     <button
                         onClick={() => setIsDeleting(true)}
-                        className={styles.badge}
+                        className={badgeStyles.badge}
                         title="Delete Score"
                     >
                         <Trash />

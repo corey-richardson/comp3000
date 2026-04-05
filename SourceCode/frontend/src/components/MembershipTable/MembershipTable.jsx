@@ -6,6 +6,7 @@ import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import calculateAgeCategory from "../../lib/calculateAgeCategory";
 import EnumMap from "../../lib/enumMap";
+import badgeStyles from "../../styles/BadgeGroups.module.css";
 import styles from "../../styles/Tables.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
@@ -112,7 +113,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
 
                             <td className={styles.actionCell}>
                                 <div className={styles.actionBadges}>
-                                    <div className={styles.badge} title="View Scores">
+                                    <div className={badgeStyles.badge} title="View Scores">
                                         <Link
                                             to={`/clubs/members/${member.userId}`}
                                             state={{ fromClub: member.clubId, clubName }}
@@ -123,7 +124,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
                                     </div>
 
                                     {(isAdmin || isCaptain) && (
-                                        <div className={styles.badge}  title="View Emergency Contacts">
+                                        <div className={badgeStyles.badge}  title="View Emergency Contacts">
                                             <Link
                                                 to={`/clubs/members/emergency-contacts/${member.userId}`}
                                                 state={{ fromClub: member.clubId, clubName }}
@@ -136,7 +137,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
 
                                     {isAdmin && (
                                         <>
-                                            <div className={styles.badge} title="Edit User Information">
+                                            <div className={badgeStyles.badge} title="Edit User Information">
                                                 <Link
                                                     to={`/clubs/members/edit/${member.userId}`}
                                                     state={{ fromClub: member.clubId, clubName }}
@@ -146,7 +147,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
                                                 </Link>
                                             </div>
 
-                                            <div className={`${styles.badge} ${styles.dangerBadge}`} title="End Membership">
+                                            <div className={`${badgeStyles.badge} ${styles.dangerBadge}`} title="End Membership">
                                                 <button
                                                     onClick={() => setMemberToDelete(member)}
                                                     className={styles.invisibleButton}

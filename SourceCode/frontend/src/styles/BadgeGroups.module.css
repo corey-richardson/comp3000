@@ -1,0 +1,36 @@
+.group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badge,
+.badge:has(a),
+.badge:has(button),
+.infoBadge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 6px;
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--border-color);
+    transition: border 0.1s ease;
+}
+
+.infoBadge {
+    cursor: default !important;
+    border-color: transparent !important;
+}
+
+.badge:hover,
+.badge:has(a):hover, 
+.badge:has(button):hover
+.infoBadge:hover {
+    border-bottom-color: transparent;
+    box-shadow: inset 0 -2px 0 0 var(--primary-color);
+    transform: translateY(-2px);
+    cursor: pointer;
+}

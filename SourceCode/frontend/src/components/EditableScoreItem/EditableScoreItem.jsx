@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import EnumMap from "../../lib/enumMap";
 import getClassificationClass from "../../lib/getClassificationClass";
+import badgeStyles from "../../styles/BadgeGroups.module.css";
 import styles from "../../styles/ScoreItem.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
@@ -16,7 +17,7 @@ const EditableScoreItem = ({ score, onDelete, onStatusUpdate, isPending }) => {
             <div className={styles.topRow}>
                 <span className={styles.date}>{ formattedDate }</span>
 
-                <div className={styles.badgeGroup}>
+                <div className={badgeStyles.group}>
                     <div className={styles.classificationBadge}>
                         { score.status }
                     </div>
@@ -24,7 +25,7 @@ const EditableScoreItem = ({ score, onDelete, onStatusUpdate, isPending }) => {
                     { score.status !== "VERIFIED" && (
                         <button
                             onClick={() => onStatusUpdate(score.id, "VERIFIED")}
-                            className={styles.badge} title={ "Approve Score" }
+                            className={badgeStyles.badge} title={ "Approve Score" }
                         >
                             <Check />
                         </button>
@@ -33,7 +34,7 @@ const EditableScoreItem = ({ score, onDelete, onStatusUpdate, isPending }) => {
                     { score.status !== "REJECTED" && (
                         <button
                             onClick={() => onStatusUpdate(score.id, "REJECTED")}
-                            className={styles.badge}
+                            className={badgeStyles.badge}
                             title={ "Reject Score" }
                         >
                             <X />
@@ -42,7 +43,7 @@ const EditableScoreItem = ({ score, onDelete, onStatusUpdate, isPending }) => {
 
                     <button
                         onClick={() => setIsDeleting(true)}
-                        className={styles.badge}
+                        className={badgeStyles.badge}
                         title={ "Delete Score" }
                     >
                         <Trash />

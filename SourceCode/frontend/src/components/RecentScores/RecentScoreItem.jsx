@@ -2,6 +2,7 @@ import { Check, Sun, Warehouse, X } from "lucide-react";
 
 import EnumMap from "../../lib/enumMap";
 import getClassificationClass from "../../lib/getClassificationClass";
+import badgeStyles from "../../styles/BadgeGroups.module.css";
 import styles from "../../styles/ScoreItem.module.css";
 
 const RecentScoreItem = ({ score }) => {
@@ -12,12 +13,12 @@ const RecentScoreItem = ({ score }) => {
             <div className={styles.topRow}>
                 <span className={styles.date}>{ formattedDate }</span>
 
-                <div className={styles.badgeGroup}>
-                    <span className={styles.infoBadge} title={score.verifiedAt ? "Processed by Records Officer" : "Unprocessed by Records Officer"}>
+                <div className={badgeStyles.group}>
+                    <span className={badgeStyles.infoBadge} title={score.verifiedAt ? "Processed by Records Officer" : "Unprocessed by Records Officer"}>
                         { score.verifiedAt ? <Check /> : <X /> }
                     </span>
 
-                    <span className={styles.infoBadge} title={ EnumMap[score.venue] }>
+                    <span className={badgeStyles.infoBadge} title={ EnumMap[score.venue] }>
                         { score.venue === "INDOOR" ? <Warehouse /> : <Sun /> }
                     </span>
                 </div>
