@@ -6,6 +6,7 @@ import express, { Request, Response, NextFunction } from "express";
 import authRoutes from "./routes/auth";
 import clubRoutes from "./routes/clubRoutes";
 import contactsRoutes from "./routes/contactsRoutes";
+import inviteRoutes from "./routes/inviteRoutes";
 import profileRoutes from "./routes/profileRoutes";
 import roundRoutes from "./routes/roundRoutes";
 import scoreRoutes from "./routes/scoreRoutes";
@@ -43,6 +44,7 @@ app.use("/api/profiles", profileRoutes);
 app.use("/api/rounds", roundRoutes);
 app.use("/api/scores", scoreRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api", inviteRoutes);
 
 // Error Handling
 
