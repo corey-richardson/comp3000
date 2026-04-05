@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import ClubCard from "./ClubCard";
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import dashboardStyles from "../../styles/Dashboard.module.css";
-import ClubCard from "../ClubCard/ClubCard";
 
 const ClubCards = () => {
     const { user } = useAuthContext();

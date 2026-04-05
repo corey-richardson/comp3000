@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
-import ClubCard from "../../components/ClubCard/ClubCard";
+import ClubCard from "../../components/ClubCards/ClubCard";
 import { useApi } from "../../hooks/useApi";
 
 const Clubs = () => {
