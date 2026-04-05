@@ -25,12 +25,12 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.error || "Failed to revoke invite.");
+                throw new Error(data.error);
             }
 
             onRevokeSuccess();
-        } catch (error) {
-            setError(error.message);
+        } catch (_error) {
+            setError("Failed to revoke invite.");
         } finally {
             setIsRevoking(false);
             setIsPending(false);
@@ -82,6 +82,8 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
                     confirmButtonTextAction="Revoking"
                 />
             )}
+
+            { error && <p className={"centred error-message"}>{ error }</p>}
         </div>
     );
 };

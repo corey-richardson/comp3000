@@ -3,7 +3,9 @@ import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 import InviteList from "../../components/InviteManagement/InviteList";
+import Pagination from "../../components/Pagination/Pagination";
 import { useApi } from "../../hooks/useApi";
+import { usePagination } from "../../hooks/usePagination";
 import formStyles from "../../styles/LandingPageForms.module.css";
 import sideFormStyles from "../../styles/SideForm.module.css";
 
@@ -11,6 +13,10 @@ const InviteManagement = () => {
 
     const { id: clubId } = useParams();
     const { makeApiCall } = useApi();
+
+    const paginationProps = usePagination();
+    const { currentPage, setTotalPages } = paginationProps;
+    const invitesPerPage = 10;
 
     const [ invites, setInvites ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
@@ -25,12 +31,13 @@ const InviteManagement = () => {
         setError(null);
 
         try {
-            const response = await makeApiCall(`/api/clubs/${clubId}/invites`);
+            const response = await makeApiCall(`/api/clubs/${clubId}/invites?page=${currentPage}&limit=${invitesPerPage}`);
             if (!response) return; // 401
 
             if (response.ok) {
                 const data = await response.json();
-                setInvites(data);
+                setInvites(data.invites);
+                setTotalPages(data.pagination.totalPages);
             }
         } catch (_error) {
             setError("Failed to load invites.");
@@ -38,7 +45,7 @@ const InviteManagement = () => {
             setIsLoading(false);
         }
 
-    }, [clubId, makeApiCall ]);
+    }, [clubId, makeApiCall, currentPage, setTotalPages ]);
 
     useEffect(() => {
         fetchInvites();
@@ -61,6 +68,8 @@ const InviteManagement = () => {
                         error={error}
                         onRevokeSuccess={handleRemoveInvite}
                     />
+
+                    <Pagination paginationProps={paginationProps} />
                 </div>
 
                 <div className={formStyles.formBox}>
