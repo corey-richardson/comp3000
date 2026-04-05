@@ -133,3 +133,46 @@
         margin: 0;
     }
 }
+
+.forceRow {
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    gap: 0.5rem !important;
+    flex-wrap: nowrap;
+}
+
+.rowButton {
+    width: auto !important;
+    min-width: fit-content;
+    padding: 0.5rem 1rem !important;
+    margin-top: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.labelWithIcon {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.labelWithIcon svg {
+    transform: translateY(4px);
+    margin-right: 0.5rem;
+}
+
+.rowButton svg {
+    transform: translateY(1px);
+}
+
+@media (width <= 480px) {
+    .rowButton span {
+        display: none; 
+    }
+
+    .rowButton {
+        min-width: fit-content;
+    }
+}

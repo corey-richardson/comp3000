@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getInvitesByClub, revokeInvite } from "../controllers/inviteController";
+import { createInvite, getInvitesByClub, revokeInvite } from "../controllers/inviteController";
 import requireAuth from "../middleware/requireAuth";
 
 const router = Router();
@@ -12,6 +12,7 @@ router.use(requireAuth);
 // Protected Routes
 // Relative to /api/clubs
 router.get("/clubs/:clubId/invites", getInvitesByClub);
+router.post("/clubs/:clubId/invites", createInvite);
 
 // Relative to /api/invites
 router.delete("/invites/:inviteId", revokeInvite);

@@ -13,11 +13,10 @@ const InviteList = ({ invites, totalCount, isLoading, error, onRevokeSuccess }) 
     }
 
     return (
-        <div className={styles.listContainer}>
-
+        <div>
             <div className={styles.listHeader}>
                 <h3>Invites</h3>
-                <p className="small">{ totalCount } active invites found.</p>
+                <p className="small">{ totalCount } active invites found. { invites.length !== totalCount && <span>({invites.length} displayed.)</span> }</p>
             </div>
 
             <div className={styles.listContent}>

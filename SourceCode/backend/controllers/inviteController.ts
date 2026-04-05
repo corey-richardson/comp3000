@@ -72,6 +72,76 @@ export const getInvitesByClub = async (request: Request, response: Response) => 
     }
 };
 
+export const createInvite = async (request: Request, response: Response) => {
+    const { clubId } = request.params as { clubId: string };
+    const requestingUserId = (request as any).user.id;
+
+    const { membershipNumber } = request.body;
+
+    if (!membershipNumber) {
+        return response.status(400).json({ error: "Membership ID is required." });
+    }
+
+    try {
+        const existingInvite = await prisma.invite.findFirst({
+            where: {
+                clubId,
+                membershipNumber,
+                status: InviteStatus.PENDING
+            }
+        });
+
+        if (existingInvite) {
+            return response.status(409).json({ error: "Invite already exists." });
+        }
+
+        const linkedUser = await prisma.profile.findUnique({
+            where: { membershipNumber }
+        });
+
+        const newInvite = await prisma.invite.create({
+            data: {
+                membershipNumber,
+                status: InviteStatus.PENDING,
+                club: {
+                    connect: { id: clubId }
+                },
+                inviter: {
+                    connect: { id: requestingUserId }
+                },
+                ...(linkedUser && {
+                    invitee: {
+                        connect: {
+                            id: linkedUser.id
+                        }
+                    }
+                })
+            },
+            include: {
+                invitee: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        username: true
+                    }
+                },
+                inviter: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        username: true
+                    }
+                }
+            }
+        });
+
+        return response.status(201).json(newInvite);
+    } catch (_error: any) {
+        console.error(_error);
+        return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
+
 export const revokeInvite = async (request: Request, response: Response) => {
     const { inviteId } = request.params as { inviteId: string };
     const requestingUserId = (request as any).user.id;

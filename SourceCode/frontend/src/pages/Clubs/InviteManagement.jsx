@@ -59,6 +59,12 @@ const InviteManagement = () => {
 
     const handleRemoveInvite = (id) => {
         setInvites(prev => prev.filter(invite => invite.id !== id));
+        setTotalCount(prev => prev - 1);
+    };
+
+    const handleAddInvite = (invite) => {
+        setInvites(prev => [invite, ...prev]);
+        setTotalCount(prev => prev + 1);
     };
 
     return (
@@ -67,7 +73,7 @@ const InviteManagement = () => {
             <h2>Invite Management</h2>
 
             <div className={sideFormStyles.sideForm}>
-                <div>
+                <>
                     <InviteList
                         invites={invites}
                         totalCount={totalCount}
@@ -77,9 +83,12 @@ const InviteManagement = () => {
                     />
 
                     <Pagination paginationProps={paginationProps} />
-                </div>
+                </>
 
-                <InviteForm />
+                <InviteForm
+                    clubId={clubId}
+                    onInviteSuccess={handleAddInvite}
+                />
             </div>
         </div>
     );
