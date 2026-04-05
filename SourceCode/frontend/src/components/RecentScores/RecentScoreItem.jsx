@@ -13,11 +13,11 @@ const RecentScoreItem = ({ score }) => {
                 <span className={styles.date}>{ formattedDate }</span>
 
                 <div className={styles.badgeGroup}>
-                    <span className={styles.badge} title={score.verifiedAt ? "Processed by Records Officer" : "Unprocessed by Records Officer"}>
+                    <span className={styles.infoBadge} title={score.verifiedAt ? "Processed by Records Officer" : "Unprocessed by Records Officer"}>
                         { score.verifiedAt ? <Check /> : <X /> }
                     </span>
 
-                    <span className={styles.badge} title={ EnumMap[score.venue] }>
+                    <span className={styles.infoBadge} title={ EnumMap[score.venue] }>
                         { score.venue === "INDOOR" ? <Warehouse /> : <Sun /> }
                     </span>
                 </div>

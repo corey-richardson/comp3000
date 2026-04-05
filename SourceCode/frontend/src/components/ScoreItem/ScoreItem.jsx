@@ -63,30 +63,34 @@ const ScoreItem = ({ score, onDelete }) => {
 
                 <div className={styles.badgeGroup}>
                     <span
-                        className={styles.badge}
+                        className={styles.infoBadge}
                         title={getStatusTitle()}
                     >
                         {getStatusIcon()}
                     </span>
 
-                    <span className={styles.badge} title={ EnumMap[score.venue] }>
+                    <span className={styles.infoBadge} title={ EnumMap[score.venue] }>
                         { score.venue === "INDOOR" ? <Warehouse /> : <Sun /> }
                     </span>
 
                     {!score.verified_at && (
-                        <span className={styles.badge} title="Edit Score">
-                            <Link to={`./edit/${score.id}`}><Pencil /></Link>
-                        </span>
+                        <Link
+                            to={`./edit/${score.id}`}
+                            title="Edit Score"
+                            className={styles.badge}
+                        >
+                            <Pencil />
+                        </Link>
                     )}
 
-                    <span className={styles.badge} title="Delete">
-                        <button
-                            onClick={() => setIsDeleting(true)}
-                            className={styles.invisibleButton}
-                        >
-                            <Trash />
-                        </button>
-                    </span>
+                    <button
+                        onClick={() => setIsDeleting(true)}
+                        className={styles.badge}
+                        title="Delete Score"
+                    >
+                        <Trash />
+                    </button>
+
                 </div>
             </div>
 
