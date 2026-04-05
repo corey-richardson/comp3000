@@ -15,7 +15,11 @@ const InviteManagement = () => {
     const { makeApiCall } = useApi();
 
     const paginationProps = usePagination();
-    const { currentPage, setTotalPages } = paginationProps;
+    const {
+        currentPage, setTotalPages,
+        totalCount, setTotalCount
+    } = paginationProps;
+
     const invitesPerPage = 10;
 
     const [ invites, setInvites ] = useState([]);
@@ -37,7 +41,9 @@ const InviteManagement = () => {
             if (response.ok) {
                 const data = await response.json();
                 setInvites(data.invites);
+
                 setTotalPages(data.pagination.totalPages);
+                setTotalCount(data.pagination.totalCount);
             }
         } catch (_error) {
             setError("Failed to load invites.");
@@ -45,7 +51,7 @@ const InviteManagement = () => {
             setIsLoading(false);
         }
 
-    }, [clubId, makeApiCall, currentPage, setTotalPages ]);
+    }, [clubId, makeApiCall, currentPage, setTotalPages, setTotalCount ]);
 
     useEffect(() => {
         fetchInvites();
@@ -64,6 +70,7 @@ const InviteManagement = () => {
                 <div>
                     <InviteList
                         invites={invites}
+                        totalCount={totalCount}
                         isLoading={isLoading}
                         error={error}
                         onRevokeSuccess={handleRemoveInvite}

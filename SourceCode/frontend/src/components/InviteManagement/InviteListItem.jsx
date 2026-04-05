@@ -56,9 +56,9 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
             </div>
 
             <div className={styles.metaInfo}>
-                <span className="small">Sent: {new Date(invite.created_at).toLocaleDateString()}</span>
+                <span className="small">Invited on <strong>{ new Date(invite.created_at).toLocaleDateString() }</strong>.</span>
                 { invite.inviter && (
-                    <span className="small">Invited by {invite.inviter.username}.</span>
+                    <span className="small">Invited by <strong>{ invite.inviter.firstName } { invite.inviter.lastName }</strong> ({ invite.inviter.username }).</span>
                 )}
 
                 {invite.status === "PENDING" && (

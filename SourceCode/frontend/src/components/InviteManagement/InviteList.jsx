@@ -1,14 +1,23 @@
 import InviteListItem from "./InviteListItem";
 import styles from "./InviteManagement.module.css";
 
-const InviteList = ({ invites, isLoading, error, onRevokeSuccess }) => {
+const InviteList = ({ invites, totalCount, isLoading, error, onRevokeSuccess }) => {
+
+    if (isLoading) {
+        return (
+            <>
+                <h3>Invites</h3>
+                <p className="small centred">Loading invites...</p>
+            </>
+        );
+    }
 
     return (
         <div className={styles.listContainer}>
 
             <div className={styles.listHeader}>
                 <h3>Invites</h3>
-                <p className="small">{ invites?.length || "No" } active invites loaded.</p>
+                <p className="small">{ totalCount } active invites found.</p>
             </div>
 
             <div className={styles.listContent}>

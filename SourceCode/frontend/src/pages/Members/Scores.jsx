@@ -26,8 +26,12 @@ const MemberScores = () => {
     const { filteredScores } = filterBarProps;
 
     const paginationProps = usePagination();
-    const { currentPage, setTotalPages } = paginationProps;
-    const scoresPerPage = 100;
+    const {
+        currentPage, setTotalPages,
+        totalCount, setTotalCount
+    } = paginationProps;
+
+    const scoresPerPage = 50;
 
     const fetchScores = useCallback(async (page) => {
         setIsLoading(true);
@@ -44,8 +48,10 @@ const MemberScores = () => {
 
                 setUser(data.user);
                 setScores(data.scores);
-                setTotalPages(data.pagination.totalPages);
                 setSummary(data.summary);
+
+                setTotalPages(data.pagination.totalPages);
+                setTotalCount(data.pagination.totalCount);
             }
 
         } catch (error) {
@@ -127,7 +133,7 @@ const MemberScores = () => {
                 <RecordsSummaryEditor userId={userId} initialSummary={summary} />
                 <ScoreFilterBar filterBarProps={filterBarProps} />
 
-                <p className="small">{scores.length} scores to display. { scores.length !== filteredScores.length && <span>({filteredScores.length} displayed.)</span> }</p>
+                <p className="small">{ totalCount } scores found. { scores.length !== totalCount && <span>({filteredScores.length} displayed.)</span> }</p>
             </div>
 
             { filteredScores.map(score => (
