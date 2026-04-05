@@ -66,9 +66,13 @@ const Dashboard = () => {
                     error={error}
                 />
 
-                <DetailsForm userId={userId} />
+                <div className={dashboardStyles.dashboardContainer}>
+                    <DetailsForm userId={userId} />
+                </div>
 
-                <EmergencyContacts userId={userId}/>
+                <div className={dashboardStyles.dashboardContainer}>
+                    <EmergencyContacts userId={userId}/>
+                </div>
             </div>
 
         </div>

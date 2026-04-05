@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import InviteForm from "../../components/InviteManagement/InviteForm";
 import InviteList from "../../components/InviteManagement/InviteList";
 import Pagination from "../../components/Pagination/Pagination";
 import { useApi } from "../../hooks/useApi";
 import { usePagination } from "../../hooks/usePagination";
-import formStyles from "../../styles/LandingPageForms.module.css";
 import sideFormStyles from "../../styles/SideForm.module.css";
 
 const InviteManagement = () => {
@@ -79,9 +79,7 @@ const InviteManagement = () => {
                     <Pagination paginationProps={paginationProps} />
                 </div>
 
-                <div className={formStyles.formBox}>
-                    <p>THIS WILL BE A FORM TO CREATE A NEW INVITE</p>
-                </div>
+                <InviteForm />
             </div>
         </div>
     );
