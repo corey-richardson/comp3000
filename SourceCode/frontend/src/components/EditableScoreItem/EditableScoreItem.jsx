@@ -22,35 +22,31 @@ const EditableScoreItem = ({ score, onDelete, onStatusUpdate, isPending }) => {
                     </div>
 
                     { score.status !== "VERIFIED" && (
-                        <div className={styles.badge} title={ "Approve Score" }>
-                            <button
-                                onClick={() => onStatusUpdate(score.id, "VERIFIED")}
-                                className={styles.invisibleButton}
-                            >
-                                <Check />
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => onStatusUpdate(score.id, "VERIFIED")}
+                            className={styles.badge} title={ "Approve Score" }
+                        >
+                            <Check />
+                        </button>
                     )}
 
                     { score.status !== "REJECTED" && (
-                        <div className={styles.badge} title={ "Reject Score" }>
-                            <button
-                                onClick={() => onStatusUpdate(score.id, "REJECTED")}
-                                className={styles.invisibleButton}
-                            >
-                                <X />
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => onStatusUpdate(score.id, "REJECTED")}
+                            className={styles.badge}
+                            title={ "Reject Score" }
+                        >
+                            <X />
+                        </button>
                     )}
 
-                    <div className={styles.badge} title={ "Delete Score" }>
-                        <button
-                            onClick={() => setIsDeleting(true)}
-                            className={styles.invisibleButton}
-                        >
-                            <Trash />
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => setIsDeleting(true)}
+                        className={styles.badge}
+                        title={ "Delete Score" }
+                    >
+                        <Trash />
+                    </button>
                 </div>
 
             </div>
