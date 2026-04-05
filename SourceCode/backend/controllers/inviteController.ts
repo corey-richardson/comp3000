@@ -137,7 +137,6 @@ export const createInvite = async (request: Request, response: Response) => {
 
         return response.status(201).json(newInvite);
     } catch (_error: any) {
-        console.error(_error);
         return response.status(500).json({ error: "Internal Server Error." });
     }
 };

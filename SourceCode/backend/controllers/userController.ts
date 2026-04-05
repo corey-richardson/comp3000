@@ -87,8 +87,27 @@ export const loginUser = async (request: Request, response: Response) => {
             return response.status(401).json({ error: "Incorrect password." });
         }
 
+        // Attempt to find club Invites associated with user on login
+        if (profile?.membershipNumber) {
+            await prisma.invite.updateMany({
+                where: {
+                    membershipNumber: profile.membershipNumber,
+                    userId: null,
+                    status: "PENDING",
+                },
+                data: {
+                    userId: profile.id
+                }
+            });
+        }
+
         const token = createJwt(profile.id);
-        response.status(200).json({ email, username: profile.username, token, id: profile.id });
+        response.status(200).json({
+            email,
+            username: profile.username,
+            token,
+            id: profile.id
+        });
 
     } catch (_error: any) {
         response.status(500).json({ error: "Internal server error during login." });

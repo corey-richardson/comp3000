@@ -60,6 +60,17 @@ export const updateProfile = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
+        const currentProfile = await prisma.profile.findUnique({
+            where: {
+                id: targetUserId
+            },
+            select: {
+                membershipNumber: true
+            }
+        });
+
+        if (!currentProfile) return response.status(404).json({ error: "Profile not found." });
+
         // Will this work if a value isn't set? membershipNumber not a required field so
         // could falsely match against someone else's "null" membershipNumber if not set.
         // if (username || email || membershipNumber) {
@@ -94,12 +105,37 @@ export const updateProfile = async (request: Request, response: Response) => {
         }
 
         const updatedProfile = await prisma.$transaction(async (tx) => {
-            await tx.invite.updateMany({
-                where: { membershipNumber, status: "PENDING" },
-                data: { userId: targetUserId },
-            });
+            if (membershipNumber !== undefined &&
+                membershipNumber !== currentProfile.membershipNumber
+            ) {
 
-            const profile = await tx.profile.update({
+                if (currentProfile.membershipNumber) {
+                    await tx.invite.updateMany({
+                        where: {
+                            membershipNumber: currentProfile.membershipNumber,
+                            userId: targetUserId
+                        },
+                        data: {
+                            userId: null
+                        }
+                    });
+                }
+
+                if (membershipNumber) {
+                    await tx.invite.updateMany({
+                        where: {
+                            membershipNumber: membershipNumber,
+                            userId: null,
+                            status: "PENDING"
+                        },
+                        data: {
+                            userId: targetUserId
+                        }
+                    });
+                }
+            }
+
+            return await tx.profile.update({
                 where: { id: targetUserId },
                 data: {
                     firstName,
@@ -113,8 +149,6 @@ export const updateProfile = async (request: Request, response: Response) => {
                     updated_at: new Date(),
                 }
             });
-
-            return profile;
         });
 
         response.status(200).json(updatedProfile);
