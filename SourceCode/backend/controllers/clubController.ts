@@ -110,7 +110,7 @@ export const getClubById = async (request: Request, response: Response) => {
             members: stripMemberPii,
         });
     } catch (_error: any) {
-        return response.status(500).json({ error: "Internal Server Error" });
+        return response.status(500).json({ error: "Internal Server Error." });
     }
 };
 

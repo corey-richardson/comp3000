@@ -167,7 +167,7 @@ const EmergencyContacts = () => {
 
                 <div className={formStyles.row}>
                     <div className={formStyles.fieldGroup}>
-                        <label>Phone Number</label>
+                        <label>*Phone Number</label>
                         <input
                             value={newContact.contactPhone}
                             type="tel"

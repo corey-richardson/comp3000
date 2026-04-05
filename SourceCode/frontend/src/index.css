@@ -39,6 +39,7 @@ html, body {
 }
 
 .error-message {
+  text-align: center !important;
   color: red;
 }
 

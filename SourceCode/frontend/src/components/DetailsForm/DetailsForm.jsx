@@ -90,8 +90,8 @@ const DetailsForm = () => {
             setChangesPending(false);
             setMessage("Your details have been updated successfully.");
 
-        } catch (_error) {
-            setError("An error occurred while saving.");
+        } catch (error) {
+            setError(error.message);
         } finally {
             setLoading(false);
         }
