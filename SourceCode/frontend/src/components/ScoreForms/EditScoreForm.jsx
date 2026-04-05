@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import ScoreForm from "./ScoreForm";
 import { useApi } from "../../hooks/useApi";
-import ScoreForm from "../ScoreForm/ScoreForm";
 
 const TODAY = new Date();
 

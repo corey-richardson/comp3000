@@ -1,5 +1,5 @@
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
-import SubmitScoreForm from "../../components/SubmitScoreForm/SubmitScoreForm";
+import SubmitScoreForm from "../../components/ScoreForms/SubmitScoreForm";
 
 const SubmitScore = () => {
 

@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
+import ScoreForm from "./ScoreForm";
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import calculateAgeCategory from "../../lib/calculateAgeCategory";
-import ScoreForm from "../ScoreForm/ScoreForm";
 
 const TODAY = new Date();
 

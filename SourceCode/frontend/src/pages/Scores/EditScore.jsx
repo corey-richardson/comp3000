@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
-import EditScoreForm from "../../components/EditScoreForm/EditScoreForm";
+import EditScoreForm from "../../components/ScoreForms/EditScoreForm";
 import { useApi } from "../../hooks/useApi";
 
 const EditScore = () => {
