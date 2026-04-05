@@ -1,8 +1,6 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import RecentScoreItem from "./RecentScoreItem";
-import { useAuthContext } from "../../hooks/useAuthContext";
 import dashboardStyles from "../../styles/Dashboard.module.css";
 
 const RecentScores = ({ scores, isLoading, error }) => {
