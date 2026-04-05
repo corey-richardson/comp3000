@@ -323,8 +323,6 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             })
         ]);
 
-        const totalPages = Math.ceil(totalCount / limit);
-
         let filteredScores = scores;
         const canSeeJournal = await requireRoleInSharedClubOrDataOwnership(
             requestingUserId,
@@ -341,7 +339,7 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             summary: recordsSummary,
             pagination: {
                 totalCount,
-                totalPages,
+                totalPages: Math.ceil(totalCount / limit),
                 currentPage: page,
                 limit
             }
