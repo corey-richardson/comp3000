@@ -59,7 +59,7 @@ const MemberScores = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [userId, makeApiCall, scoresPerPage, setTotalPages]);
+    }, [ userId, makeApiCall, scoresPerPage, setTotalPages, setTotalCount ]);
 
     useEffect(() => {
         fetchScores(currentPage);
