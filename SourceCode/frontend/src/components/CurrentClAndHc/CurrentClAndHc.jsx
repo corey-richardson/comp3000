@@ -1,14 +1,76 @@
-import { useAuthContext } from "../../hooks/useAuthContext";
+import { Warehouse, Sun } from "lucide-react";
+
+import styles from "./CurrentClAndHc.module.css";
+import EnumMap from "../../lib/enumMap";
 import dashboardStyles from "../../styles/Dashboard.module.css";
 
-const CurrentClassificationsAndHandicaps = () => {
-    const { user } = useAuthContext();
+const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error }) => {
 
     return (
         <div className={dashboardStyles.dashboardContainer}>
             <h2>Current Classifications and Handicaps.</h2>
-            <p>{ user?.username }</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+            { !isLoading && summary && (
+                <div className={styles.content}>
+                    <div className={styles.statsRow}>
+                        <div className={styles.dataGroup}>
+                            <div className={styles.groupLabel}>
+                                <Warehouse />
+                                Indoor
+                            </div>
+
+                            <div className={styles.displayGroup}>
+
+                                <div className={styles.dataPoint}>
+                                    <label className="small">Classification</label>
+                                    <span>{EnumMap[summary.indoorClassification] || "Unclassified"}</span>
+                                </div>
+
+                                <div className={styles.dataPoint}>
+                                    <label className="small">Handicap</label>
+                                    <span>{summary.indoorHandicap ?? "-"}</span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div className={styles.dataGroup}>
+                            <div className={styles.groupLabel}>
+                                <Sun />
+                                Outdoor
+                            </div>
+
+                            <div className={styles.displayGroup}>
+
+                                <div className={styles.dataPoint}>
+                                    <label className="small">Classification</label>
+                                    <span>{EnumMap[summary.outdoorClassification] || "Unclassified"}</span>
+                                </div>
+
+                                <div className={styles.dataPoint}>
+                                    <label className="small">Handicap</label>
+                                    <span>{summary.outdoorHandicap ?? "-"}</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    { summary?.notes && (
+                        <div className={styles.notesSection}>
+                            <label className="small">Records Officers&apos; Notes</label>
+                            <p>{ summary.notes }</p>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            { !isLoading && !summary && (
+                <p className="small centred">No summary to display. A summary will be created when a Records Officer first processes a score.</p>
+            ) }
+
+            { isLoading && <p className="small centred">Loading...</p> }
+            { error && <p className="error-message">{error}</p> }
         </div>
     );
 };
