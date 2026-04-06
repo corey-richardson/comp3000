@@ -30,8 +30,8 @@ const InviteForm = ({ clubId, onInviteSuccess }) => {
 
             onInviteSuccess(data);
             setMembershipNumber("");
-        } catch (_error) {
-            setError("Failed to invite member.");
+        } catch (error) {
+            setError(error.message || "Failed to invite member.");
         } finally {
             setIsSubmitting(false);
         }

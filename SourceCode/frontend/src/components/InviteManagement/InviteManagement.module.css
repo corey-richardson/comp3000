@@ -53,3 +53,15 @@
     padding-top: 0.5rem;
     color: var(--light-text-color);
 }
+
+.activityRow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activityRow:last-child {
+    border-bottom: none;
+}

@@ -1,4 +1,5 @@
 import { InviteStatus, Role } from "@prisma/client";
+import { subDays } from "date-fns";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
@@ -72,6 +73,52 @@ export const getInvitesByClub = async (request: Request, response: Response) => 
     }
 };
 
+export const getRecentClubUpdates = async (request: Request, response: Response) => {
+    const { clubId } = request.params as { clubId: string };
+    const requestingUserId = (request as any).user.id;
+
+    const thirtyDaysAgo = subDays(new Date(), 30);
+
+    try {
+        const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN"]);
+
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
+        const updates = await prisma.invite.findMany({
+            where: {
+                clubId,
+                OR: [
+                    { created_at: { gte: thirtyDaysAgo } },
+                    { accepted_at: { gte: thirtyDaysAgo } },
+                    { declined_at: { gte: thirtyDaysAgo } }
+                ]
+            },
+            include: {
+                invitee: { select: { firstName: true, lastName: true } },
+                inviter: { select: { firstName: true, lastName: true } }
+            }
+        });
+
+        const sortedUpdates = updates.sort((a, b) => {
+            const getLatestDate = (inv: any) => (
+                Math.max(
+                    new Date(inv.created_at).getTime(),
+                    inv.accepted_at ? new Date(inv.accepted_at).getTime() : 0,
+                    inv.declined_at ? new Date(inv.declined_at).getTime() : 0
+                )
+            );
+
+            return getLatestDate(b) - getLatestDate(a);
+        });
+
+        return response.status(200).json(sortedUpdates);
+    } catch (_error: any) {
+        return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
+
 export const getMyInvites = async (request: Request, response: Response) => {
     const requestingUserId = (request as any).user.id;
 
@@ -137,12 +184,24 @@ export const createInvite = async (request: Request, response: Response) => {
         });
 
         if (existingInvite) {
-            return response.status(409).json({ error: "Invite already exists." });
+            return response.status(409).json({ error: "This user has already been invited to this club." });
         }
 
         const linkedUser = await prisma.profile.findUnique({
             where: { membershipNumber }
         });
+
+        const existingMembership = await prisma.membership.findFirst({
+            where: {
+                userId: linkedUser?.id,
+                clubId,
+                ended_at: null
+            }
+        });
+
+        if (existingMembership) {
+            return response.status(409).json({ error: "This user is already a member of this club." });
+        }
 
         const newInvite = await prisma.invite.create({
             data: {
@@ -209,14 +268,15 @@ export const acceptInvite = async (request: Request, response: Response) => {
                     id: inviteId
                 },
                 data: {
-                    status: InviteStatus.ACCEPTED
+                    status: InviteStatus.ACCEPTED,
+                    accepted_at: new Date()
                 }
             }),
             prisma.membership.create({
                 data: {
                     userId: requestingUserId,
                     clubId: invite.clubId,
-                    roles: [ Role.MEMBER ],
+                    roles: [ Role.MEMBER ]
                 },
                 include: {
                     club: true
@@ -252,7 +312,8 @@ export const declineInvite = async (request: Request, response: Response) => {
                 id: inviteId
             },
             data: {
-                status: InviteStatus.DECLINED
+                status: InviteStatus.DECLINED,
+                declined_at: new Date()
             }
         });
 
