@@ -1,3 +1,4 @@
+import { Target } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -69,6 +70,11 @@ const Clubs = () => {
                 >
                     View Incoming Invites
                 </Link>
+
+                <span className={headerLinkStyles.cell} title={`You are a member of ${ clubs?.length } clubs.`}>
+                    <Target />
+                    { clubs?.length }
+                </span>
             </div>
 
             { isLoading && <p className="small centred">Loading clubs...</p> }

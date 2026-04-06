@@ -119,7 +119,10 @@ const ClubCard = ({ membership, onLeave }) => {
     );
 
     return isElevated ? (
-        <Link to={`/clubs/${club.id}`} className={`${styles.clubItem} ${styles.clickable}`}>
+        <Link
+            to={`/clubs/${club.id}`}
+            className={`${styles.clubItem} ${styles.clickable}`}
+        >
             {commonCardContent}
         </Link>
     ) : (
