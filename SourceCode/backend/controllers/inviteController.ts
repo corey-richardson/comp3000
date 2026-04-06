@@ -68,7 +68,52 @@ export const getInvitesByClub = async (request: Request, response: Response) => 
             }
         });
     } catch (_error: any) {
-        response.status(500).json({ error: "Internal Server Error." });
+        return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
+
+export const getMyInvites = async (request: Request, response: Response) => {
+    const requestingUserId = (request as any).user.id;
+
+    const limit = request.query.limit ? parseInt(request.query.limit as string) : 10;
+    const page = request.query.page ? parseInt(request.query.page as string) : 1;
+    const skip = (page - 1) * limit;
+
+    try {
+        const [ invites, totalCount ] = await Promise.all([
+            prisma.invite.findMany({
+                where: {
+                    userId: requestingUserId,
+                    status: InviteStatus.PENDING
+                },
+                orderBy: {
+                    created_at: "desc"
+                },
+                include: {
+                    club: true
+                },
+                skip: skip,
+                take: limit
+            }),
+            prisma.invite.count({
+                where: {
+                    userId: requestingUserId,
+                    status: InviteStatus.PENDING
+                }
+            })
+        ]);
+
+        return response.status(200).json({
+            invites,
+            pagination: {
+                totalCount,
+                totalPages: Math.ceil(totalCount / limit),
+                currentPage: page,
+                limit
+            }
+        });
+    } catch (_error: any) {
+        return response.status(500).json({ error: _error.message });
     }
 };
 

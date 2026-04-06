@@ -128,30 +128,35 @@ export const getMyClubs = async (request: Request, response: Response) => {
     };
 
     try {
-        const [ memberships, invites ] = await Promise.all([
+        const [ memberships, totalCount ] = await Promise.all([
             prisma.membership.findMany({
-                where: { userId: requestingUserId, ended_at: null },
+                where: {
+                    userId: requestingUserId,
+                    ended_at: null
+                },
                 include: {
                     club: {
                         include: {
                             _count: {
-                                select: { members: { where: { ended_at: null } } }
+                                select: {
+                                    members: {
+                                        where: {
+                                            ended_at: null
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }),
-            prisma.invite.findMany({
+            prisma.membership.count({
                 where: {
                     userId: requestingUserId,
-                    status: "PENDING"
-                },
+                    ended_at: null
+                }
             })
         ]);
-
-        if (memberships.length === 0) {
-            return response.status(404).json({ error: "No clubs found." });
-        }
 
         let result = memberships.map(m => ({
             ...m,
@@ -169,16 +174,13 @@ export const getMyClubs = async (request: Request, response: Response) => {
             return a.club.name.localeCompare(b.club.name);
         });
 
-        const totalCount = result.length;
-
         if (limit && limit > 0) {
             result = result.slice(0, limit);
         }
 
         return response.status(200).json({
             memberships: result,
-            totalCount,
-            invites
+            totalCount
         });
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
