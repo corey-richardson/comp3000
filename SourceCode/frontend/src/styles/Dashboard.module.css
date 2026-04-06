@@ -5,7 +5,7 @@
     margin: 2rem auto;
 }
 
-@media (width >= 1920px) {
+@media (width >= 1600px) {
     .dashboardGrid {
         column-count: 2;
     }
