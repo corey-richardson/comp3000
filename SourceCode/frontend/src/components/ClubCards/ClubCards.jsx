@@ -1,46 +1,9 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import ClubCard from "./ClubCard";
-import { useApi } from "../../hooks/useApi";
-import { useAuthContext } from "../../hooks/useAuthContext";
 import dashboardStyles from "../../styles/Dashboard.module.css";
 
-const ClubCards = () => {
-    const { user } = useAuthContext();
-    const { makeApiCall } = useApi();
-
-    const [ clubs, setClubs ] = useState([]);
-    const [ totalCount, setTotalCount ] = useState(0);
-
-    const [ isLoading, setIsLoading ] = useState(false);
-    const [ error, setError ] = useState(null);
-
-    useEffect(() => {
-        const fetchClubs = async () => {
-            setIsLoading(true);
-            setError(null);
-
-            try {
-                const response = await makeApiCall("/api/clubs/my-clubs?limit=3");
-                if (!response) return; // 401
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setClubs(data.memberships);
-                    setTotalCount(data.totalCount);
-                }
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        if (user) {
-            fetchClubs();
-        }
-    },  [ user, makeApiCall ]);
+const ClubCards = ({ clubs, totalCount, isLoading, error }) => {
 
     return (
         <div className={dashboardStyles.dashboardContainer}>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
@@ -6,16 +6,12 @@ import calculateAgeCategory from "../../lib/calculateAgeCategory.js";
 import EnumMap from "../../lib/enumMap.js";
 import formStyles from "../../styles/Forms.module.css";
 
-const DetailsForm = () => {
-    const { user, authIsReady } = useAuthContext();
+const DetailsForm = ({ profile, setProfile, isLoading, setIsLoading, error, setError }) => {
+    const { user } = useAuthContext();
     const { makeApiCall } = useApi();
 
-    const [ profile, setProfile ] = useState(null);
-    const [ refreshFlag, setRefreshFlag ] = useState(false); // to be used in handleSubmit
     const [ changesPending, setChangesPending ] = useState(false);
 
-    const [ loading, setLoading ] = useState(true);
-    const [ error, setError ] = useState("");
     const [ message, setMessage ] = useState("");
 
     const displayAgeCategory = useMemo(() => {
@@ -24,45 +20,15 @@ const DetailsForm = () => {
         return calculateAgeCategory(year, true);
     }, [ profile?.yearOfBirth]);
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-            if (!authIsReady || !user?.id) return;
-
-            setLoading(true);
-            try {
-                const response = await makeApiCall(`/api/profiles/${user.id}`);
-                if (!response) return; // 401
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    setError(data.error);
-                    return;
-                }
-
-                setProfile(data);
-                setMessage(`Your details were last updated at ${
-                    new Date(data.updated_at || data.created_at).toLocaleString()
-                }.`);
-            } catch (_error) {
-                setError(_error.message, "Failed to fetch profile.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProfile();
-    }, [ user?.id, refreshFlag, makeApiCall, authIsReady ]);
-
     const handleInputChange = useCallback((key) => (e) => {
         const newValue = e.target.value;
         setProfile(prev => ({ ...prev, [key]: newValue }));
         setChangesPending(true);
-    }, []);
+    }, [ setProfile ]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
 
         try {
@@ -86,14 +52,13 @@ const DetailsForm = () => {
                 throw Error(data.error);
             }
 
-            setRefreshFlag(prev => !prev);
             setChangesPending(false);
             setMessage("Your details have been updated successfully.");
 
         } catch (error) {
             setError(error.message);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -173,12 +138,12 @@ const DetailsForm = () => {
                     </div>
                 </div>
 
-                { !loading && !changesPending && <button disabled>Save Details</button> }
-                { !loading && changesPending && <button type="submit">Save Details</button> }
-                { loading && <button disabled>Loading...</button> }
+                { !isLoading && !changesPending && <button disabled>Save Details</button> }
+                { !isLoading && changesPending && <button type="submit">Save Details</button> }
+                { isLoading && <button disabled>isLoading...</button> }
             </form>
 
-            { !loading && message && (
+            { !isLoading && message && (
                 <p className="small centred">{ message }</p>
             )}
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 
 import EmergencyContactCard from "./EmergencyContactCard";
 import styles from "./EmergencyContacts.module.css";
@@ -9,16 +9,12 @@ import formStyles from "../../styles/Forms.module.css";
 
 const RELATIONSHIP_OPTIONS = ["PARENT", "GRANDPARENT", "GUARDIAN", "SPOUSE", "SIBLING", "FRIEND", "OTHER"];
 
-const EmergencyContacts = () => {
+const EmergencyContacts = ({ contacts, setContacts, isLoading, setIsLoading, error, setError }) => {
     /* CONTEXT / HOOKS */
-    const { user, authIsReady } = useAuthContext();
+    const { user } = useAuthContext();
     const { makeApiCall } = useApi();
 
     /* STATE */
-    const [contacts, setContacts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
     const [newContact, setNewContact] = useState({
         contactName: "",
         contactPhone: "",
@@ -28,31 +24,9 @@ const EmergencyContacts = () => {
 
     /* API HANDLERS */
 
-    const fetchContacts = useCallback(async () => {
-        if (!authIsReady || !user?.id) return;
-        setLoading(true);
-
-        try {
-            const response = await makeApiCall(`/api/contacts/user/${user.id}`);
-            const data = await response.json();
-
-            if (response.ok) {
-                setContacts(data.contacts);
-            }
-        } catch (_error) {
-            setError("Could not load contacts.");
-        } finally {
-            setLoading(false);
-        }
-    }, [user?.id, authIsReady, makeApiCall]);
-
-    useEffect(() => {
-        fetchContacts();
-    }, [fetchContacts]);
-
     const handleCreate = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
 
         const tempId = "temp-" + Date.now();
@@ -89,12 +63,12 @@ const EmergencyContacts = () => {
         } catch (_error) {
             setError("An error occurred while saving.");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     const handleUpdate = async (contact) => {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
 
         try {
@@ -110,16 +84,16 @@ const EmergencyContacts = () => {
             }
         } catch (_error) {
             setError("Update Failed.");
-            fetchContacts();
+            // fetchContacts();
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
 
         return false;
     };
 
     const handleDelete = async (contactId) => {
-        setLoading(true);
+        setIsLoading(true);
 
         try {
             const response = await makeApiCall(`/api/contacts/${contactId}`, { method: "DELETE" });
@@ -129,7 +103,7 @@ const EmergencyContacts = () => {
         } catch (_error) {
             setError("Delete failed.");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -187,8 +161,8 @@ const EmergencyContacts = () => {
 
                 <button
                     type="submit"
-                    disabled={!newContact.contactName || !newContact.contactPhone || loading}>
-                    {loading ? "Adding..." : "Add New Contact"}
+                    disabled={!newContact.contactName || !newContact.contactPhone || isLoading}>
+                    {isLoading ? "Adding..." : "Add New Contact"}
                 </button>
             </form>
 
@@ -202,7 +176,7 @@ const EmergencyContacts = () => {
                             contact={contact}
                             onUpdate={handleUpdate}
                             onDelete={handleDelete}
-                            loading={loading}
+                            isLoading={isLoading}
                             RELATIONSHIP_OPTIONS={RELATIONSHIP_OPTIONS}
                         />
                     ))}

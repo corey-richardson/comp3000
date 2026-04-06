@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
 import MemberEdit from "./pages/Members/Edit";
 import MemberEmergencyContacts from "./pages/Members/EmergencyContacts";
+import MemberInvites from "./pages/Members/Invites";
 import MemberScores from "./pages/Members/Scores";
 import EditScore from "./pages/Scores/EditScore";
 import MyScores from "./pages/Scores/MyScores";
@@ -61,6 +62,11 @@ function App() {
                             <Route
                                 path="/clubs/create"
                                 element={user ? <CreateClub /> : <Navigate to="/" />}
+                            />
+
+                            <Route
+                                path="/clubs/invites"
+                                element={user ? <MemberInvites /> : <Navigate to="/" />}
                             />
 
                             <Route

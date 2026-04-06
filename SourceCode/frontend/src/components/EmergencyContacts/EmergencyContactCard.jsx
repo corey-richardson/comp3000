@@ -6,7 +6,7 @@ import EnumMap from "../../lib/enumMap.js";
 import formStyles from "../../styles/Forms.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay.jsx";
 
-const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSHIP_OPTIONS }) => {
+const EmergencyContactCard = ({ contact, onUpdate, onDelete, isLoading, RELATIONSHIP_OPTIONS }) => {
     const [ isOpen, setIsOpen ] = useState(false);
     const [ formData, setFormData ] = useState({ ...contact });
     const [ isChanged, setIsChanged ] = useState(false);
@@ -112,7 +112,7 @@ const EmergencyContactCard = ({ contact, onUpdate, onDelete, loading, RELATIONSH
                     <div className={styles.buttonGroup}>
                         <button
                             type="submit"
-                            disabled={!isChanged || loading || !formData.name || !formData.phoneNumber}
+                            disabled={!isChanged || isLoading || !formData.name || !formData.phoneNumber}
                         >
                             Update Contact
                         </button>

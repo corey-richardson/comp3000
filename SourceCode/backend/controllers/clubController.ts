@@ -128,19 +128,26 @@ export const getMyClubs = async (request: Request, response: Response) => {
     };
 
     try {
-        const memberships = await prisma.membership.findMany({
-            where: { userId: requestingUserId, ended_at: null },
-            include: {
-                club: {
-                    include: {
-                        _count: {
-                            select: { members: { where: { ended_at: null } } }
+        const [ memberships, invites ] = await Promise.all([
+            prisma.membership.findMany({
+                where: { userId: requestingUserId, ended_at: null },
+                include: {
+                    club: {
+                        include: {
+                            _count: {
+                                select: { members: { where: { ended_at: null } } }
+                            }
                         }
                     }
                 }
-            }
-
-        });
+            }),
+            prisma.invite.findMany({
+                where: {
+                    userId: requestingUserId,
+                    status: "PENDING"
+                },
+            })
+        ]);
 
         if (memberships.length === 0) {
             return response.status(404).json({ error: "No clubs found." });
@@ -170,7 +177,8 @@ export const getMyClubs = async (request: Request, response: Response) => {
 
         return response.status(200).json({
             memberships: result,
-            totalCount
+            totalCount,
+            invites
         });
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
