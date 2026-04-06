@@ -42,9 +42,6 @@ const SubmitScoreForm = () => {
             if (!authIsReady || !user?.id) return;
 
             if (userDataRef.current) {
-                const yearShot = new Date(formData.dateShot).getFullYear();
-                const currentAgeCategory = calculateAgeCategory(userDataRef.current.yearOfBirth, yearShot);
-
                 setFormData(prev => ({
                     ...prev,
                     yearOfBirth: userDataRef.current.yearOfBirth,
@@ -98,7 +95,7 @@ const SubmitScoreForm = () => {
                 }));
             }
         }
-    }, [ formData.dateShot ]);
+    }, [ formData.dateShot, formData.ageCategory ]);
 
     // HANDLERS
 

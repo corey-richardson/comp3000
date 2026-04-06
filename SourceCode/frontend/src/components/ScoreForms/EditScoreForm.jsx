@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ScoreForm from "./ScoreForm";
 import { useApi } from "../../hooks/useApi";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import calculateAgeCategory from "../../lib/calculateAgeCategory";
 
 const TODAY = new Date();
 
 const EditScoreForm = ({ score }) => {
+    const { user, authIsReady } = useAuthContext();
     const { makeApiCall } = useApi();
     const navigate = useNavigate();
 
@@ -32,6 +35,45 @@ const EditScoreForm = ({ score }) => {
         sex: score?.sex || "OPEN"
     });
 
+    // Fetch Users Birth Year and Recalculate Age Category on Date change
+    const userDataRef = useRef(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            if (!authIsReady || !user?.id || userDataRef.current) return;
+
+            try {
+                const response = await makeApiCall(`/api/profiles/${user.id}`);
+                if (!response) return; // 401
+
+                if (response.ok) {
+                    const data = await response.json();
+                    userDataRef.current = { yearOfBirth: data.yearOfBirth };
+                }
+
+            } catch (_error) {
+                console.warn("Failed to fetch user birth year for recalculation of age category.");
+            }
+        };
+
+        fetchUser();
+    }, [ user, authIsReady, makeApiCall ]);
+
+    useEffect(() => {
+        if (userDataRef.current?.yearOfBirth) {
+            const yearShot = new Date(formData.dateShot).getFullYear();
+            const updatedCategory = calculateAgeCategory( userDataRef.current.yearOfBirth, yearShot );
+
+            if (formData.ageCategory !== updatedCategory) {
+                setFormData(prev => ({
+                    ...prev,
+                    ageCategory: updatedCategory
+                }));
+            }
+        }
+    }, [ formData.dateShot, formData.ageCategory ]);
+
+    // API Handlers
     const handlePut = async (e, roundData) => {
         e.preventDefault();
 
