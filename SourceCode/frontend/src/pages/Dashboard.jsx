@@ -54,16 +54,22 @@ const Dashboard = () => {
             setErrors({});
 
             const handleResponse = async (response, onSuccess, errorKey, setIsLoading) => {
-                if (!response) return;
-                const data = await response.json();
+                try {
+                    if (!response) return;
+                    const data = await response.json();
 
-                if (response.ok) {
-                    onSuccess(data);
-                } else {
-                    setErrors(prev => ({ ...prev, [errorKey]: data.error }));
+                    if (response.ok) {
+                        onSuccess(data);
+                    } else {
+                        setErrors(prev => ({ ...prev, [errorKey]: data.error }));
+                    }
+
+                    setIsLoading(false);
+                } catch (error) {
+                    setErrors(prev => ({ ...prev, [errorKey]: "Error processing response." }));
+                } finally {
+                    setIsLoading(false);
                 }
-
-                setIsLoading(false);
             };
 
             try {
@@ -100,6 +106,11 @@ const Dashboard = () => {
 
             } catch (error) {
                 setErrors(prev => ({ ...prev, global: "Connection error. Please refresh." }));
+            } finally {
+                setIsScoresLoading(false);
+                setIsMembershipsLoading(false);
+                setIsProfileLoading(false);
+                setIsContactsLoading(false);
             }
         };
 
@@ -128,7 +139,7 @@ const Dashboard = () => {
 
                     <UserInviteList
                         invites={invites}
-                        isLoading={isScoresLoading}
+                        isLoading={isMembershipsLoading}
                         error={errors.memberships}
                     />
                 </div>
