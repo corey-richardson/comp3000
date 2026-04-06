@@ -148,20 +148,22 @@ const Dashboard = () => {
                     error={errors.memberships}
                 />
 
-                <div className={dashboardStyles.dashboardContainer}>
-                    <h2>My Invites.</h2>
+                {invites.length > 0 && (
+                    <div className={dashboardStyles.dashboardContainer}>
+                        <h2>My Invites.</h2>
 
-                    <UserInviteList
-                        invites={invites}
-                        setInvites={setInvites}
-                        totalCount={invitesTotalCount}
-                        setTotalCount={setInvitesTotalCount}
-                        onAccept={handleAddMembership}
-                        isLoading={isInvitesLoading}
-                        error={errors.invites}
-                        setError={keyBasedErrorSetter("invites")}
-                    />
-                </div>
+                        <UserInviteList
+                            invites={invites}
+                            setInvites={setInvites}
+                            totalCount={invitesTotalCount}
+                            setTotalCount={setInvitesTotalCount}
+                            onAccept={handleAddMembership}
+                            isLoading={isInvitesLoading}
+                            error={errors.invites}
+                            setError={keyBasedErrorSetter("invites")}
+                        />
+                    </div>
+                )}
 
                 <CurrentClassificationsAndHandicaps
                     summary={summary}
