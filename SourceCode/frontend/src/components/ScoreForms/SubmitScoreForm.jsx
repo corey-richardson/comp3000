@@ -14,7 +14,6 @@ const SubmitScoreForm = () => {
     const navigate = useNavigate();
 
     // STATE
-
     const [ isLoading, setIsLoading ] = useState(false);
     const [ error, setError ] = useState(null);
 
@@ -36,19 +35,23 @@ const SubmitScoreForm = () => {
     });
 
     // FETCH USER INFO
-
     const userDataRef = useRef(null);
+
     useEffect(() => {
         const fetchUser = async () => {
             if (!authIsReady || !user?.id) return;
 
             if (userDataRef.current) {
+                const yearShot = new Date(formData.dateShot).getFullYear();
+                const currentAgeCategory = calculateAgeCategory(userDataRef.current.yearOfBirth, yearShot);
+
                 setFormData(prev => ({
                     ...prev,
+                    yearOfBirth: userDataRef.current.yearOfBirth,
                     bowstyle: userDataRef.current.defaultBowstyle,
-                    ageCategory: userDataRef.current.ageCategory,
                     sex: userDataRef.current.sex
                 }));
+
                 return;
             }
 
@@ -57,15 +60,14 @@ const SubmitScoreForm = () => {
                 if (!response) return; // 401
 
                 const data = await response.json();
-                if (!response.ok) {
-                    throw Error(data.error);
-                }
+                if (!response.ok) throw Error(data.error);
 
-                const calculatedAgeCategory = calculateAgeCategory(data.yearOfBirth);
+                const yearShot = new Date(formData.dateShot).getFullYear();
+                const calculatedAgeCategory = calculateAgeCategory(data.yearOfBirth, yearShot);
 
                 userDataRef.current = {
+                    yearOfBirth: data.yearOfBirth,
                     defaultBowstyle: data.defaultBowstyle,
-                    ageCategory: calculatedAgeCategory,
                     sex: data.sex
                 };
 
@@ -82,7 +84,21 @@ const SubmitScoreForm = () => {
         };
 
         fetchUser();
-    }, [ user, authIsReady, makeApiCall ]);
+    }, [ user, authIsReady, makeApiCall, formData.dateShot ]);
+
+    useEffect(() => {
+        if (userDataRef.current?.yearOfBirth) {
+            const yearShot = new Date(formData.dateShot).getFullYear();
+            const updatedCategory = calculateAgeCategory(userDataRef.current.yearOfBirth, yearShot);
+
+            if (formData.ageCategory !== updatedCategory) {
+                setFormData(prev => ({
+                    ...prev,
+                    ageCategory: updatedCategory
+                }));
+            }
+        }
+    }, [ formData.dateShot ]);
 
     // HANDLERS
 
