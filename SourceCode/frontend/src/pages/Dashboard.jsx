@@ -14,16 +14,17 @@ const Dashboard = () => {
     const { user, authIsReady } = useAuthContext();
     const { makeApiCall } = useApi();
 
-    const userId = user?.id;
-
     const [ scores, setScores ] = useState([]);
     const [ summary, setSummary ] = useState(null);
     const [ isScoresLoading, setIsScoresLoading ] = useState(true);
 
     const [ memberships, setMemberships ] = useState([]);
     const [ membershipTotalCount, setMembershipTotalCount ] = useState(0);
-    const [ invites, setInvites ] = useState([]);
     const [ isMembershipsLoading, setIsMembershipsLoading ] = useState(true);
+
+    const [ invites, setInvites ] = useState([]);
+    const [ invitesTotalCount, setInvitesTotalCount ] = useState(0);
+    const [ isInvitesLoading, setIsInvitesLoading ] = useState(true);
 
     const [ profile, setProfile ] = useState(null);
     const [ isProfileLoading, setIsProfileLoading ] = useState(true);
@@ -34,6 +35,7 @@ const Dashboard = () => {
     const [ errors, setErrors ] = useState({
         scores: null,
         memberships: null,
+        invites: null,
         profile: null,
         contacts: null
     });
@@ -48,6 +50,7 @@ const Dashboard = () => {
 
             setIsScoresLoading(true);
             setIsMembershipsLoading(true);
+            setIsInvitesLoading(true);
             setIsProfileLoading(true);
             setIsContactsLoading(true);
 
@@ -76,13 +79,15 @@ const Dashboard = () => {
                 const [
                     scoreResponse,
                     membershipResponse,
+                    invitesResponse,
                     profileResponse,
                     contactResponse
                 ] = await Promise.all([
-                    makeApiCall(`/api/scores/user/${userId}?limit=3`),
+                    makeApiCall(`/api/scores/user/${user?.id}?limit=3`),
                     makeApiCall("/api/clubs/my-clubs?limit=3"),
-                    makeApiCall(`/api/profiles/${userId}`),
-                    makeApiCall(`/api/contacts/user/${user.id}`)
+                    makeApiCall("/api/invites/my-invites?limit=3"),
+                    makeApiCall(`/api/profiles/${user?.id}`),
+                    makeApiCall(`/api/contacts/user/${user?.id}`)
                 ]);
 
                 handleResponse(scoreResponse, (data) => {
@@ -93,8 +98,12 @@ const Dashboard = () => {
                 handleResponse(membershipResponse, (data) => {
                     setMemberships(data.memberships);
                     setMembershipTotalCount(data.totalCount);
-                    setInvites(data.invites);
                 }, "memberships", setIsMembershipsLoading);
+
+                handleResponse(invitesResponse, (data) => {
+                    setInvites(data.invites);
+                    setInvitesTotalCount(data.pagination.totalCount);
+                }, "invites", setIsInvitesLoading);
 
                 handleResponse(profileResponse, (data) => {
                     setProfile(data);
@@ -139,8 +148,11 @@ const Dashboard = () => {
 
                     <UserInviteList
                         invites={invites}
-                        isLoading={isMembershipsLoading}
-                        error={errors.memberships}
+                        totalCount={invitesTotalCount}
+                        setInvites={setInvites}
+                        isLoading={isInvitesLoading}
+                        error={errors.invites}
+                        setError={keyBasedErrorSetter("invites")}
                     />
                 </div>
 
