@@ -53,6 +53,19 @@ const Dashboard = () => {
 
             setErrors({});
 
+            const handleResponse = async (response, onSuccess, errorKey, setIsLoading) => {
+                if (!response) return;
+                const data = await response.json();
+
+                if (response.ok) {
+                    onSuccess(data);
+                } else {
+                    setErrors(prev => ({ ...prev, [errorKey]: data.error }));
+                }
+
+                setIsLoading(false);
+            };
+
             try {
                 const [
                     scoreResponse,
@@ -66,38 +79,24 @@ const Dashboard = () => {
                     makeApiCall(`/api/contacts/user/${user.id}`)
                 ]);
 
-                if (scoreResponse && scoreResponse.ok) {
-                    const scoreData = await scoreResponse.json();
-                    setScores(scoreData.scores);
-                    setSummary(scoreData.summary);
-                    setIsScoresLoading(false);
-                } else if (scoreResponse && !scoreResponse.ok) {
-                    const scoreData = await scoreResponse.json();
-                    setErrors(prev => ({ ...prev, scores: scoreData.error }));
-                }
+                handleResponse(scoreResponse, (data) => {
+                    setScores(data.scores);
+                    setSummary(data.summary);
+                }, "scores", setIsScoresLoading);
 
-                if (membershipResponse && membershipResponse.ok) {
-                    const membershipData = await membershipResponse.json();
-                    setMemberships(membershipData.memberships);
-                    setMembershipTotalCount(membershipData.totalCount);
-                    setInvites(membershipData.invites);
-                    setIsMembershipsLoading(false);
-                } else if (membershipResponse && !membershipResponse.ok) {
-                    const membershipData = await membershipResponse.json();
-                    setErrors(prev => ({ ...prev, memberships: membershipData.error }));
-                }
+                handleResponse(membershipResponse, (data) => {
+                    setMemberships(data.memberships);
+                    setMembershipTotalCount(data.totalCount);
+                    setInvites(data.invites);
+                }, "memberships", setIsMembershipsLoading);
 
-                if (profileResponse && profileResponse.ok) {
-                    const profileData = await profileResponse.json();
-                    setProfile(profileData);
-                    setIsProfileLoading(false);
-                }
+                handleResponse(profileResponse, (data) => {
+                    setProfile(data);
+                }, "profile", setIsProfileLoading);
 
-                if (contactResponse && contactResponse.ok) {
-                    const contactData = await contactResponse.json();
-                    setContacts(contactData.contacts);
-                    setIsContactsLoading(false);
-                }
+                handleResponse(contactResponse, (data) => {
+                    setContacts(data.contacts);
+                }, "contacts", setIsContactsLoading);
 
             } catch (error) {
                 setErrors(prev => ({ ...prev, global: "Connection error. Please refresh." }));
