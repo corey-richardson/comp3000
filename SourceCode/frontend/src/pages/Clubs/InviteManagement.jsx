@@ -101,13 +101,13 @@ const InviteManagement = () => {
                     clubId={clubId}
                     onInviteSuccess={handleAddInvite}
                 />
-
-                <InviteActivity
-                    activity={activity}
-                    isLoading={isLoading}
-                    error={error}
-                />
             </div>
+
+            <InviteActivity
+                activity={activity}
+                isLoading={isLoading}
+                error={error}
+            />
         </div>
     );
 };
