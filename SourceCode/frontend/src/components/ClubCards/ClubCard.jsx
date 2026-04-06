@@ -51,7 +51,7 @@ const ClubCard = ({ membership, onLeave }) => {
                 <div className={badgeStyles.group}>
                     <span className={badgeStyles.infoBadge} title="Member Count">
                         <Users />
-                        { memberCount }
+                        { memberCount || "-" }
                     </span>
 
                     { isElevated && (

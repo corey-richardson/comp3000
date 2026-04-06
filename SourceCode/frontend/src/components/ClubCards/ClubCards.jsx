@@ -13,7 +13,7 @@ const ClubCards = ({ clubs, totalCount, isLoading, error }) => {
                 {!isLoading && clubs.length > 0 ? (
                     <>
                         { clubs.map((membership) => (
-                            <ClubCard membership={membership} key={membership.club.id} />
+                            <ClubCard membership={membership} key={membership.id} />
                         )) }
 
                         <p className="small centred">Displaying { clubs.length } of { totalCount } clubs. See all of the clubs you are a member of on the <Link to="../clubs">My Clubs</Link> page.</p>

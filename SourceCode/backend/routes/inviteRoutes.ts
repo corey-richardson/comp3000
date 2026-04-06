@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { createInvite, getInvitesByClub, getMyInvites, revokeInvite } from "../controllers/inviteController";
+import { acceptInvite, createInvite, declineInvite,getInvitesByClub, getMyInvites, revokeInvite } from "../controllers/inviteController";
 import requireAuth from "../middleware/requireAuth";
 
 const router = Router();
@@ -16,6 +16,8 @@ router.post("/clubs/:clubId/invites", createInvite);
 
 // Relative to /api/invites
 router.get("/invites/my-invites", getMyInvites);
+router.post("/invites/:inviteId/accept", acceptInvite);
+router.post("/invites/:inviteId/decline", declineInvite);
 router.delete("/invites/:inviteId", revokeInvite);
 
 export default router;

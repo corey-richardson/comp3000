@@ -12,6 +12,10 @@
     color: var(--text-color);
 }
 
+.cardItem:first-child {
+    margin-top: 1rem;
+}
+
 .cardItem:hover {
     background-color: var(--light-gray);
     border-color: var(--primary-color);

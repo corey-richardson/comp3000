@@ -1,4 +1,4 @@
-import { InviteStatus } from "@prisma/client";
+import { InviteStatus, Role } from "@prisma/client";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
@@ -183,6 +183,82 @@ export const createInvite = async (request: Request, response: Response) => {
         return response.status(201).json(newInvite);
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
+
+export const acceptInvite = async (request: Request, response: Response) => {
+    const { inviteId } = request.params as { inviteId: string };
+    const requestingUserId = (request as any).user.id;
+
+    try {
+        const invite = await prisma.invite.findFirst({
+            where: {
+                id: inviteId,
+                userId: requestingUserId,
+                status: InviteStatus.PENDING
+            }
+        });
+
+        if (!invite) {
+            return response.status(404).json({ error: "Invite not found." });
+        }
+
+        const [ _invite, membership ] = await prisma.$transaction([
+            prisma.invite.update({
+                where: {
+                    id: inviteId
+                },
+                data: {
+                    status: InviteStatus.ACCEPTED
+                }
+            }),
+            prisma.membership.create({
+                data: {
+                    userId: requestingUserId,
+                    clubId: invite.clubId,
+                    roles: [ Role.MEMBER ],
+                },
+                include: {
+                    club: true
+                }
+            })
+        ]);
+
+        return response.status(200).json(membership);
+    } catch (_error: any) {
+        return response.status(500).json({ error: "Failed to accept invite." });
+    }
+};
+
+export const declineInvite = async (request: Request, response: Response) => {
+    const { inviteId } = request.params as { inviteId: string };
+    const requestingUserId = (request as any).user.id;
+
+    try {
+        const invite = await prisma.invite.findFirst({
+            where: {
+                id: inviteId,
+                userId: requestingUserId,
+                status: InviteStatus.PENDING
+            }
+        });
+
+        if (!invite) {
+            return response.status(404).json({ error: "Invite not found." });
+        }
+
+        await prisma.invite.update({
+            where: {
+                id: inviteId
+            },
+            data: {
+                status: InviteStatus.DECLINED
+            }
+        });
+
+        return response.status(200).json({ message: "Invite accepted." });
+    } catch (_error: any) {
+        return response.status(500).json({ error: "Failed to accept invite." });
     }
 };
 

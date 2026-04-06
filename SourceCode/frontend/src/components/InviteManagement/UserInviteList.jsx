@@ -6,7 +6,7 @@ import badgeStyles from "../../styles/BadgeGroups.module.css";
 import cardStyles from "../../styles/Card.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
-const UserInviteListItem = ({ invite, onRemove, setError }) => {
+const UserInviteListItem = ({ invite, onAccept, onRemove, setError }) => {
     const { makeApiCall } = useApi();
 
     const [isConfirming, setIsConfirming] = useState(false);
@@ -16,7 +16,23 @@ const UserInviteListItem = ({ invite, onRemove, setError }) => {
         setIsActioning(true);
 
         try {
-            console.log(inviteId, action);
+            const response = await makeApiCall(`/api/invites/${inviteId}/${action}`, {
+                method: "POST"
+            });
+
+            if (!response) return; // 401
+            const data = await response.json();
+            console.log(data);
+
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+
+            if (onAccept && action === "accept") {
+                onAccept(data);
+            }
+
+            onRemove(inviteId);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -64,7 +80,7 @@ const UserInviteListItem = ({ invite, onRemove, setError }) => {
             {isConfirming && (
                 <DeleteOverlay
                     message={`Decline invite from ${ invite.club.name }?`}
-                    onConfirm={() => handleAction("decline")}
+                    onConfirm={() => handleAction(invite.id, "decline")}
                     onCancel={() => setIsConfirming(false)}
                     isPending={isActioning}
                     confirmButtonText="Decline"
@@ -79,6 +95,7 @@ const UserInviteListItem = ({ invite, onRemove, setError }) => {
 const UserInviteList = ({
     invites, setInvites,
     totalCount, setTotalCount,
+    onAccept,
     isLoading,
     error, setError
 }) => {
@@ -98,6 +115,7 @@ const UserInviteList = ({
                 <UserInviteListItem
                     key={invite.id}
                     invite={invite}
+                    onAccept={onAccept}
                     onRemove={handleRemove}
                     setError={setError}
                 />

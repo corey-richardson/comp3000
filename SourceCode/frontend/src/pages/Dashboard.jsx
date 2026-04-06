@@ -44,6 +44,11 @@ const Dashboard = () => {
         setErrors(prev => ({ ...prev, [key]: error }));
     };
 
+    const handleAddMembership = (newMembership) => {
+        setMemberships(prev => [ newMembership, ...prev ]);
+        setMembershipTotalCount(prev => prev + 1);
+    };
+
     useEffect(() => {
         const fetchDashboardData = async () => {
             if (!authIsReady || !user?.id) return;
@@ -148,8 +153,10 @@ const Dashboard = () => {
 
                     <UserInviteList
                         invites={invites}
-                        totalCount={invitesTotalCount}
                         setInvites={setInvites}
+                        totalCount={invitesTotalCount}
+                        setTotalCount={setInvitesTotalCount}
+                        onAccept={handleAddMembership}
                         isLoading={isInvitesLoading}
                         error={errors.invites}
                         setError={keyBasedErrorSetter("invites")}
