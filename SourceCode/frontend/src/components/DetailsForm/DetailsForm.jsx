@@ -17,7 +17,7 @@ const DetailsForm = ({ profile, setProfile, isLoading, setIsLoading, error, setE
     const displayAgeCategory = useMemo(() => {
         const year = parseInt(profile?.yearOfBirth);
         if (isNaN(year)) return "Please set year.";
-        return calculateAgeCategory(year, true);
+        return EnumMap[calculateAgeCategory(year)];
     }, [ profile?.yearOfBirth]);
 
     const handleInputChange = useCallback((key) => (e) => {
