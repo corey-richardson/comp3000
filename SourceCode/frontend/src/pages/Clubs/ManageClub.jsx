@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 import MembershipTable from "../../components/MembershipTable/MembershipTable";
 import { useApi } from "../../hooks/useApi";
-import statsStyles from "../../styles/ClubStatsGrid.module.css";
+import headerLinkStyles from "../../styles/HeaderLinks.module.css";
 
 const ManageClub = () => {
     const { id: clubId } = useParams();
@@ -52,11 +52,11 @@ const ManageClub = () => {
                 <>
                     <h2>Manage {club?.name}.</h2>
 
-                    <div className={statsStyles.grid}>
+                    <div className={headerLinkStyles.grid}>
                         <Link
                             to={`/clubs/${clubId}/records`}
                             state={{ fromClub: clubId, clubName: club?.name }}
-                            className={`${statsStyles.cell} ${statsStyles.clickable}`}
+                            className={`${headerLinkStyles.cell} ${headerLinkStyles.clickable}`}
                         >
                             Score Records Management
                         </Link>
@@ -64,12 +64,12 @@ const ManageClub = () => {
                         <Link
                             to={`/clubs/${clubId}/invites`}
                             state={{ fromClub: clubId, clubName: club?.name }}
-                            className={`${statsStyles.cell} ${statsStyles.clickable}`}
+                            className={`${headerLinkStyles.cell} ${headerLinkStyles.clickable}`}
                         >
                             View and Manage Invites
                         </Link>
 
-                        <span className={statsStyles.cell} title="Member Count">
+                        <span className={headerLinkStyles.cell} title="Member Count">
                             <Users />
                             { club?.memberCount }
                         </span>

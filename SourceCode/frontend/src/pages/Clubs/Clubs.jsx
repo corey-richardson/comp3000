@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 import ClubCard from "../../components/ClubCards/ClubCard";
 import { useApi } from "../../hooks/useApi";
+import headerLinkStyles from "../../styles/HeaderLinks.module.css";
 
 const Clubs = () => {
     const { makeApiCall } = useApi();
@@ -53,7 +54,22 @@ const Clubs = () => {
             <Breadcrumbs />
 
             <h2>Clubs.</h2>
-            <Link to="./create" className="centred">Create a New Club</Link>
+
+            <div className={headerLinkStyles.grid}>
+                <Link
+                    to={"./create"}
+                    className={`${headerLinkStyles.cell} ${headerLinkStyles.clickable}`}
+                >
+                    Create a New Club
+                </Link>
+
+                <Link
+                    to={"./invites"}
+                    className={`${headerLinkStyles.cell} ${headerLinkStyles.clickable}`}
+                >
+                    View Incoming Invites
+                </Link>
+            </div>
 
             { isLoading && <p className="small centred">Loading clubs...</p> }
             { error && <p className="error-message">{ error }</p> }
