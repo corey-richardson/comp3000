@@ -15,6 +15,7 @@ const Dashboard = () => {
     const { makeApiCall } = useApi();
 
     const [ scores, setScores ] = useState([]);
+    const [ scoresTotalCount, setScoresTotalCount ] = useState(0);
     const [ summary, setSummary ] = useState(null);
     const [ isScoresLoading, setIsScoresLoading ] = useState(true);
 
@@ -97,6 +98,7 @@ const Dashboard = () => {
 
                 handleResponse(scoreResponse, (data) => {
                     setScores(data.scores);
+                    setScoresTotalCount(data.pagination.totalCount);
                     setSummary(data.summary);
                 }, "scores", setIsScoresLoading);
 
@@ -137,6 +139,7 @@ const Dashboard = () => {
             <div className={dashboardStyles.dashboardGrid}>
                 <RecentScores
                     scores={scores}
+                    totalCount={scoresTotalCount}
                     isLoading={isScoresLoading}
                     error={errors.scores}
                 />

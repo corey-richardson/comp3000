@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import RecentScoreItem from "./RecentScoreItem";
 import dashboardStyles from "../../styles/Dashboard.module.css";
 
-const RecentScores = ({ scores, isLoading, error }) => {
+const RecentScores = ({ scores, totalCount, isLoading, error }) => {
 
     return (
         <div className={dashboardStyles.dashboardContainer}>
@@ -15,7 +15,7 @@ const RecentScores = ({ scores, isLoading, error }) => {
                         <RecentScoreItem score={score} key={score.id} />
                     )) }
 
-                    <p className="small centred">See all of your scores on the <Link to="../scores">My Scores</Link> page.</p>
+                    <p className="small centred">Displaying { scores.length } of { totalCount } scores. See all of your scores on the <Link to="../scores">My Scores</Link> page.</p>
                 </>
             )}
 
