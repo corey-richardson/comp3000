@@ -5,7 +5,7 @@ import CurrentClassificationsAndHandicaps from "../components/CurrentClAndHc/Cur
 import DetailsForm from "../components/DetailsForm/DetailsForm.jsx";
 import EmergencyContacts from "../components/EmergencyContacts/EmergencyContacts.jsx";
 import UserInviteList from "../components/InviteManagement/UserInviteList";
-import RecentScores from "../components/RecentScores/RecentScores.jsx";
+import RecentScores from "../components/ScoreItems/RecentScores.jsx";
 import { useApi } from "../hooks/useApi";
 import { useAuthContext } from "../hooks/useAuthContext";
 import dashboardStyles from "../styles/Dashboard.module.css";

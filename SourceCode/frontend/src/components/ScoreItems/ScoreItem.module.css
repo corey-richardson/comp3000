@@ -4,56 +4,6 @@
     flex-direction: column;
 }
 
-.scoreItem {
-    position: relative;
-    background-color: white;
-    padding: 2rem 1.25rem;
-    margin-bottom: 0;
-    box-shadow: none;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-    transition: all 0.2s ease-in-out;
-}
-
-.scoreItem:hover h3 {
-    color: var(--primary-color);
-}
-
-.scoreItem:not(:last-child) {
-    border-bottom: 2px solid var(--border-color);
-}
-
-.scoreItem:hover {
-    background-color: var(--light-gray);
-    border-color: var(--primary-color);
-    border-width: 4px;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px var(--shadow);
-}
-
-.topRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.date {
-    font-size: 0.8rem;
-    color: var(--text-color);
-    font-weight: 500;
-    letter-spacing: 0.025em;
-}
-
-.mainInfo {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.75rem;
-}
-
 .roundDetails h3 {
     margin: 0;
     font-size: 1.3rem;
@@ -126,14 +76,6 @@
     line-height: 1.2;
     color: var(--text-color);
     overflow-wrap: break-word;
-}
-
-.footerRow {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding-top: 0.25rem;
-    margin-top: 0.5rem;
 }
 
 .classificationBadge {

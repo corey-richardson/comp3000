@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 import Pagination from "../../components/Pagination/Pagination";
 import ScoreFilterBar from "../../components/ScoreFilterBar/ScoreFilterBar";
-import ScoreItem from "../../components/ScoreItem/ScoreItem";
+import ScoreItem from "../../components/ScoreItems/ScoreItem";
+import styles from "../../components/ScoreItems/ScoreItem.module.css";
 import { useApi } from "../../hooks/useApi";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { usePagination } from "../../hooks/usePagination";
 import { useScoreFilters } from "../../hooks/useScoreFilters";
-import styles from "../../styles/ScoreItem.module.css";
 
 const MyScores = () => {
     const { user, authIsReady } = useAuthContext();

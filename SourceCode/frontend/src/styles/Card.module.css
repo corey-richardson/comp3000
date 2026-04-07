@@ -22,7 +22,16 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 6px var(--shadow);
     border-bottom-width: 4px;
-    cursor: pointer;
+    cursor: default;
+}
+
+.clickable:hover {
+    background-color: var(--light-gray);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px var(--shadow);
+    border-bottom-width: 4px;
+    cursor: pointer !important;
 }
 
 .cardItem:hover h3 {

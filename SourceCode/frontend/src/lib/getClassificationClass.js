@@ -1,4 +1,4 @@
-import styles from "../styles/ScoreItem.module.css";
+import styles from "../components/ScoreItems/ScoreItem.module.css";
 
 const getClassificationClass = (key) => {
     if (!key) return styles.classUC;

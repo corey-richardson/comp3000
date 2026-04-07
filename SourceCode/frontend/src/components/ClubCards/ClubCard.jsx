@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import styles from "./ClubCard.module.css";
 import EnumMap from "../../lib/enumMap";
 import badgeStyles from "../../styles/BadgeGroups.module.css";
+import cardStyles from "../../styles/Card.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
 const ClubCard = ({ membership, onLeave }) => {
@@ -44,9 +45,9 @@ const ClubCard = ({ membership, onLeave }) => {
 
     const commonCardContent = (
         <>
-            <div className={styles.topRow}>
+            <div className={cardStyles.topRow}>
 
-                <span className={styles.date}>Since {formattedDate }</span>
+                <span className={cardStyles.date}>Since {formattedDate }</span>
 
                 <div className={badgeStyles.group}>
                     <span className={badgeStyles.infoBadge} title="Member Count">
@@ -63,7 +64,7 @@ const ClubCard = ({ membership, onLeave }) => {
                     { onLeave && (
                         <span className={badgeStyles.badge} title="Leave Club">
                             <button
-                                className={styles.invisibleButton}
+                                className={badgeStyles.invisibleButton}
                                 onClick={handleLeaveClub}
                             >
                                 <Unlink />
@@ -75,7 +76,7 @@ const ClubCard = ({ membership, onLeave }) => {
 
             </div>
 
-            <div className={styles.mainInfo}>
+            <div className={cardStyles.mainInfo}>
 
                 <div className={styles.clubInfo}>
                     <h3>{ club.name }</h3>
@@ -97,7 +98,7 @@ const ClubCard = ({ membership, onLeave }) => {
 
             </div>
 
-            <div className={styles.footerRow}>
+            <div className={cardStyles.footerRow}>
                 <span className={`${styles.statusBadge} ${isElevated ? styles.elevated : styles.standard}`}>
                     {isElevated ? "Elevated Member" : "Standard Member"}
                 </span>
@@ -121,12 +122,12 @@ const ClubCard = ({ membership, onLeave }) => {
     return isElevated ? (
         <Link
             to={`/clubs/${club.id}`}
-            className={`${styles.clubItem} ${styles.clickable}`}
+            className={`${cardStyles.cardItem} ${cardStyles.clickable}`}
         >
             {commonCardContent}
         </Link>
     ) : (
-        <div className={`${styles.card} ${styles.disabled}`}>
+        <div className={`${cardStyles.cardItem}`}>
             {commonCardContent}
         </div>
     );

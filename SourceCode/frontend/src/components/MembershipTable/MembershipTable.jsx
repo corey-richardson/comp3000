@@ -117,7 +117,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
                                         <Link
                                             to={`/clubs/members/${member.userId}`}
                                             state={{ fromClub: member.clubId, clubName }}
-                                            className={styles.invisibleButton}
+                                            className={badgeStyles.invisibleButton}
                                         >
                                             <Info />
                                         </Link>
@@ -128,7 +128,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
                                             <Link
                                                 to={`/clubs/members/emergency-contacts/${member.userId}`}
                                                 state={{ fromClub: member.clubId, clubName }}
-                                                className={styles.invisibleButton}
+                                                className={badgeStyles.invisibleButton}
                                             >
                                                 <Siren />
                                             </Link>
@@ -141,7 +141,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
                                                 <Link
                                                     to={`/clubs/members/edit/${member.userId}`}
                                                     state={{ fromClub: member.clubId, clubName }}
-                                                    className={styles.invisibleButton}
+                                                    className={badgeStyles.invisibleButton}
                                                 >
                                                     <Pencil />
                                                 </Link>
@@ -150,7 +150,7 @@ const MembershipTable = ({ members: initialMemberState = [], clubName, decrement
                                             <div className={`${badgeStyles.badge} ${styles.dangerBadge}`} title="End Membership">
                                                 <button
                                                     onClick={() => setMemberToDelete(member)}
-                                                    className={styles.invisibleButton}
+                                                    className={badgeStyles.invisibleButton}
                                                 >
                                                     <Unlink />
                                                 </button>

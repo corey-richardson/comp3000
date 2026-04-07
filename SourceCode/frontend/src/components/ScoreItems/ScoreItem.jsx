@@ -2,11 +2,12 @@ import { Check, Pencil, Sun, Target, Trash, Warehouse, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import styles from "./ScoreItem.module.css";
 import { useApi } from "../../hooks/useApi";
 import EnumMap from "../../lib/enumMap";
 import getClassificationClass from "../../lib/getClassificationClass";
 import badgeStyles from "../../styles/BadgeGroups.module.css";
-import styles from "../../styles/ScoreItem.module.css";
+import cardStyles from "../../styles/Card.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
 const ScoreItem = ({ score, onDelete }) => {
@@ -58,9 +59,9 @@ const ScoreItem = ({ score, onDelete }) => {
     };
 
     return (
-        <div className={styles.scoreItem}>
-            <div className={styles.topRow}>
-                <span className={styles.date}>{ formattedDate }</span>
+        <div className={cardStyles.cardItem}>
+            <div className={cardStyles.topRow}>
+                <span className={cardStyles.date}>{ formattedDate }</span>
 
                 <div className={badgeStyles.group}>
                     <span
@@ -95,7 +96,7 @@ const ScoreItem = ({ score, onDelete }) => {
                 </div>
             </div>
 
-            <div className={styles.mainInfo}>
+            <div className={cardStyles.mainInfo}>
                 <div className={styles.roundDetails}>
                     <h3>{ score.roundName }</h3>
                     <p>{ EnumMap[score.bowstyle] } { EnumMap[score.ageCategory] } { EnumMap[score.sex] }, { EnumMap[score.competition] }</p>
@@ -142,7 +143,7 @@ const ScoreItem = ({ score, onDelete }) => {
                 </div>
             )}
 
-            <div className={styles.footerRow}>
+            <div className={cardStyles.footerRow}>
                 <span className={`${styles.classificationBadge} ${getClassificationClass(score.classification)}`}>
                     Official Classification: { EnumMap[score.classification] || "Unclassified"}
                 </span>
@@ -165,7 +166,7 @@ const ScoreItem = ({ score, onDelete }) => {
                 />
             )}
 
-            <span>{error}</span>
+            {error && <span className="error-message small centred">{ error }</span>}
         </div>
     );
 };

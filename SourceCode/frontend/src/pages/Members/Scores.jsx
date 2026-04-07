@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
-import EditableScoreItem from "../../components/EditableScoreItem/EditableScoreItem";
 import Pagination from "../../components/Pagination/Pagination";
 import RecordsSummaryEditor from "../../components/RecordsSummaryEditor/RecordsSummaryEditor";
 import ScoreFilterBar from "../../components/ScoreFilterBar/ScoreFilterBar";
+import EditableScoreItem from "../../components/ScoreItems/EditableScoreItem";
 import { useApi } from "../../hooks/useApi";
 import { usePagination } from "../../hooks/usePagination";
 import { useScoreFilters } from "../../hooks/useScoreFilters";
