@@ -135,7 +135,7 @@ const MemberScores = () => {
                     paginationProps={paginationProps}
                 />
 
-                <p className="small">{ totalCount } scores found. { scores.length !== totalCount && <span>({filteredScores.length} displayed.)</span> }</p>
+                <p className="small">{ totalCount } scores found. { filteredScores.length !== totalCount && <span>({filteredScores.length} displayed.)</span> }</p>
             </div>
 
             { filteredScores.map(score => (
