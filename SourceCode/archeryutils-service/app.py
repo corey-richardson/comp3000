@@ -145,6 +145,7 @@ def get_rounds():
                     "name": round_obj.name,
                     "max_score": round_obj.max_score(),
                     "num_arrows": round_obj.n_arrows,
+                    "venue": "INDOOR",
                 }
             )
 
@@ -156,6 +157,7 @@ def get_rounds():
                     "name": round_obj.name,
                     "max_score": round_obj.max_score(),
                     "num_arrows": round_obj.n_arrows,
+                    "venue": "OUTDOOR",
                 }
             )
 
@@ -166,9 +168,12 @@ def get_rounds():
             "max_score": round_obj.max_score(),
             "num_arrows": round_obj.n_arrows,
         }
+
         if code_name in MISC_INDOOR_EXPLICIT:
+            round_data["venue"] = "INDOOR"
             indoor_rounds.append(round_data)
         else:
+            round_data["venue"] = "OUTDOOR"
             outdoor_rounds.append(round_data)
 
     return jsonify(

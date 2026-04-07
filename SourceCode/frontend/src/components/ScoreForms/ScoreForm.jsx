@@ -52,14 +52,33 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
     // ENFORCE AND VALIDATE ROUND SELECTION
 
     const selectedRoundData = useMemo(() => {
-        if (!allRounds || !formData.venue || !formData.roundNameSearch) {
+        if (!allRounds || !formData.roundNameSearch) {
             return null;
         }
 
-        return allRounds[formData.venue].find(
+        const matchInCurrentVenueType = allRounds[formData.venue]?.find(
+            (round) => round.name === formData.roundNameSearch
+        );
+
+        if (matchInCurrentVenueType) {
+            return matchInCurrentVenueType;
+        }
+
+        const otherVenue = formData.venue === "INDOOR" ? "OUTDOOR" : "INDOOR";
+        return allRounds[otherVenue]?.find(
             (round) => round.name === formData.roundNameSearch
         );
     }, [ allRounds, formData.venue, formData.roundNameSearch ]);
+
+    useEffect(() => {
+        if (selectedRoundData && selectedRoundData.venue !== formData.venue) {
+            setFormData(prev => ({
+                ...prev,
+                venue: selectedRoundData.venue
+            }));
+        }
+    }, [ selectedRoundData?.name, selectedRoundData?.venue, setFormData ]);
+
     const isRoundValid = !!selectedRoundData;
 
     // HANDLERS
@@ -70,9 +89,7 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
         setFormData(prev => {
             const newData = { ...prev, [name]: value };
 
-            if (name === "venue") {
-                newData.roundNameSearch = "";
-            } else if (name === "dateShot") {
+            if (name === "dateShot") {
                 newData.dateShot = new Date(value);
             }
 
@@ -81,7 +98,10 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
     };
 
     return (
-        <form className={`${formStyles.formContainer} ${formStyles.fullWidth}`} onSubmit={(e) => handleSubmit(e, selectedRoundData)}>
+        <form
+            className={`${formStyles.formContainer} ${formStyles.fullWidth}`}
+            onSubmit={(e) => handleSubmit(e, selectedRoundData)}
+        >
             <div className={formStyles.row}>
 
                 <div className={formStyles.fieldGroup}>
@@ -93,17 +113,6 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
                         onChange={handleChange}
                         required
                     />
-                </div>
-
-                <div className={formStyles.fieldGroup}>
-                    <label>*Venue:</label>
-                    <select name="venue" value={formData.venue} onChange={handleChange}>
-                        {options.venue.map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
                 </div>
 
                 <div className={formStyles.fieldGroup}>
@@ -121,12 +130,24 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
                         required
                     />
                     <datalist id="rounds-datalist">
-                        {allRounds && allRounds[formData.venue]?.map((round) => (
-                            <option key={round.codename} value={round.name}>
+                        {allRounds && Object.values(allRounds).flat().map((round) => (
+                            <option
+                                key={round.codename}
+                                value={round.name}
+                            >
                                 {round.name}
                             </option>
                         ))}
                     </datalist>
+                </div>
+
+                <div className={formStyles.fieldGroup}>
+                    <label>Venue:</label>
+                    <input
+                        type="text"
+                        value={ EnumMap[selectedRoundData?.venue] || "Select a round..." }
+                        readOnly
+                    />
                 </div>
 
             </div>
@@ -156,7 +177,12 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
 
                 <div className={formStyles.fieldGroup}>
                     <label>*Competition Level:</label>
-                    <select value={formData.competition} name="competition" onChange={handleChange} required>
+                    <select
+                        value={formData.competition}
+                        name="competition"
+                        onChange={handleChange}
+                        required
+                    >
                         {options.competition.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
@@ -260,7 +286,7 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
             </div>
 
             <button type="submit" disabled={isLoading || !isRoundValid}>
-                {isLoading ? "Saving..." : buttonText}
+                { isLoading ? "Saving..." : buttonText }
             </button>
 
             { error && <p className="error-message">{error}</p> }
