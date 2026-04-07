@@ -2,7 +2,7 @@ import { RotateCcw } from "lucide-react";
 
 import styles from "./FilterBar.module.css";
 
-const ScoreFilterBar = ({ filterBarProps }) => {
+const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
 
     const {
         clearFilters,
@@ -14,6 +14,10 @@ const ScoreFilterBar = ({ filterBarProps }) => {
         startDate, setStartDate,
         endDate, setEndDate
     } = filterBarProps;
+
+    const {
+        loadNumber, setLoadNumber
+    } = paginationProps;
 
     return (
         <div className={styles.filterContainer}>
@@ -51,6 +55,16 @@ const ScoreFilterBar = ({ filterBarProps }) => {
                 <option value="NEWEST">Newest First</option>
                 <option value="OLDEST">Oldest First</option>
                 <option value="SCORE">Highest Score</option>
+            </select>
+
+            <select
+                value={loadNumber}
+                onChange={(e) => setLoadNumber(e.target.value)}
+            >
+                <option value="10">Load: 10</option>
+                <option value="25">Load: 25</option>
+                <option value="50">Load: 50</option>
+                <option value="100">Load: 100</option>
             </select>
 
             <div className={styles.dateGroup}>

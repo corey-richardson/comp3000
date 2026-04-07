@@ -104,7 +104,7 @@ const Dashboard = () => {
 
                 handleResponse(membershipResponse, (data) => {
                     setMemberships(data.memberships);
-                    setMembershipTotalCount(data.totalCount);
+                    setMembershipTotalCount(data.pagination.totalCount);
                 }, "memberships", setIsMembershipsLoading);
 
                 handleResponse(invitesResponse, (data) => {

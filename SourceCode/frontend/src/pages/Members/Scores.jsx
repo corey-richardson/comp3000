@@ -27,18 +27,17 @@ const MemberScores = () => {
 
     const paginationProps = usePagination();
     const {
+        loadNumber,
         currentPage, setTotalPages,
         totalCount, setTotalCount
     } = paginationProps;
-
-    const scoresPerPage = 50;
 
     const fetchScores = useCallback(async (page) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            const response = await makeApiCall(`/api/scores/user/${userId}?limit=${scoresPerPage}&page=${page}`);
+            const response = await makeApiCall(`/api/scores/user/${userId}?limit=${loadNumber}&page=${page}`);
             if (!response) {
                 return; // 401
             };
@@ -59,11 +58,11 @@ const MemberScores = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [ userId, makeApiCall, scoresPerPage, setTotalPages, setTotalCount ]);
+    }, [ userId, makeApiCall, loadNumber, setTotalPages, setTotalCount ]);
 
     useEffect(() => {
         fetchScores(currentPage);
-    }, [currentPage, scoresPerPage, fetchScores]);
+    }, [currentPage, loadNumber, fetchScores]);
 
     const handleStatusUpdate = async (id, newStatus) => {
         setIsPendingAction(true);
@@ -131,7 +130,10 @@ const MemberScores = () => {
             <div>
                 <h2>Scores for {`${user?.firstName} ${user?.lastName}`}</h2>
                 <RecordsSummaryEditor userId={userId} initialSummary={summary} />
-                <ScoreFilterBar filterBarProps={filterBarProps} />
+                <ScoreFilterBar
+                    filterBarProps={filterBarProps}
+                    paginationProps={paginationProps}
+                />
 
                 <p className="small">{ totalCount } scores found. { scores.length !== totalCount && <span>({filteredScores.length} displayed.)</span> }</p>
             </div>

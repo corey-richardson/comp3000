@@ -4,6 +4,7 @@ export const usePagination = (initialPage = 1) => {
     const [ currentPage, setCurrentPage ] = useState(initialPage);
     const [ totalPages, setTotalPages ] = useState(1);
     const [ totalCount, setTotalCount ] = useState(0);
+    const [ loadNumber, setLoadNumber ] = useState(25);
 
     const prevPage = useCallback(() => {
         setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -17,6 +18,7 @@ export const usePagination = (initialPage = 1) => {
         currentPage,
         totalPages, setTotalPages,
         totalCount, setTotalCount,
+        loadNumber, setLoadNumber,
         prevPage, nextPage
     };
 };
