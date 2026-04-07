@@ -22,7 +22,6 @@ const UserInviteListItem = ({ invite, onAccept, onRemove, setError }) => {
 
             if (!response) return; // 401
             const data = await response.json();
-            console.log(data);
 
             if (!response.ok) {
                 throw new Error(data.error);

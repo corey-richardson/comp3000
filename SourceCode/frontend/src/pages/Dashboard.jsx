@@ -74,7 +74,7 @@ const Dashboard = () => {
                     }
 
                     setIsLoading(false);
-                } catch (error) {
+                } catch (_error) {
                     setErrors(prev => ({ ...prev, [errorKey]: "Error processing response." }));
                 } finally {
                     setIsLoading(false);
@@ -120,7 +120,7 @@ const Dashboard = () => {
                     setContacts(data.contacts);
                 }, "contacts", setIsContactsLoading);
 
-            } catch (error) {
+            } catch (_error) {
                 setErrors(prev => ({ ...prev, global: "Connection error. Please refresh." }));
             } finally {
                 setIsScoresLoading(false);

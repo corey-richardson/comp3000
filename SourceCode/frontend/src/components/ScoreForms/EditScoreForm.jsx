@@ -52,6 +52,7 @@ const EditScoreForm = ({ score }) => {
                 }
 
             } catch (_error) {
+                // eslint-disable-next-line no-console
                 console.warn("Failed to fetch user birth year for recalculation of age category.");
             }
         };

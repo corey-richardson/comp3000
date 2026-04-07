@@ -2,13 +2,10 @@
 import { Check, X, Clock } from "lucide-react";
 
 import styles from "./InviteManagement.module.css";
-import cardStyles from "../../styles/Card.module.css";
 
 const InviteActivity = ({ activity, isLoading, error }) => {
 
     const getLatestAction = (invite) => {
-        console.log(invite.status);
-
         if (invite.status === "ACCEPTED" && invite.accepted_at) {
             return {
                 verb: "was",
