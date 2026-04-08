@@ -519,6 +519,29 @@ export const getOverallClassificationLevels = async (request: Request, response:
                 "A1", "A2", "A3",
             ];
 
+            const hasMetTierRequirements = (tierRank: number, qualifyingScores: typeof relevantScores) => {
+                let filteredByCompetitionStatus = qualifyingScores;
+                let requiredArrows = arrowCountRequirements.ARCHER;
+
+                if (tierRank >= 7) {
+                    filteredByCompetitionStatus = qualifyingScores.filter(score => (
+                        score.competition === CompetitionStatus.RECORD_STATUS_COMPETITION
+                    ));
+                    requiredArrows = arrowCountRequirements.MASTER;
+                } else if (tierRank >= 4) {
+                    filteredByCompetitionStatus = qualifyingScores.filter(score => (
+                        score.competition !== CompetitionStatus.PRACTICE
+                    ));
+                    requiredArrows = arrowCountRequirements.BOWMAN;
+                }
+
+                const totalArrows = filteredByCompetitionStatus.reduce((arrows, score) => (
+                    arrows + score.numArrows
+                ), 0);
+
+                return totalArrows >= requiredArrows;
+            };
+
             for (const tier of tiers) {
                 const tierRank = rank[tier];
 
@@ -526,49 +549,8 @@ export const getOverallClassificationLevels = async (request: Request, response:
                     score.rank >= tierRank
                 ));
 
-                // Master Bowman Logic
-                // - Record Status Events
-                if (tierRank >= 7) {
-                    const recordStatusScores = qualifyingScores.filter(score => (
-                        score.competition === CompetitionStatus.RECORD_STATUS_COMPETITION
-                    ));
-
-                    const totalArrows = recordStatusScores.reduce((arrows, score) => (
-                        arrows + score.numArrows
-                    ), 0);
-
-                    if (totalArrows >= arrowCountRequirements.MASTER) {
-                        if (venue === Venue.OUTDOOR) return tier;
-                        else return `I-${tier}`;
-                    }
-                // Bowman Logic
-                // Club Events, Open Competition or Record Status Events
-                } else if (tierRank >= 4) {
-                    const compScores = qualifyingScores.filter(score => (
-                        score.competition === CompetitionStatus.RECORD_STATUS_COMPETITION ||
-                        score.competition === CompetitionStatus.OPEN_COMPETITION ||
-                        score.competition === CompetitionStatus.CLUB_EVENT
-                    ));
-
-                    const totalArrows = compScores.reduce((arrows, score) => (
-                        arrows + score.numArrows
-                    ), 0);
-
-                    if (totalArrows >= arrowCountRequirements.BOWMAN) {
-                        if (venue === Venue.OUTDOOR) return tier;
-                        else return `I-${tier}`;
-                    }
-                // Archer Logic
-                // Any Event
-                } else {
-                    const totalArrows = qualifyingScores.reduce((arrows, score) => (
-                        arrows + score.numArrows
-                    ), 0);
-
-                    if (totalArrows >= arrowCountRequirements.ARCHER) {
-                        if (venue === Venue.OUTDOOR) return tier;
-                        else return `I-${tier}`;
-                    }
+                if (hasMetTierRequirements(tierRank, qualifyingScores)) {
+                    return tier;
                 }
             }
 
