@@ -370,6 +370,9 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             }),
             prisma.recordsSummary.findUnique({
                 where: { userId: targetUserId },
+                include: {
+                    bowstyleSummaries: true,
+                }
             })
         ]);
 

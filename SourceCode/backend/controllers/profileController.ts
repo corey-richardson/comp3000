@@ -162,40 +162,55 @@ export const updateRecordsSummary = async (request: Request, response: Response)
     const { id: userId } = request.params as { id: string };
 
     const {
-        indoorClassification,
-        indoorClassificationBadgeGiven,
-        indoorHandicap,
-        outdoorClassification,
-        outdoorClassificationBadgeGiven,
-        outdoorHandicap,
+        bowstyleSummaries,
         notes
     } = request.body;
 
     try {
-        const summary = await prisma.recordsSummary.upsert({
-            where: { userId },
-            update: {
-                indoorClassification,
-                indoorClassificationBadgeGiven,
-                indoorHandicap: indoorHandicap !== null ? parseInt(indoorHandicap) : null,
-                outdoorClassification,
-                outdoorClassificationBadgeGiven,
-                outdoorHandicap: outdoorHandicap !== null ? parseInt(outdoorHandicap) : null,
-                notes
-            },
-            create: {
-                userId: userId,
-                indoorClassification: indoorClassification || "UNCLASSIFIED",
-                indoorClassificationBadgeGiven,
-                indoorHandicap: indoorHandicap !== null ? parseInt(indoorHandicap) : null,
-                outdoorClassification: outdoorClassification || "UNCLASSIFIED",
-                outdoorClassificationBadgeGiven,
-                outdoorHandicap: outdoorHandicap !== null ? parseInt(outdoorHandicap) : null,
-                notes
-            },
+        const result = await prisma.$transaction(async (tx) => {
+            const summary = await tx.recordsSummary.upsert({
+                where: { userId },
+                update: { notes },
+                create: { userId, notes },
+            });
+
+            if (bowstyleSummaries && Array.isArray(bowstyleSummaries)) {
+                await Promise.all(
+                    bowstyleSummaries.map((item: any) =>
+                        tx.bowstyleSummary.upsert({
+                            where: {
+                                userId_bowstyle: {
+                                    userId: userId,
+                                    bowstyle: item.bowstyle,
+                                },
+                            },
+                            update: {
+                                indoorClassification: item.indoorClassification,
+                                indoorClassificationBadgeGiven: item.indoorClassificationBadgeGiven,
+                                indoorHandicap: item.indoorHandicap,
+                                outdoorClassification: item.outdoorClassification,
+                                outdoorClassificationBadgeGiven: item.outdoorClassificationBadgeGiven,
+                                outdoorHandicap: item.outdoorHandicap,
+                            },
+                            create: {
+                                userId: userId,
+                                bowstyle: item.bowstyle,
+                                indoorClassification: item.indoorClassification,
+                                indoorClassificationBadgeGiven: item.indoorClassificationBadgeGiven,
+                                indoorHandicap: item.indoorHandicap,
+                                outdoorClassification: item.outdoorClassification,
+                                outdoorClassificationBadgeGiven: item.outdoorClassificationBadgeGiven,
+                                outdoorHandicap: item.outdoorHandicap,
+                            },
+                        })
+                    )
+                );
+            }
+
+            return summary;
         });
 
-        response.status(200).json(summary);
+        response.status(200).json(result);
     } catch (_error: any) {
         response.status(500).json({ error: "Failed to save records summary." });
     }
