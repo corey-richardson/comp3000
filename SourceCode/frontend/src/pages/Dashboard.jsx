@@ -168,11 +168,15 @@ const Dashboard = () => {
                     </div>
                 )}
 
-                <CurrentClassificationsAndHandicaps
-                    summary={summary}
-                    isLoading={isScoresLoading}
-                    error={errors.scores}
-                />
+                <div className={dashboardStyles.dashboardContainer}>
+                    <h2>Current Classifications and Handicaps.</h2>
+
+                    <CurrentClassificationsAndHandicaps
+                        summary={summary}
+                        isLoading={isScoresLoading}
+                        error={errors.scores}
+                    />
+                </div>
 
                 <div className={dashboardStyles.dashboardContainer}>
                     <DetailsForm

@@ -3,10 +3,43 @@ import { useState } from "react";
 
 import styles from "./CurrentClAndHc.module.css";
 import EnumMap from "../../lib/enumMap";
-import dashboardStyles from "../../styles/Dashboard.module.css";
+import cardStyles from "../../styles/Card.module.css";
 import tabStyles from "../../styles/SelectorTabs.module.css";
 
-const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error }) => {
+const ClassificationCard = ({
+    venue,
+    classification,
+    handicap
+}) => {
+    const Icon = venue === "Indoor" ? Warehouse : Sun;
+
+    return (
+        <div className={cardStyles.cardItem}>
+            <div className={cardStyles.topRow}>
+                <div className={styles.groupLabel}>
+                    <Icon />
+                    <span>{ venue }</span>
+                </div>
+            </div>
+
+            <div className={styles.displayGroup}>
+
+                <div className={styles.dataPoint}>
+                    <label className="small">Classification</label>
+                    <span>{EnumMap[classification] || "Unclassified"}</span>
+                </div>
+
+                <div className={styles.dataPoint}>
+                    <label className="small">Handicap</label>
+                    <span>{handicap ?? "-"}</span>
+                </div>
+
+            </div>
+        </div>
+    );
+};
+
+const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error, customStyles }) => {
 
     const [ activeBowstyleIndex, setActiveBowstyleIndex ] = useState(0);
 
@@ -14,9 +47,7 @@ const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error }) => {
     const currentBowstyleSummary = hasData ? summary.bowstyleSummaries[activeBowstyleIndex] : null;
 
     return (
-        <div className={dashboardStyles.dashboardContainer}>
-            <h2>Current Classifications and Handicaps.</h2>
-
+        <>
             { hasData && (
                 <div className={tabStyles.tabs}>
                     {summary.bowstyleSummaries.map((style, idx) => (
@@ -35,53 +66,27 @@ const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error }) => {
             { !isLoading && currentBowstyleSummary && (
                 <div className={styles.content}>
                     <div className={styles.statsRow}>
-                        <div className={styles.dataGroup}>
-                            <div className={styles.groupLabel}>
-                                <Warehouse />
-                                Indoor
-                            </div>
 
-                            <div className={styles.displayGroup}>
+                        <ClassificationCard
+                            venue="Indoor"
+                            classification={currentBowstyleSummary.indoorClassification}
+                            handicap={currentBowstyleSummary.indoorHandicap}
+                        />
 
-                                <div className={styles.dataPoint}>
-                                    <label className="small">Classification</label>
-                                    <span>{EnumMap[currentBowstyleSummary.indoorClassification] || "Unclassified"}</span>
-                                </div>
+                        <ClassificationCard
+                            venue="Outdoor"
+                            classification={currentBowstyleSummary.outdoorClassification}
+                            handicap={currentBowstyleSummary.outdoorHandicap}
+                        />
 
-                                <div className={styles.dataPoint}>
-                                    <label className="small">Handicap</label>
-                                    <span>{currentBowstyleSummary.indoorHandicap ?? "-"}</span>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div className={styles.dataGroup}>
-                            <div className={styles.groupLabel}>
-                                <Sun />
-                                Outdoor
-                            </div>
-
-                            <div className={styles.displayGroup}>
-
-                                <div className={styles.dataPoint}>
-                                    <label className="small">Classification</label>
-                                    <span>{EnumMap[currentBowstyleSummary.outdoorClassification] || "Unclassified"}</span>
-                                </div>
-
-                                <div className={styles.dataPoint}>
-                                    <label className="small">Handicap</label>
-                                    <span>{currentBowstyleSummary.outdoorHandicap ?? "-"}</span>
-                                </div>
-
-                            </div>
-                        </div>
                     </div>
 
-                    { summary?.notes && (
-                        <div className={styles.notesSection}>
-                            <label className="small">Records Officers&apos; Notes</label>
-                            <p>{ summary.notes }</p>
+                    {summary?.notes && (
+                        <div className={cardStyles.cardItem}>
+                            <div className={cardStyles.topRow}>
+                                <span className={cardStyles.date}>Records Officers&apos; Notes</span>
+                            </div>
+                            <p className={styles.notesText}>{ summary.notes }</p>
                         </div>
                     )}
                 </div>
@@ -93,7 +98,7 @@ const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error }) => {
 
             { isLoading && <p className="small centred">Loading...</p> }
             { error && <p className="error-message">{error}</p> }
-        </div>
+        </>
     );
 };
 

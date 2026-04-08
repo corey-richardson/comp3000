@@ -9,6 +9,7 @@
 .tab {
     padding: 0.5rem 1rem;
     border: none;
+    border-radius: var(--border-radius);
     background: transparent;
     color: var(--light-text-color);
     cursor: pointer;
@@ -21,9 +22,10 @@
 
 .tab:hover {
     background: var(--light-gray);
-    color: var(--text-color);
+    color: var(--primary-color);
 }
 
 .tab.activeTab {
     font-weight: bold;
+    color: var(--primary-color);
 }
