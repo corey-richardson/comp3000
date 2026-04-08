@@ -1,8 +1,8 @@
-import { Bowstyle, CompetitionStatus, Venue } from "@prisma/client";
-import { Score } from "@prisma/client";
+import { Bowstyle, CompetitionStatus, IndoorClassification, OutdoorClassification, Score, Venue } from "@prisma/client";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
+import { getBowstlyePerformances } from "../services/bowstylePerformanceService";
 import { toPrismaAge, toPrismaSex, toPythonAge, toPythonSex } from "../utils/enumAdapter";
 import { requireRoleInClub, requireRoleInSharedClubOrDataOwnership } from "../utils/serverUtils";
 
@@ -241,6 +241,56 @@ export const updateScoreStatus = async (request: Request, response: Response) =>
             }
         });
 
+        if (status === "VERIFIED") {
+
+            const toIndoorEnum = (value: string): IndoorClassification => {
+                return (value === "NC" ? "UNCLASSIFIED" : value) as IndoorClassification;
+            };
+
+            const toOutdoorEnum = (value: string): OutdoorClassification => {
+                return (value === "NC" ? "UNCLASSIFIED" : value) as OutdoorClassification;
+            };
+
+            const classificationResults = await getBowstlyePerformances(existingScore.userId);
+
+            await prisma.recordsSummary.upsert({
+                where: {
+                    userId: existingScore.userId
+                },
+                update: {},
+                create: {
+                    userId: existingScore.userId
+                }
+            });
+
+            await Promise.all(
+                classificationResults.map((result) => {
+                    return prisma.bowstyleSummary.upsert({
+                        where: {
+                            userId_bowstyle: {
+                                userId: existingScore.userId,
+                                bowstyle: result.bowstyle
+                            }
+                        },
+                        update: {
+                            indoorClassification: toIndoorEnum(result.indoor.classification),
+                            outdoorClassification: toOutdoorEnum(result.outdoor.classification),
+                            indoorHandicap: result.indoor.handicap,
+                            outdoorHandicap: result.outdoor.handicap,
+                        },
+                        create: {
+                            userId: existingScore.userId,
+                            bowstyle: result.bowstyle,
+                            indoorClassification: toIndoorEnum(result.indoor.classification),
+                            outdoorClassification: toOutdoorEnum(result.outdoor.classification),
+                            indoorHandicap: result.indoor.handicap,
+                            outdoorHandicap: result.outdoor.handicap,
+                        }
+                    });
+                })
+            );
+        }
+
         return response.status(200).json(updatedScore);
 
     } catch (error: any) {
@@ -450,122 +500,6 @@ export const getScoreById = async (request: Request, response: Response) => {
         }
 
         return response.status(200).json(score);
-    } catch (_error: any) {
-        return response.status(500).json({ error: "Internal Server Error." });
-    }
-};
-
-export const getOverallClassificationLevels = async (request: Request, response: Response) => {
-    const { userId } = request.params as { userId: string };
-
-    const now = new Date();
-    const currentYear = now.getFullYear();
-
-    const outdoorStartDate = new Date(currentYear - 1, 0, 1);
-    const indoorStartDate = now.getMonth() < 6 ?
-        new Date(currentYear - 2, 6, 1) :
-        new Date(currentYear - 1, 6, 1);
-
-    try {
-        const scores = await prisma.score.findMany({
-            where: {
-                userId,
-                status: "VERIFIED",
-                classification: { not: null },
-                OR: [
-                    { venue: "OUTDOOR", dateShot: { gte: outdoorStartDate } },
-                    { venue: "INDOOR", dateShot: { gte: indoorStartDate } }
-                ]
-            },
-            select: {
-                venue: true,
-                classification: true,
-                numArrows: true,
-                bowstyle: true,
-                competition: true,
-                handicap: true
-            }
-        });
-
-        const calculateOverallClassifiation = (venue: Venue, style: Bowstyle) => {
-            const rank: Record<string, number> = {
-                "NC": 0,
-                "A3": 1, "A2": 2, "A1": 3,
-                "B3": 4, "B2": 5, "B1": 6,
-                "MB": 7, "GMB": 8, "EMB": 9
-            };
-
-            const relevantScores = scores
-                .filter(score => (
-                    score.venue === venue &&
-                    score.bowstyle === style
-                ))
-                .map(score => ({
-                    ...score,
-                    rank: rank[score?.classification?.replace("I-", "") || "NC"] || 0
-                }));
-
-            if (relevantScores.length === 0) {
-                return "NC";
-            }
-
-            const arrowCountRequirements = venue === "OUTDOOR"
-                ? { ARCHER: 144, BOWMAN: 216, MASTER: 432 }
-                : { ARCHER: 120, BOWMAN: 180, MASTER: 180 };
-
-            const tiers = [
-                "EMB", "GMB", "MB",
-                "B1", "B2", "B3",
-                "A1", "A2", "A3",
-            ];
-
-            const hasMetTierRequirements = (tierRank: number, qualifyingScores: typeof relevantScores) => {
-                let filteredByCompetitionStatus = qualifyingScores;
-                let requiredArrows = arrowCountRequirements.ARCHER;
-
-                if (tierRank >= 7) {
-                    filteredByCompetitionStatus = qualifyingScores.filter(score => (
-                        score.competition === CompetitionStatus.RECORD_STATUS_COMPETITION
-                    ));
-                    requiredArrows = arrowCountRequirements.MASTER;
-                } else if (tierRank >= 4) {
-                    filteredByCompetitionStatus = qualifyingScores.filter(score => (
-                        score.competition !== CompetitionStatus.PRACTICE
-                    ));
-                    requiredArrows = arrowCountRequirements.BOWMAN;
-                }
-
-                const totalArrows = filteredByCompetitionStatus.reduce((arrows, score) => (
-                    arrows + score.numArrows
-                ), 0);
-
-                return totalArrows >= requiredArrows;
-            };
-
-            for (const tier of tiers) {
-                const tierRank = rank[tier];
-
-                const qualifyingScores = relevantScores.filter(score => (
-                    score.rank >= tierRank
-                ));
-
-                if (hasMetTierRequirements(tierRank, qualifyingScores)) {
-                    return tier;
-                }
-            }
-
-            return "NC";
-        };
-
-        const bowstyles = Array.from(new Set(scores.map(score => score.bowstyle)));
-        const summary = bowstyles.map(style => ({
-            bowstyle: style,
-            outdoor: calculateOverallClassifiation(Venue.OUTDOOR, style),
-            indoor: calculateOverallClassifiation(Venue.INDOOR, style),
-        }));
-
-        return response.status(200).json(summary);
-
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }

@@ -165,6 +165,17 @@ model RecordsSummary {
   id     String @id @default(cuid())
   userId String @unique
 
+  bowstyleSummaries BowstyleSummary[]
+  notes             String?
+
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BowstyleSummary {
+  id       String   @id @default(cuid())
+  userId   String
+  bowstyle Bowstyle
+
   indoorClassification           IndoorClassification  @default(UNCLASSIFIED)
   indoorClassificationBadgeGiven IndoorClassification?
   indoorHandicap                 Int?
@@ -173,9 +184,9 @@ model RecordsSummary {
   outdoorClassificationBadgeGiven OutdoorClassification?
   outdoorHandicap                 Int?
 
-  notes String?
+  recordsSummary RecordsSummary @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
-  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, bowstyle])
 }
 
 // Enumerated Types
