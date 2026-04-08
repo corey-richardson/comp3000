@@ -20,6 +20,60 @@ const OUTDOOR_CLASSIFICATIONS = [
     "MB", "GMB", "EMB"
 ];
 
+const ClassificationGroup = ({
+    venue,
+    data,
+    options,
+    onFieldChange
+}) => {
+
+    const Icon = venue === "INDOOR" ? Warehouse : Sun;
+
+    return (
+        <div className={styles.dataGroup}>
+
+            <div className={styles.groupLabel}>
+                <Icon />
+                <span style={{ textTransform: "capitalize" }}>{ venue }</span>
+                ({ EnumMap[data.bowstyle] })
+            </div>
+
+            <div className={styles.inputGroup}>
+
+                <div className={styles.inputWrapper}>
+                    <label>Calculated Classification</label>
+                    <input
+                        type="text"
+                        value={ EnumMap[data[`${venue}Classification`]] || "Unclassified" }
+                        readOnly
+                    />
+                </div>
+
+                <div className={styles.inputWrapper}>
+                    <label>Classification Badge Given</label>
+                    <select
+                        name={`${venue}ClassificationBadgeGiven`}
+                        value={data[`${venue}ClassificationBadgeGiven`] || "UNCLASSIFIED"}
+                        onChange={onFieldChange}
+                    >
+                        { options.map(cl => <option key={cl} value={cl}>{ EnumMap[cl] || cl }</option>) }
+                    </select>
+                </div>
+
+                <div className={styles.inputWrapper}>
+                    <label>Calculated Handicap</label>
+                    <input
+                        type="text"
+                        value={data[`${venue}Handicap`] ?? "-"}
+                        readOnly
+                    />
+                </div>
+
+            </div>
+        </div>
+    );
+};
+
 const RecordsSummaryEditor = ({ userId, initialSummary }) => {
     const { makeApiCall } = useApi();
 
@@ -106,84 +160,20 @@ const RecordsSummaryEditor = ({ userId, initialSummary }) => {
                 {currentSummary ? (
                     <div className={styles.statsRow}>
 
-                        <div className={styles.dataGroup}>
+                        <ClassificationGroup
+                            venue="indoor"
+                            data={currentSummary}
+                            options={INDOOR_CLASSIFICATIONS}
+                            onFieldChange={(e) => handleSummaryChange(e, activeBowstyleIndex)}
+                        />
 
-                            <div className={styles.groupLabel}>
-                                <Warehouse />
-                                Indoor ({ EnumMap[currentSummary.bowstyle] })
-                            </div>
+                        <ClassificationGroup
+                            venue="outdoor"
+                            data={currentSummary}
+                            options={OUTDOOR_CLASSIFICATIONS}
+                            onFieldChange={(e) => handleSummaryChange(e, activeBowstyleIndex)}
+                        />
 
-                            <div className={styles.inputGroup}>
-
-                                <div className={styles.inputWrapper}>
-                                    <label>Calculated Classification Achieved</label>
-                                    <input
-                                        type="text"
-                                        value={ EnumMap[currentSummary.indoorClassification] || "Unclassified" }
-                                        readOnly
-                                    />
-                                </div>
-
-                                <div className={styles.inputWrapper}>
-                                    <label>Highest Classification Badge Awarded</label>
-                                    <select
-                                        name="indoorClassificationBadgeGiven"
-                                        value={currentSummary.indoorClassificationBadgeGiven || "UNCLASSIFIED"}
-                                        onChange={(e) => handleSummaryChange(e, activeBowstyleIndex)}
-                                    >
-                                        {INDOOR_CLASSIFICATIONS.map(cl => <option key={cl} value={cl}>{ EnumMap[cl] || cl }</option>)}
-                                    </select>
-                                </div>
-
-                                <div className={styles.inputWrapper}>
-                                    <label>Calculated Handicap Achieved</label>
-                                    <input
-                                        type="number"
-                                        name="indoorHandicap"
-                                        value={currentSummary.indoorHandicap || "-"}
-                                        readOnly
-                                    />
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div className={styles.dataGroup}>
-                            <div className={styles.groupLabel}><Sun size={18}/> Outdoor ({EnumMap[currentSummary.bowstyle]})</div>
-                            <div className={styles.inputGroup}>
-
-                                <div className={styles.inputWrapper}>
-                                    <label>Calculated Classification Achieved</label>
-                                    <input
-                                        type="text"
-                                        value={ EnumMap[currentSummary.outdoorClassification] || "Unclassified" }
-                                        readOnly
-                                    />
-                                </div>
-
-                                <div className={styles.inputWrapper}>
-                                    <label>Highest Classification Badge Awarded</label>
-                                    <select
-                                        name="outdoorClassificationBadgeGiven"
-                                        value={currentSummary.outdoorClassificationBadgeGiven || "UNCLASSIFIED"}
-                                        onChange={(e) => handleSummaryChange(e, activeBowstyleIndex)}
-                                    >
-                                        {OUTDOOR_CLASSIFICATIONS.map(cl => <option key={cl} value={cl}>{EnumMap[cl] || cl}</option>)}
-                                    </select>
-                                </div>
-
-                                <div className={styles.inputWrapper}>
-                                    <label>Calculated Handicap Achieved</label>
-                                    <input
-                                        type="number"
-                                        name="outdoorHandicap"
-                                        value={currentSummary.outdoorHandicap || "-"}
-                                        readOnly
-                                    />
-                                </div>
-
-                            </div>
-                        </div>
                     </div>
                 ) : (
                     <div className={styles.emptyState}>
