@@ -1,8 +1,8 @@
-import { Bowstyle, CompetitionStatus, IndoorClassification, OutdoorClassification, Score, Venue } from "@prisma/client";
+import { Bowstyle, CompetitionStatus, Score, Venue } from "@prisma/client";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
-import { getBowstlyePerformances } from "../services/bowstylePerformanceService";
+import { refreshRecordsSummary } from "../services/recordsSummaryService";
 import { toPrismaAge, toPrismaSex, toPythonAge, toPythonSex } from "../utils/enumAdapter";
 import { requireRoleInClub, requireRoleInSharedClubOrDataOwnership } from "../utils/serverUtils";
 
@@ -241,57 +241,7 @@ export const updateScoreStatus = async (request: Request, response: Response) =>
             }
         });
 
-        if (status === "VERIFIED") {
-            // Limitation: if a score WAS verified, and is later rejected, there is no subsequent update to the users RecordsSummary
-            // to remove this now-rejected score.
-
-            const toIndoorEnum = (value: string): IndoorClassification => {
-                return (value === "NC" ? "UNCLASSIFIED" : value) as IndoorClassification;
-            };
-
-            const toOutdoorEnum = (value: string): OutdoorClassification => {
-                return (value === "NC" ? "UNCLASSIFIED" : value) as OutdoorClassification;
-            };
-
-            const classificationResults = await getBowstlyePerformances(existingScore.userId);
-
-            await prisma.recordsSummary.upsert({
-                where: {
-                    userId: existingScore.userId
-                },
-                update: {},
-                create: {
-                    userId: existingScore.userId
-                }
-            });
-
-            await Promise.all(
-                classificationResults.map((result) => {
-                    return prisma.bowstyleSummary.upsert({
-                        where: {
-                            userId_bowstyle: {
-                                userId: existingScore.userId,
-                                bowstyle: result.bowstyle
-                            }
-                        },
-                        update: {
-                            indoorClassification: toIndoorEnum(result.indoor.classification),
-                            outdoorClassification: toOutdoorEnum(result.outdoor.classification),
-                            indoorHandicap: result.indoor.handicap,
-                            outdoorHandicap: result.outdoor.handicap,
-                        },
-                        create: {
-                            userId: existingScore.userId,
-                            bowstyle: result.bowstyle,
-                            indoorClassification: toIndoorEnum(result.indoor.classification),
-                            outdoorClassification: toOutdoorEnum(result.outdoor.classification),
-                            indoorHandicap: result.indoor.handicap,
-                            outdoorHandicap: result.outdoor.handicap,
-                        }
-                    });
-                })
-            );
-        }
+        await refreshRecordsSummary(existingScore.userId);
 
         return response.status(200).json(updatedScore);
 
@@ -326,6 +276,8 @@ export const deleteScore = async (request: Request, response: Response) => {
         await prisma.score.delete({
             where: { id: scoreId },
         });
+
+        await refreshRecordsSummary(score.userId);
 
         return response.status(204).send();
 

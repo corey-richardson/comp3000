@@ -1,8 +1,56 @@
-import { Bowstyle, CompetitionStatus, Venue } from "@prisma/client";
+import { Bowstyle, CompetitionStatus, IndoorClassification, OutdoorClassification, Venue } from "@prisma/client";
 
 import prisma from "../lib/prisma";
 
-export const getBowstlyePerformances = async (userId: string) => {
+export const refreshRecordsSummary = async (userId: string) => {
+    const toIndoorEnum = (value: string): IndoorClassification => {
+        return (value === "NC" ? "UNCLASSIFIED" : value) as IndoorClassification;
+    };
+
+    const toOutdoorEnum = (value: string): OutdoorClassification => {
+        return (value === "NC" ? "UNCLASSIFIED" : value) as OutdoorClassification;
+    };
+
+    const classificationResults = await recordsSummaryCalculator(userId);
+
+    return await prisma.$transaction(async (tx) => {
+
+        await tx.recordsSummary.upsert({
+            where: { userId },
+            update: {},
+            create: { userId },
+        });
+
+        const updates = classificationResults.map((result) => {
+            return tx.bowstyleSummary.upsert({
+                where: {
+                    userId_bowstyle: {
+                        userId,
+                        bowstyle: result.bowstyle,
+                    },
+                },
+                update: {
+                    indoorClassification: toIndoorEnum(result.indoor.classification),
+                    outdoorClassification: toOutdoorEnum(result.outdoor.classification),
+                    indoorHandicap: result.indoor.handicap,
+                    outdoorHandicap: result.outdoor.handicap,
+                },
+                create: {
+                    userId,
+                    bowstyle: result.bowstyle,
+                    indoorClassification: toIndoorEnum(result.indoor.classification),
+                    outdoorClassification: toOutdoorEnum(result.outdoor.classification),
+                    indoorHandicap: result.indoor.handicap,
+                    outdoorHandicap: result.outdoor.handicap,
+                },
+            });
+        });
+
+        return await Promise.all(updates);
+    });
+};
+
+const recordsSummaryCalculator = async (userId: string) => {
 
     const now = new Date();
     const currentYear = now.getFullYear();
