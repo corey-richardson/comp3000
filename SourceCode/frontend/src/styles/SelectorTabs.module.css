@@ -1,0 +1,29 @@
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    overflow-x: auto;
+}
+
+.tab {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--light-text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+
+.tab:hover {
+    background: var(--light-gray);
+    color: var(--text-color);
+}
+
+.tab.activeTab {
+    font-weight: bold;
+}

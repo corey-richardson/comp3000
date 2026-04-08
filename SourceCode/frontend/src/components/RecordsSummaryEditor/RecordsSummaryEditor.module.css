@@ -94,14 +94,29 @@
     field-sizing: content;
 }
 
-.notesInput {
-    flex: 1;
-    min-height: 40px;
-    padding: 0.5rem;
+.notesSection {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.notesSection label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.notesSection textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     font-family: inherit;
-    resize: none;
+    resize: vertical;
+    min-height: 80px;
 }
 
 .footerRow {

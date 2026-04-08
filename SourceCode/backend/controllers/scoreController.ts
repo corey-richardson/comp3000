@@ -242,6 +242,8 @@ export const updateScoreStatus = async (request: Request, response: Response) =>
         });
 
         if (status === "VERIFIED") {
+            // Limitation: if a score WAS verified, and is later rejected, there is no subsequent update to the users RecordsSummary
+            // to remove this now-rejected score.
 
             const toIndoorEnum = (value: string): IndoorClassification => {
                 return (value === "NC" ? "UNCLASSIFIED" : value) as IndoorClassification;
