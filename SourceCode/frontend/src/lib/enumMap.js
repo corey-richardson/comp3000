@@ -80,6 +80,10 @@ const EnumMap = {
     PENDING: "Pending",
     ACCEPTED: "Accepted",
     DECLINED: "Declined",
+    // Score Statuses
+    SUBMITTED: "Awaiting Verification",
+    VERIFIED: "Approved",
+    REJECTED: "Rejected"
 };
 
 export default EnumMap;
