@@ -85,7 +85,7 @@ function App() {
                             />
 
                             <Route
-                                path="/clubs/:id/records"
+                                path="/clubs/:id/scores"
                                 element={user ? <RecordsManagement /> : <Navigate to="/" />}
                             />
 

@@ -290,7 +290,7 @@ export const getScoresByUser = async (request: Request, response: Response) => {
     const { userId: targetUserId } = request.params as { userId: string };
     const requestingUserId = (request as any).user.id;
 
-    const limit = request.query.limit ? parseInt(request.query.limit as string) : 10;
+    const limit = request.query.limit ? parseInt(request.query.limit as string) : 25;
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
     const skip = (page - 1) * limit;
 
@@ -360,7 +360,7 @@ export const getScoresByClub = async (request: Request, response: Response) => {
     const { clubId } = request.params as { clubId: string };
     const requestingUserId = (request as any).user.id;
 
-    const limit = request.query.limit ? parseInt(request.query.limit as string) : undefined;
+    const limit = request.query.limit ? parseInt(request.query.limit as string) : 25;
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
     const skip = limit ? (page - 1) * limit : undefined;
 
@@ -375,27 +375,38 @@ export const getScoresByClub = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
-        const scores = await prisma.score.findMany({
-            where: {
-                profile: {
-                    memberOf: {
-                        some: { clubId, ended_at: null }
+        const [ scores, totalCount ] = await Promise.all([
+            prisma.score.findMany({
+                where: {
+                    profile: {
+                        memberOf: {
+                            some: { clubId, ended_at: null }
+                        }
+                    }
+                },
+                include: {
+                    profile: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            username: true
+                        }
+                    }
+                },
+                orderBy: { dateShot: "desc" },
+                take: limit,
+                skip: skip,
+            }),
+            prisma.score.count({
+                where: {
+                    profile: {
+                        memberOf: {
+                            some: { clubId, ended_at: null }
+                        }
                     }
                 }
-            },
-            include: {
-                profile: {
-                    select: {
-                        firstName: true,
-                        lastName: true,
-                        username: true
-                    }
-                }
-            },
-            orderBy: { dateShot: "desc" },
-            take: limit,
-            skip: skip,
-        });
+            })
+        ]);
 
         let filteredScores = scores;
         const canSeeJournal = await requireRoleInClub(
@@ -407,7 +418,15 @@ export const getScoresByClub = async (request: Request, response: Response) => {
             filteredScores = stripJournal(scores);
         }
 
-        return response.status(200).json(filteredScores);
+        return response.status(200).json({
+            scores: filteredScores,
+            pagination: {
+                totalCount,
+                totalPages: Math.ceil(totalCount / limit),
+                currentPage: page,
+                limit
+            }
+        });
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
     }

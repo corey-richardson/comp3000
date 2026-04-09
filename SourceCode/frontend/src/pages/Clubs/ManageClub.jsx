@@ -54,7 +54,7 @@ const ManageClub = () => {
 
                     <div className={headerLinkStyles.grid}>
                         <Link
-                            to={`/clubs/${clubId}/records`}
+                            to={`/clubs/${clubId}/scores`}
                             state={{ fromClub: clubId, clubName: club?.name }}
                             className={`${headerLinkStyles.cell} ${headerLinkStyles.clickable}`}
                         >

@@ -8,7 +8,12 @@ import badgeStyles from "../../styles/BadgeGroups.module.css";
 import cardStyles from "../../styles/Card.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
-const EditableScoreItem = ({ score, onDelete, onStatusUpdate, isPending }) => {
+const EditableScoreItem = ({
+    score,
+    onDelete,
+    onStatusUpdate,
+    isPending
+}) => {
     const [ isDeleting, setIsDeleting ] = useState(false);
 
     const formattedDate = new Date(score.dateShot).toLocaleDateString();
@@ -16,7 +21,12 @@ const EditableScoreItem = ({ score, onDelete, onStatusUpdate, isPending }) => {
     return (
         <div className={cardStyles.cardItem}>
             <div className={cardStyles.topRow}>
-                <span className={cardStyles.date}>{ formattedDate }</span>
+                <span className={cardStyles.date}>
+                    { formattedDate }
+                    { score.profile && (
+                        <span>{` - ${ score.profile?.firstName } ${ score.profile?.lastName } (${ score.profile?.username })`}</span>
+                    )}
+                </span>
 
                 <div className={badgeStyles.group}>
                     <div className={styles.classificationBadge}>
