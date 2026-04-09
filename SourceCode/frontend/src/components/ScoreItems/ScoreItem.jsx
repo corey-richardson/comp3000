@@ -24,7 +24,7 @@ const ScoreItem = ({ score, onDelete }) => {
             case "VERIFIED":
                 return <Check />;
             case "REJECTED":
-                return <X />;
+                return <X color="#ff0000" />;
             default:
                 return <Target />;
         }

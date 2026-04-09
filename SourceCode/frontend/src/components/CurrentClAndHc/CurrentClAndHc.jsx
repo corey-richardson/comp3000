@@ -39,7 +39,7 @@ const ClassificationCard = ({
     );
 };
 
-const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error, customStyles }) => {
+const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error }) => {
 
     const [ activeBowstyleIndex, setActiveBowstyleIndex ] = useState(0);
 

@@ -1,4 +1,4 @@
-import { Check, Sun, Warehouse, X } from "lucide-react";
+import { Check, Sun, Target, Warehouse, X } from "lucide-react";
 
 import styles from "./ScoreItem.module.css";
 import EnumMap from "../../lib/enumMap";
@@ -8,6 +8,28 @@ import cardStyles from "../../styles/Card.module.css";
 
 const RecentScoreItem = ({ score }) => {
     const formattedDate = new Date(score.dateShot).toLocaleDateString();
+    const verificationDate = score.verified_at ? new Date(score.verified_at) : null;
+
+    const getStatusIcon = () => {
+        switch (score.status) {
+            case "VERIFIED":
+                return <Check />;
+            case "REJECTED":
+                return <X color="#ff0000" />;
+            default:
+                return <Target />;
+        }
+    };
+
+    const getStatusTitle = () => {
+        if (score.status === "VERIFIED" && verificationDate) {
+            return `Verified by Records Officer on ${verificationDate.toLocaleDateString()} at ${verificationDate.toLocaleTimeString()}`;
+        }
+        if (score.status === "REJECTED") {
+            return "Rejected by Records Officer";
+        }
+        return "Pending verification by Records Officer";
+    };
 
     return (
         <div className={cardStyles.cardItem}>
@@ -15,8 +37,11 @@ const RecentScoreItem = ({ score }) => {
                 <span className={cardStyles.date}>{ formattedDate }</span>
 
                 <div className={badgeStyles.group}>
-                    <span className={badgeStyles.infoBadge} title={score.verifiedAt ? "Processed by Records Officer" : "Unprocessed by Records Officer"}>
-                        { score.verifiedAt ? <Check /> : <X /> }
+                    <span
+                        className={badgeStyles.infoBadge}
+                        title={getStatusTitle()}
+                    >
+                        {getStatusIcon()}
                     </span>
 
                     <span className={badgeStyles.infoBadge} title={ EnumMap[score.venue] }>
