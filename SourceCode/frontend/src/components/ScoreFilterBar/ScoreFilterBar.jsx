@@ -7,10 +7,16 @@ const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
     const {
         clearFilters,
         hasActiveFilters,
+
         searchPhrase, setSearchPhrase,
+
         filterStatus, setFilterStatus,
         filterVenue, setFilterVenue,
+        filterBowstyle, setFilterBowstyle,
+        filterSex, setFilterSex,
+
         sortOrder, setSortOrder,
+
         startDate, setStartDate,
         endDate, setEndDate
     } = filterBarProps;
@@ -49,6 +55,27 @@ const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
             </select>
 
             <select
+                value={filterBowstyle}
+                onChange={(e) => setFilterBowstyle(e.target.value)}
+            >
+                <option value="ALL">All Bowstyles</option>
+                <option value="BAREBOW">Barebow</option>
+                <option value="COMPOUND">Compound</option>
+                <option value="RECURVE">Recurve</option>
+                <option value="LONGBOW">Longbow</option>
+
+            </select>
+
+            <select
+                value={filterSex}
+                onChange={(e) => setFilterSex(e.target.value)}
+            >
+                <option value="ALL">All Sexes</option>
+                <option value="OPEN">Open</option>
+                <option value="FEMALE">Female</option>
+            </select>
+
+            <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
             >
@@ -65,6 +92,8 @@ const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
                 <option value="25">Load: 25</option>
                 <option value="50">Load: 50</option>
                 <option value="100">Load: 100</option>
+                <option value="500">Load: 500</option>
+                <option value="1000">Load: 1000</option>
             </select>
 
             <div className={styles.dateGroup}>

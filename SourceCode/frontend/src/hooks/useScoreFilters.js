@@ -5,6 +5,8 @@ export const useScoreFilters = (unfilteredScores) => {
 
     const [ filterStatus, setFilterStatus ] = useState("ALL");
     const [ filterVenue, setFilterVenue ] = useState("ALL");
+    const [ filterBowstyle, setFilterBowstyle ] = useState("ALL");
+    const [ filterSex, setFilterSex ] = useState("ALL");
 
     const [ sortOrder, setSortOrder ] = useState("NEWEST");
 
@@ -13,8 +15,12 @@ export const useScoreFilters = (unfilteredScores) => {
 
     const clearFilters = () => {
         setSearchPhrase("");
+
         setFilterStatus("ALL");
         setFilterVenue("ALL");
+        setFilterBowstyle("ALL");
+        setFilterSex("ALL");
+
         setSortOrder("NEWEST");
         setStartDate("");
         setEndDate("");
@@ -23,14 +29,19 @@ export const useScoreFilters = (unfilteredScores) => {
     const hasActiveFilters = searchPhrase !== "" ||
         filterStatus !== "ALL" ||
         filterVenue !== "ALL" ||
+        filterBowstyle !== "ALL" ||
+        filterSex !== "ALL" ||
         startDate !== "" ||
         endDate !== "";
 
     const filteredScores = useMemo(() => {
+        if (!unfilteredScores) return [];
+
         return unfilteredScores.filter(score => {
             const matchesSearch = score.roundName.toLowerCase().includes(searchPhrase.toLowerCase());
             const matchesStatus = filterStatus === "ALL" || score.status === filterStatus;
             const matchesVenue = filterVenue === "ALL" || score.venue === filterVenue;
+            const matchesBowstyle = filterBowstyle === "ALL" || score.bowstyle === filterBowstyle;
 
             const dateShot = new Date(score.dateShot).setHours(0, 0, 0, 0);
             const start = startDate ? new Date(startDate).setHours(0, 0, 0, 0) : null;
@@ -38,7 +49,7 @@ export const useScoreFilters = (unfilteredScores) => {
 
             const matchesDate = (!start || dateShot >= start) && (!end || dateShot <= end );
 
-            return matchesSearch && matchesStatus && matchesVenue && matchesDate;
+            return matchesSearch && matchesStatus && matchesVenue && matchesBowstyle && matchesDate;
         }).sort((a, b) => {
             if (sortOrder === "NEWEST") {
                 return new Date(b.dateShot) - new Date(a.dateShot);
@@ -52,16 +63,22 @@ export const useScoreFilters = (unfilteredScores) => {
 
             return 0;
         });
-    }, [unfilteredScores, searchPhrase, filterStatus, filterVenue, sortOrder, startDate, endDate]);
+    }, [unfilteredScores, searchPhrase, filterStatus, filterVenue, filterBowstyle, filterSex, sortOrder, startDate, endDate]);
 
     return {
         filteredScores,
         clearFilters,
         hasActiveFilters,
+
         searchPhrase, setSearchPhrase,
+
         filterStatus, setFilterStatus,
         filterVenue, setFilterVenue,
+        filterBowstyle, setFilterBowstyle,
+        filterSex, setFilterSex,
+
         sortOrder, setSortOrder,
+
         startDate, setStartDate,
         endDate, setEndDate
     };
