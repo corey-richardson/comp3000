@@ -1,4 +1,4 @@
-import { Bowstyle, CompetitionStatus, Score, Venue } from "@prisma/client";
+import { Bowstyle, CompetitionStatus, Score, ScoreStatus, Venue } from "@prisma/client";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
@@ -196,6 +196,8 @@ export const updateScore = async (request: Request, response: Response) => {
 
                 notes,
                 journal,
+
+                status: ScoreStatus.SUBMITTED
             }
         });
 
@@ -236,8 +238,8 @@ export const updateScoreStatus = async (request: Request, response: Response) =>
             where: { id: scoreId },
             data: {
                 status,
-                verified_at: status === "VERIFIED" ? new Date() : null,
-                verifiedById: status === "VERIFIED" ? requestingUserId : null,
+                verified_at: status === ScoreStatus.VERIFIED ? new Date() : null,
+                verifiedById: status === ScoreStatus.VERIFIED ? requestingUserId : null,
             }
         });
 

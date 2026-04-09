@@ -30,7 +30,7 @@ const EditableScoreItem = ({
 
                 <div className={badgeStyles.group}>
                     <div className={styles.classificationBadge}>
-                        { score.status }
+                        { EnumMap[score.status] }
                     </div>
 
                     { score.status !== "VERIFIED" && (
