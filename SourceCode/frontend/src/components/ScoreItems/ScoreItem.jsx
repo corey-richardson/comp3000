@@ -4,41 +4,25 @@ import { Link } from "react-router-dom";
 
 import styles from "./ScoreItem.module.css";
 import { useApi } from "../../hooks/useApi";
+import { useScoreItem } from "../../hooks/useScoreItem";
 import EnumMap from "../../lib/enumMap";
 import getClassificationClass from "../../lib/getClassificationClass";
 import badgeStyles from "../../styles/BadgeGroups.module.css";
 import cardStyles from "../../styles/Card.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
-const ScoreItem = ({ score, onDelete }) => {
+const ScoreItem = ({
+    score,
+    onDelete,
+    isEditable = false,
+    minimal = false
+}) => {
     const { makeApiCall } = useApi();
+    const { formattedDate, statusIcon, statusTitle, venueIcon } = useScoreItem(score);
+
     const [ isDeleting, setIsDeleting ] = useState(false);
     const [ isPending, setIsPending ] = useState(false);
     const [ error, setError ] = useState(null);
-
-    const formattedDate = new Date(score.dateShot).toLocaleDateString();
-    const verificationDate = score.verified_at ? new Date(score.verified_at) : null;
-
-    const getStatusIcon = () => {
-        switch (score.status) {
-            case "VERIFIED":
-                return <Check />;
-            case "REJECTED":
-                return <X color="#ff0000" />;
-            default:
-                return <Target />;
-        }
-    };
-
-    const getStatusTitle = () => {
-        if (score.status === "VERIFIED" && verificationDate) {
-            return `Verified by Records Officer on ${verificationDate.toLocaleDateString()} at ${verificationDate.toLocaleTimeString()}`;
-        }
-        if (score.status === "REJECTED") {
-            return "Rejected by Records Officer";
-        }
-        return "Pending verification by Records Officer";
-    };
 
     const handleDelete = async () => {
         setIsDeleting(true);
@@ -49,7 +33,7 @@ const ScoreItem = ({ score, onDelete }) => {
             if (!response) return; // 401
 
             if (response.ok) {
-                onDelete(score.id); // Notify parent page to filter local state
+                onDelete(score.id);
             }
         } catch (error) {
             setError(error.message);
@@ -64,18 +48,20 @@ const ScoreItem = ({ score, onDelete }) => {
                 <span className={cardStyles.date}>{ formattedDate }</span>
 
                 <div className={badgeStyles.group}>
-                    <span
-                        className={badgeStyles.infoBadge}
-                        title={getStatusTitle()}
-                    >
-                        {getStatusIcon()}
-                    </span>
+                    <div className={badgeStyles.group}>
+                        <span
+                            className={badgeStyles.infoBadge}
+                            title={statusTitle}
+                        >
+                            { statusIcon }
+                        </span>
 
-                    <span className={badgeStyles.infoBadge} title={ EnumMap[score.venue] }>
-                        { score.venue === "INDOOR" ? <Warehouse /> : <Sun /> }
-                    </span>
+                        <span className={badgeStyles.infoBadge} title={ EnumMap[score.venue] }>
+                            { venueIcon }
+                        </span>
+                    </div>
 
-                    {!score.verified_at && (
+                    {isEditable && !score.verified_at && (
                         <Link
                             to={`./edit/${score.id}`}
                             title="Edit Score"
@@ -85,13 +71,15 @@ const ScoreItem = ({ score, onDelete }) => {
                         </Link>
                     )}
 
-                    <button
-                        onClick={() => setIsDeleting(true)}
-                        className={badgeStyles.badge}
-                        title="Delete Score"
-                    >
-                        <Trash />
-                    </button>
+                    {!minimal && onDelete && (
+                        <button
+                            onClick={() => setIsDeleting(true)}
+                            className={badgeStyles.badge}
+                            title="Delete Score"
+                        >
+                            <Trash />
+                        </button>
+                    )}
 
                 </div>
             </div>
@@ -108,39 +96,43 @@ const ScoreItem = ({ score, onDelete }) => {
                 </div>
             </div>
 
-            <div className={styles.statsGrid}>
-                <div className={styles.statBlock}>
-                    <label>Xs</label>
-                    <span>{score.xs ?? "-"}</span>
-                </div>
+            {!minimal && (
+                <>
+                    <div className={styles.statsGrid}>
+                        <div className={styles.statBlock}>
+                            <label>Xs</label>
+                            <span>{score.xs ?? "-"}</span>
+                        </div>
 
-                <div className={styles.statBlock}>
-                    <label>10s / 9s</label>
-                    <span>{score.tens ?? 0} / {score.nines ?? 0}</span>
-                </div>
+                        <div className={styles.statBlock}>
+                            <label>10s / 9s</label>
+                            <span>{score.tens ?? 0} / {score.nines ?? 0}</span>
+                        </div>
 
-                <div className={styles.statBlock}>
-                    <label>Hits</label>
-                    <span>{score.hits ?? "-"}</span>
-                </div>
-            </div>
+                        <div className={styles.statBlock}>
+                            <label>Hits</label>
+                            <span>{score.hits ?? "-"}</span>
+                        </div>
+                    </div>
 
-            {(score.notes || score.journal) && (
-                <div className={styles.notesGrid}>
-                    {score.notes && (
-                        <div className={styles.notesBlock}>
-                            <label>Notes</label>
-                            <span>{score.notes ?? "-"}</span>
+                    {(score.notes || score.journal) && (
+                        <div className={styles.notesGrid}>
+                            {score.notes && (
+                                <div className={styles.notesBlock}>
+                                    <label>Notes</label>
+                                    <span>{score.notes ?? "-"}</span>
+                                </div>
+                            )}
+
+                            {score.journal && (
+                                <div className={styles.notesBlock}>
+                                    <label>Journal</label>
+                                    <span>{score.journal ?? "-"}</span>
+                                </div>
+                            )}
                         </div>
                     )}
-
-                    {score.journal && (
-                        <div className={styles.notesBlock}>
-                            <label>Journal</label>
-                            <span>{score.journal ?? "-"}</span>
-                        </div>
-                    )}
-                </div>
+                </>
             )}
 
             <div className={cardStyles.footerRow}>

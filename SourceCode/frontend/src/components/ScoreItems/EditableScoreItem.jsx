@@ -2,6 +2,7 @@ import { Check, Trash, X } from "lucide-react";
 import { useState } from "react";
 
 import styles from "./ScoreItem.module.css";
+import { useScoreItem } from "../../hooks/useScoreItem";
 import EnumMap from "../../lib/enumMap";
 import getClassificationClass from "../../lib/getClassificationClass";
 import badgeStyles from "../../styles/BadgeGroups.module.css";
@@ -16,7 +17,7 @@ const EditableScoreItem = ({
 }) => {
     const [ isDeleting, setIsDeleting ] = useState(false);
 
-    const formattedDate = new Date(score.dateShot).toLocaleDateString();
+    const { formattedDate } = useScoreItem(score);
 
     return (
         <div className={cardStyles.cardItem}>

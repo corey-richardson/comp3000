@@ -99,7 +99,11 @@ const MyScores = () => {
             <div className={styles.scoreList}>
                 { filteredScores.length > 0 ? (
                     filteredScores.map(score => (
-                        <ScoreItem score={score} onDelete={handleDeletion} key={score.id} />
+                        <ScoreItem
+                            score={score}
+                            onDelete={handleDeletion} key={score.id}
+                            isEditable={true}
+                        />
                     ))
                 ) : (
                     <p className="small centred">No scores to display. Submit one <Link to="../scores/submit">here</Link>.</p>
