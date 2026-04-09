@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const usePagination = (initialPage = 1) => {
     const [ currentPage, setCurrentPage ] = useState(initialPage);
@@ -13,6 +13,10 @@ export const usePagination = (initialPage = 1) => {
     const nextPage = useCallback(() => {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     }, [ totalPages ]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [ loadNumber ]);
 
     return {
         currentPage,
