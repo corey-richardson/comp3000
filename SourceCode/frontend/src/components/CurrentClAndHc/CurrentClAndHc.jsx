@@ -1,5 +1,5 @@
 import { Warehouse, Sun } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import styles from "./CurrentClAndHc.module.css";
 import EnumMap from "../../lib/enumMap";
@@ -41,7 +41,21 @@ const ClassificationCard = ({
 
 const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error }) => {
 
+    const defaultBowstyle = summary.profile.defaultBowstyle;
     const [ activeBowstyleIndex, setActiveBowstyleIndex ] = useState(0);
+
+    const sortedSummaries = useMemo(() => {
+        if (!summary?.bowstyleSummaries) return [];
+
+        return [ ...summary.bowstyleSummaries ].sort((a, b) => {
+            if (a.bowstyle === defaultBowstyle) return -1;
+            if (b.bowstyle === defaultBowstyle) return 1;
+
+            const nameA = EnumMap[a.bowstyle] || a.bowstyle;
+            const nameB = EnumMap[b.bowstyle] || b.bowstyle;
+            return nameA.localeCompare(nameB);
+        });
+    }, [summary, defaultBowstyle]);
 
     const hasData = !isLoading && summary?.bowstyleSummaries?.length > 0;
     const currentBowstyleSummary = hasData ? summary.bowstyleSummaries[activeBowstyleIndex] : null;
@@ -50,7 +64,7 @@ const CurrentClassificationsAndHandicaps = ({ summary, isLoading, error }) => {
         <>
             { hasData && (
                 <div className={tabStyles.tabs}>
-                    {summary.bowstyleSummaries.map((style, idx) => (
+                    {sortedSummaries.map((style, idx) => (
                         <button
                             key={style.bowstyle}
                             type="button"

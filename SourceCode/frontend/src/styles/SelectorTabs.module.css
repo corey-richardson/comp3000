@@ -4,9 +4,11 @@
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 0.5rem;
     overflow-x: auto;
+    align-items: center;
 }
 
 .tab {
+    position: relative;
     padding: 0.5rem 1rem;
     border: none;
     border-radius: var(--border-radius);
@@ -16,8 +18,15 @@
     transition: all 0.2s ease;
 }
 
-.tab:not(:last-child) {
-    border-right: 1px solid var(--border-color);
+.tab:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: -0.25rem;
+    top: 10%;
+    height: 80%;
+    width: 1px;
+    background-color: var(--border-color);
+
 }
 
 .tab:hover {

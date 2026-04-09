@@ -321,13 +321,18 @@ export const getScoresByUser = async (request: Request, response: Response) => {
                 where: { id: targetUserId },
                 select: {
                     firstName: true,
-                    lastName: true,
+                    lastName: true
                 }
             }),
             prisma.recordsSummary.findUnique({
                 where: { userId: targetUserId },
                 include: {
                     bowstyleSummaries: true,
+                    profile: {
+                        select: {
+                            defaultBowstyle: true
+                        }
+                    }
                 }
             })
         ]);
