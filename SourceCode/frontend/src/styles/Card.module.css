@@ -1,7 +1,7 @@
 .cardItem {
     position: relative;
     background-color: white;
-    padding: 1.5rem 1.25rem;
+    padding: 1rem 1.25rem;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -10,10 +10,6 @@
     border-bottom: 2px solid var(--border-color);
     text-decoration: none;
     color: var(--text-color);
-}
-
-.cardItem:first-child {
-    margin-top: 1rem;
 }
 
 .cardItem:hover {
