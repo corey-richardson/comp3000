@@ -5,6 +5,7 @@ import styles from "./InviteManagement.module.css";
 import { useApi } from "../../hooks/useApi";
 import EnumMap from "../../lib/enumMap";
 import badgeStyles from "../../styles/BadgeGroups.module.css";
+import cardStyles from "../../styles/Card.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
 
 const InviteListItem = ({ invite, onRevokeSuccess }) => {
@@ -30,8 +31,8 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
             }
 
             onRevokeSuccess();
-        } catch (_error) {
-            setError("Failed to revoke invite.");
+        } catch (error) {
+            setError(error.message);
         } finally {
             setIsRevoking(false);
             setIsPending(false);
@@ -39,8 +40,11 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
     };
 
     return (
-        <div key={invite.id} className={styles.listItem}>
-            <div className={styles.mainInfo}>
+        <div
+            key={invite.id}
+            className={cardStyles.cardItem}
+        >
+            <div className={cardStyles.topRow}>
 
                 <div className={styles.userIdentity}>
                     { invite.invitee ? (
@@ -56,11 +60,13 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
 
             </div>
 
-            <div className={styles.metaInfo}>
-                <span className="small">Invited on <strong>{ new Date(invite.created_at).toLocaleDateString() }</strong>.</span>
-                { invite.inviter && (
-                    <span className="small">Invited by <strong>{ invite.inviter.firstName } { invite.inviter.lastName }</strong> ({ invite.inviter.username }).</span>
-                )}
+            <div className={cardStyles.mainInfo}>
+                <div className={cardStyles.date}>
+                    <span className="small">Invited on <strong>{ new Date(invite.created_at).toLocaleDateString() }</strong>. </span>
+                    { invite.inviter && (
+                        <span className="small">Invited by <strong>{ invite.inviter.firstName } { invite.inviter.lastName }</strong> ({ invite.inviter.username }).</span>
+                    )}
+                </div>
 
                 {invite.status === "PENDING" && (
                     <button
@@ -70,6 +76,14 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
                     >
                         <CircleX />
                     </button>
+                )}
+            </div>
+
+            <div className={cardStyles.footerRow}>
+                { invite.asRoles.length > 0 && (
+                    <span>
+                        &nbsp;Roles: <strong>{invite.asRoles.map(role => EnumMap[role] || role).join(", ")}</strong>
+                    </span>
                 )}
             </div>
 
@@ -90,3 +104,16 @@ const InviteListItem = ({ invite, onRevokeSuccess }) => {
 };
 
 export default InviteListItem;
+
+/**
+{invite.asRoles?.length > 0 && (
+    <div className={styles.roleList}>
+        {invite.asRoles?.map((role, index) => (
+            <span key={role} className={styles.roleItem}>
+                {EnumMap[role] || role}
+                {index < invite.asRoles?.length - 1 && ","}
+            </span>
+        ))}
+    </div>
+)}
+ */

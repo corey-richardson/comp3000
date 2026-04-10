@@ -2,6 +2,7 @@ import { Check, X } from "lucide-react";
 import { useState } from "react";
 
 import { useApi } from "../../hooks/useApi";
+import EnumMap from "../../lib/enumMap";
 import badgeStyles from "../../styles/BadgeGroups.module.css";
 import cardStyles from "../../styles/Card.module.css";
 import DeleteOverlay from "../DeleteOverlay/DeleteOverlay";
@@ -73,7 +74,21 @@ const UserInviteListItem = ({ invite, onAccept, onRemove, setError }) => {
             </div>
 
             <div className={cardStyles.footerRow}>
-                { invite.club.name } have invited you to join their club.
+                <span>
+                    { invite.club.name } have invited you to join their club
+                    {(() => {
+                        const rolesToDisplay = invite.asRoles
+                            ?.filter(role => role !== "MEMBER")
+                            .map(role => EnumMap[role] || role);
+
+                        if (rolesToDisplay?.length > 0) {
+                            return (
+                                <> to be a <strong>{rolesToDisplay.join(", ")}</strong></>
+                            );
+                        }
+                        return null;
+                    })()}.
+                </span>
             </div>
 
             {isConfirming && (

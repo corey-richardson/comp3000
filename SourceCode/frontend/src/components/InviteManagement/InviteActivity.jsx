@@ -2,6 +2,7 @@
 import { Check, X, Clock } from "lucide-react";
 
 import styles from "./InviteManagement.module.css";
+import EnumMap from "../../lib/enumMap";
 
 const InviteActivity = ({ activity, isLoading, error }) => {
 
@@ -58,7 +59,22 @@ const InviteActivity = ({ activity, isLoading, error }) => {
                             <Icon />
 
                             <p className={styles.actionText}>
-                                <strong>{ inviteeName }</strong> was invited by <strong>{ inviterName }</strong>.
+                                <strong>{ inviteeName }</strong> was invited
+                                {(() => {
+                                    const rolesToDisplay = invite.asRoles
+                                        ?.filter(role => role !== "MEMBER")
+                                        .map(role => EnumMap[role] || role);
+
+                                    if (rolesToDisplay?.length > 0) {
+                                        return (
+                                            <> to be a <strong>{rolesToDisplay.join(", ")}</strong></>
+                                        );
+                                    }
+
+                                    return null;
+                                })()}
+                                {" by "}
+                                <strong>{ inviterName }</strong>.
                                 Their invite { verb } <strong>{ label }</strong> on&nbsp;
                                 <strong>{ new Date(date).toLocaleDateString() }</strong> at&nbsp;
                                 <strong>{ new Date(date).toLocaleTimeString() }</strong>.
