@@ -14,11 +14,11 @@ export const getInvitesByClub = async (request: Request, response: Response) => 
     const skip = (page - 1) * limit;
 
     try {
-        const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN"]);
+        // const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN"]);
 
-        if (!isAuthorised) {
-            return response.status(403).json({ error: "Forbidden." });
-        }
+        // if (!isAuthorised) {
+        //     return response.status(403).json({ error: "Forbidden." });
+        // }
 
         const [ invites, totalCount ] = await Promise.all([
             prisma.invite.findMany({
@@ -80,11 +80,11 @@ export const getRecentClubUpdates = async (request: Request, response: Response)
     const thirtyDaysAgo = subDays(new Date(), 30);
 
     try {
-        const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN"]);
+        // const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN"]);
 
-        if (!isAuthorised) {
-            return response.status(403).json({ error: "Forbidden." });
-        }
+        // if (!isAuthorised) {
+        //     return response.status(403).json({ error: "Forbidden." });
+        // }
 
         const updates = await prisma.invite.findMany({
             where: {
@@ -168,13 +168,19 @@ export const createInvite = async (request: Request, response: Response) => {
     const { clubId } = request.params as { clubId: string };
     const requestingUserId = (request as any).user.id;
 
-    const { membershipNumber } = request.body;
+    const { membershipNumber, asRoles } = request.body;
 
     if (!membershipNumber) {
         return response.status(400).json({ error: "Membership ID is required." });
     }
 
     try {
+        const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN"]);
+
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
         const existingInvite = await prisma.invite.findFirst({
             where: {
                 clubId,
@@ -191,22 +197,28 @@ export const createInvite = async (request: Request, response: Response) => {
             where: { membershipNumber }
         });
 
-        const existingMembership = await prisma.membership.findFirst({
-            where: {
-                userId: linkedUser?.id,
-                clubId,
-                ended_at: null
-            }
-        });
+        if (linkedUser) {
+            const existingMembership = await prisma.membership.findFirst({
+                where: {
+                    userId: linkedUser?.id,
+                    clubId,
+                    ended_at: null
+                },
+                include: {
+                    profile: true
+                }
+            });
 
-        if (existingMembership) {
-            return response.status(409).json({ error: "This user is already a member of this club." });
+            if (existingMembership) {
+                return response.status(409).json({ error: "This user is already a member of this club." });
+            }
         }
 
         const newInvite = await prisma.invite.create({
             data: {
                 membershipNumber,
                 status: InviteStatus.PENDING,
+                asRoles: asRoles || [ Role.MEMBER ],
                 club: {
                     connect: { id: clubId }
                 },
@@ -241,6 +253,7 @@ export const createInvite = async (request: Request, response: Response) => {
 
         return response.status(201).json(newInvite);
     } catch (_error: any) {
+        console.error(_error);
         return response.status(500).json({ error: "Internal Server Error." });
     }
 };
@@ -276,7 +289,9 @@ export const acceptInvite = async (request: Request, response: Response) => {
                 data: {
                     userId: requestingUserId,
                     clubId: invite.clubId,
-                    roles: [ Role.MEMBER ]
+                    roles: invite.asRoles && invite.asRoles.length > 0
+                        ? invite.asRoles
+                        : [ Role.MEMBER ]
                 },
                 include: {
                     club: true

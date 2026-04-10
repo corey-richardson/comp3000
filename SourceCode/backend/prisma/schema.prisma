@@ -84,6 +84,7 @@ model Invite {
   clubId           String
   userId           String?
   membershipNumber String?
+  asRoles     Role[]
 
   invitedBy String
   status    InviteStatus @default(PENDING)
