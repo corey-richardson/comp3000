@@ -8,7 +8,7 @@ const EnumMap = {
     // Membership Roles
     MEMBER: "Member",
     COACH : "Coach",
-    RECORDS: "Records",
+    RECORDS: "Records Officer",
     CAPTAIN: "Captain",
     ADMIN: "Admin",
     // Bowstyles

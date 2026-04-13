@@ -1,12 +1,10 @@
-import { HatGlasses, Send, Shield } from "lucide-react";
+import { HatGlasses, Send } from "lucide-react";
 import { useState } from "react";
 
 import styles from "./InviteManagement.module.css";
 import { useApi } from "../../hooks/useApi";
-import EnumMap from "../../lib/enumMap";
 import formStyles from "../../styles/Forms.module.css";
-
-const ROLES = [ "ADMIN", "CAPTAIN", "COACH", "RECORDS" ];
+import RoleSelection from "../RoleSelection/RoleSelection";
 
 const InviteForm = ({ clubId, onInviteSuccess }) => {
     const { makeApiCall } = useApi();
@@ -96,38 +94,11 @@ const InviteForm = ({ clubId, onInviteSuccess }) => {
                 </div>
 
                 <div className={styles.bottomRow}>
-                    <div className={styles.roleSelection}>
-                        <label className={formStyles.labelWithIcon}>
-                            <Shield />
-                            Assign Roles:
-                        </label>
-
-                        <div className={styles.roleCheckboxGroup}>
-                            <label className={styles.checkboxLabel}>
-                                <input
-                                    type="checkbox"
-                                    checked
-                                    readOnly
-                                />
-                                <span className={styles.lockedRole}>{ EnumMap["MEMBER"] }</span>
-                            </label>
-
-                            {ROLES.map((role) => (
-                                <label
-                                    key={role}
-                                    className={styles.checkboxLabel}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={ selectedRoles.includes(role) }
-                                        onChange={ () => handleRoleChange(role) }
-                                    />
-                                    { EnumMap[role] }
-                                </label>
-                            ))}
-
-                        </div>
-                    </div>
+                    <RoleSelection
+                        selectedRoles={selectedRoles}
+                        onRoleChange={handleRoleChange}
+                        disabled={isSubmitting}
+                    />
                 </div>
 
                 { error && <p className="error-message">{ error }</p> }
