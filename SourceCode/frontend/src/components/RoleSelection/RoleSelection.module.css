@@ -18,6 +18,16 @@
         flex-flow: row wrap;
         gap: 2rem;
     }
+
+    .roleCheckboxGroup > label:first-child::after {
+        content: "";
+        width: 1px;
+        height: 1.2rem;
+        background-color: var(--border-color);
+        margin-left: 1.5rem;
+        display: inline-block;
+        vertical-align: middle;
+    }
 }
 
 .checkboxLabel {
@@ -27,6 +37,10 @@
     line-height: 1;
     cursor: pointer;
     transition: color 0.2s ease;
+}
+
+.checkboxLabel span {
+    color: var(--text-color);
 }
 
 .checkboxLabel:hover {
@@ -44,4 +58,9 @@
 
 .checkboxLabel input[readOnly] {
     cursor: not-allowed;
+}
+
+.checkboxLabel .activeRole,
+.checkboxLabel input[readOnly] + span {
+    color: var(--primary-color);
 }

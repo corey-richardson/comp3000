@@ -25,20 +25,28 @@ const RoleSelection = ({ selectedRoles, onRoleChange, isDisabled=false }) => {
                     <span>{ EnumMap["MEMBER"] }</span>
                 </label>
 
-                {ROLES.map((role) => (
-                    <label
-                        key={role}
-                        className={styles.checkboxLabel}
-                    >
-                        <input
-                            type="checkbox"
-                            checked={ selectedRoles.includes(role) }
-                            onChange={ () => onRoleChange(role) }
-                            disabled={isDisabled}
-                        />
-                        { EnumMap[role] }
-                    </label>
-                ))}
+                {ROLES.map((role) => {
+                    const isSelected = selectedRoles.includes(role);
+
+                    return (
+                        <label
+                            key={role}
+                            className={styles.checkboxLabel}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={ isSelected }
+                                onChange={ () => onRoleChange(role) }
+                                disabled={ isDisabled }
+                            />
+                            <span
+                                className={ isSelected ? styles.activeRole : "" }
+                            >
+                                { EnumMap[role] }
+                            </span>
+                        </label>
+                    );
+                })}
 
             </div>
         </div>
