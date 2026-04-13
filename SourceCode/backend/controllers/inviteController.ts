@@ -14,11 +14,11 @@ export const getInvitesByClub = async (request: Request, response: Response) => 
     const skip = (page - 1) * limit;
 
     try {
-        // const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN"]);
+        const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN", "CAPTAIN", "COACH", "RECORDS"]);
 
-        // if (!isAuthorised) {
-        //     return response.status(403).json({ error: "Forbidden." });
-        // }
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
 
         const [ invites, totalCount ] = await Promise.all([
             prisma.invite.findMany({
@@ -80,11 +80,11 @@ export const getRecentClubUpdates = async (request: Request, response: Response)
     const thirtyDaysAgo = subDays(new Date(), 30);
 
     try {
-        // const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN"]);
+        const isAuthorised = await requireRoleInClub(requestingUserId, clubId, ["ADMIN", "CAPTAIN", "COACH", "RECORDS"]);
 
-        // if (!isAuthorised) {
-        //     return response.status(403).json({ error: "Forbidden." });
-        // }
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
 
         const updates = await prisma.invite.findMany({
             where: {
@@ -253,7 +253,6 @@ export const createInvite = async (request: Request, response: Response) => {
 
         return response.status(201).json(newInvite);
     } catch (_error: any) {
-        console.error(_error);
         return response.status(500).json({ error: "Internal Server Error." });
     }
 };

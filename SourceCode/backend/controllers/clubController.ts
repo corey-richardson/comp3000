@@ -223,7 +223,6 @@ export const getMembership = async (request: Request, response: Response) => {
             return response.status(404).json({ error: "Membership not found." });
         }
 
-        console.log(membership);
         return response.status(200).json(membership);
     } catch (_error: any) {
         return response.status(500).json({ error: "Internal Server Error." });
@@ -233,8 +232,6 @@ export const getMembership = async (request: Request, response: Response) => {
 // PATCH /api/clubs/:clubId/member/:userId
 export const updateMembership = async (request: Request, response: Response) => {
     const { clubId, userId } = request.params as { clubId: string, userId: string };
-    const { membershipId } = request.params as { membershipId: string };
-
     const { roles } = request.body;
 
     try {
@@ -281,8 +278,6 @@ export const updateMembership = async (request: Request, response: Response) => 
                 roles: roles
             }
         });
-
-        console.log(updateMembership);
 
         return response.status(200).json(updatedMembership);
     } catch (_error: any) {
