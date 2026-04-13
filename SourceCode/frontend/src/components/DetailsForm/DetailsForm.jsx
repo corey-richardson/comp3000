@@ -140,7 +140,7 @@ const DetailsForm = ({ profile, setProfile, isLoading, setIsLoading, error, setE
 
                 { !isLoading && !changesPending && <button disabled>Save Details</button> }
                 { !isLoading && changesPending && <button type="submit">Save Details</button> }
-                { isLoading && <button disabled>isLoading...</button> }
+                { isLoading && <button disabled>Loading...</button> }
             </form>
 
             { !isLoading && message && (
