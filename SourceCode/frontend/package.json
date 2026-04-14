@@ -5,8 +5,6 @@
   "proxy": "http://backend:4000",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
@@ -19,7 +17,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "vitest",
+    "test:run": "vitest run",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -39,5 +38,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "^29.0.2",
+    "vitest": "^4.1.4"
   }
 }
