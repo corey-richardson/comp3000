@@ -12,6 +12,15 @@ const INITIAL_FILTERS = {
     endDate: ""
 };
 
+/**
+ * This hook handles filtering and sorting of a list of score objects
+ * @param {Array} [unfilteredScores=[]] The array of scores to filter
+ * @returns {Array} filteredScores A list of filtered scores, derived from `unfilteredScores`
+ * @returns {Object} filters Current state holding all filter fields
+ * @returns {Function} updateFilters Updates a filter by key (e.g. `updateFilters("bowstyle", "COMPOUND")`)
+ * @returns {Function} clearFilters Resets filter state to `INITIAL_FILTERS`
+ * @returns {boolean} hasActiveFilters `True` when `filters !== INITIAL_FILTERS`
+ */
 export const useScoreFilters = (unfilteredScores = []) => {
     const [ filters, setFilters ] = useState(INITIAL_FILTERS);
 

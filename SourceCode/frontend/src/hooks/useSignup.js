@@ -2,6 +2,10 @@ import { useState } from "react";
 
 import { useAuthContext } from "./useAuthContext";
 
+/**
+ * This hook handles the user registration process (followed by sign in)
+ * * Updates localStorage and AuthContext on success
+ */
 const useSignup = () => {
     const [ error, setError ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(false);
