@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import { Check, X, Target, Warehouse, Sun } from "lucide-react";
+import { Check, X, Warehouse, Sun } from "lucide-react";
 import { describe, it, expect } from "vitest";
 
 import { useScoreItem } from "./useScoreItem";
