@@ -20,6 +20,10 @@ html, body {
   font-family: "Quicksand", sans-serif;
 }
 
+p, span {
+  line-height: 1.4rem;
+}
+
 .content {
   max-width: min(var(--max-content-width), 90vw) !important;
   margin: 3rem auto;

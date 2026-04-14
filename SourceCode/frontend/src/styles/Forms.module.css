@@ -27,6 +27,10 @@
     color: var(--primary-color);
 }
 
+.formContainer p {
+    margin: 0;
+}
+
 .formContainer label {
     color: var(--primary-color);
     font-size: 0.9rem;
