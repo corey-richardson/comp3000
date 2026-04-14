@@ -6,6 +6,12 @@ export default defineConfig({
     test: {
         globals: true,
         environment: "jsdom",
+        include: ["src/**/*.test.{js,jsx}"],
         css: true,
+    },
+    esbuild: {
+        loader: "jsx",
+        include: /src\/.*\.jsx?$/,
+        exclude: [],
     },
 });
