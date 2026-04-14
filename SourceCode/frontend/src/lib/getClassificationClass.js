@@ -1,5 +1,7 @@
 import styles from "../components/ScoreItems/ScoreItem.module.css";
 
+/** MB checks MUST be carried out before B checks as MB "includes" B */
+
 const getClassificationClass = (key) => {
     if (!key) return styles.classUC;
 
