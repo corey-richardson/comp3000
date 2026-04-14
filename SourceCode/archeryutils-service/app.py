@@ -54,7 +54,7 @@ def cap_classification_level(calculated_classification, venue, competition_statu
 
 @app.route("/calculate", methods=["POST"])
 def calculate_metrics():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "No JSON data provided"}), 400
 

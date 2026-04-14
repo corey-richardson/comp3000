@@ -44,6 +44,11 @@ jobs:
         runs-on: ubuntu-latest
         steps: 
           - uses: actions/checkout@v4
+        
+          - name: Setup Python
+            uses: actions/setup-python@v5
+            with:
+                python-version: "3.11"
 
           - name: Install Dependencies
             run: |
@@ -51,11 +56,25 @@ jobs:
                 npm install
                 npm install --prefix frontend
                 npm install --prefix backend
-                # pip install archeryutils flask pytest
+                pip install -r archeryutils-service/requirements.txt
             
-          - name: Run Unit and Integration Tests
+          - name: Run Node.js Tests
             run: npm run test:all
             working-directory: SourceCode
+          
+          - name: Run Python Tests
+            if: always() # Run even when Node.js tests fail
+            run: pytest archeryutils-service/ --junitxml=python-results.xml
+            working-directory: SourceCode
+          
+          - name: Upload Test Results
+            if: always() && github.actor != 'nektos/act' # Running in GitHub Local Actions
+            uses: actions/upload-artifact@v4
+            with:
+              name: test-reports
+              path: |
+                SourceCode/python-results.xml
+                SourceCode/frontend/coverage/
 
     build:
         needs: [ lint, test ]

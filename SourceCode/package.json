@@ -24,8 +24,9 @@
     "lint:python": "python -m flake8 --config=archeryutils-service/.flake8 archeryutils-service/ && python -m black --check archeryutils-service/ && python -m isort --check-only archeryutils-service/",
     "lint:python:fix": "python -m isort archeryutils-service/ && python -m black archeryutils-service/ && python -m flake8 --config=archeryutils-service/.flake8 archeryutils-service/",
     
-    "test:frontend": "npm test --prefix frontend",
-    "test:backend": "npm test --prefix backend",
-    "test:all": "concurrently -n \"FRONTEND,BACKEND\" -c \"yellow,blue\" \"npm test --prefix frontend\" \"npm test --prefix backend\""
+    "test:frontend": "npm test --prefix frontend -- --coverage",
+    "test:backend": "npm test --prefix backend -- --coverage",
+    "test:python": "docker exec -t archeryutils-service python -m pytest --cov=. --cov-report=html --cov-report=term",
+    "test:all": "concurrently -n \"FRONTEND,BACKEND,PYTHON\" -c \"yellow,blue,green\" \"npm run test:frontend\" \"npm run test:backend\" \"npm run test:python\""
   }
 }

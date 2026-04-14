@@ -1,2 +1,5 @@
 flask
 archeryutils
+pytest
+pytest-cov
+pytest-mock
