@@ -1,3 +1,5 @@
+import "../tests/mocks/prisma";
+
 import { Role } from "@prisma/client";
 import { describe, it, expect, vi } from "vitest";
 

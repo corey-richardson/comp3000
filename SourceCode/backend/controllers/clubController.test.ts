@@ -1,3 +1,5 @@
+import "../tests/mocks/prisma";
+
 import { Role } from "@prisma/client";
 import { Request, Response } from "express";
 import { describe, it, expect, vi, beforeEach } from "vitest";

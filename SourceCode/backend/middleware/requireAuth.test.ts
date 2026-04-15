@@ -1,3 +1,5 @@
+import "../tests/mocks/prisma";
+
 import { Response, NextFunction } from "express";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { describe, it, expect, vi, beforeEach } from "vitest";
