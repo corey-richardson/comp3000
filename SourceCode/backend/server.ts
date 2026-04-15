@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth";
 import clubRoutes from "./routes/clubRoutes";
 import contactsRoutes from "./routes/contactsRoutes";
 import inviteRoutes from "./routes/inviteRoutes";
+import membershipRoutes from "./routes/membershipRoutes";
 import profileRoutes from "./routes/profileRoutes";
 import roundRoutes from "./routes/roundRoutes";
 import scoreRoutes from "./routes/scoreRoutes";
@@ -40,6 +41,7 @@ app.get("/smoke-test", (request: Request, response: Response) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/clubs", clubRoutes);
 app.use("/api/contacts", contactsRoutes);
+app.use("/api/clubs", membershipRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/rounds", roundRoutes);
 app.use("/api/scores", scoreRoutes);
