@@ -18,10 +18,13 @@ jobs:
             with:
                 node-version: "20"
                 cache: "npm"
-                cache-dependency-path: SourceCode/package.json
+                cache-dependency-path: |
+                    SourceCode/package-lock.json
+                    SourceCode/frontend/package-lock.json
+                    SourceCode/backend/package-lock.json
             
           - name: Install JS Dependencies
-            run: npm install
+            run: npm ci
             working-directory: SourceCode
 
           - name: Run JS/TS / CSS Lint
@@ -40,8 +43,67 @@ jobs:
           - name: Run Python Lint
             run: npm run lint:python
             working-directory: SourceCode
+    
+    test-frontend:
+        needs: lint
+        runs-on: ubuntu-latest
+        steps: 
+          - uses: actions/checkout@v4
+
+          - uses: actions/setup-node@v4
+            with:
+                node-version: "20"
+                cache: "npm"
+                cache-dependency-path: SourceCode/frontend/package-lock.json
+
+          - name: Install Frontend Dependencies
+            run: npm ci
+            working-directory: SourceCode/frontend
+        
+          - name: Run Frontend Tests
+            run: npm test -- --coverage
+            working-directory: SourceCode/frontend
+
+          - name: Upload Frontend Coverage
+            if: always() && github.actor != 'nektos/act'
+            uses: actions/upload-artifact@v4
+            with:
+                name: frontend-coverage
+                path: SourceCode/frontend/coverage/
+
+    test-backend:
+        needs: lint
+        runs-on: ubuntu-latest
+        steps: 
+          - uses: actions/checkout@v4
+
+          - uses: actions/setup-node@v4
+            with:
+                node-version: "20"
+                cache: "npm"
+                cache-dependency-path: SourceCode/backend/package-lock.json
+ 
+          - name: Install Dependencies
+            run: npm ci
+            working-directory: SourceCode/backend
+          
+          - name: Generate Prisma Client
+            run: npx prisma generate --schema prisma/schema.prisma
+            working-directory: SourceCode/backend
             
-    test:
+          - name: Run Backend Tests
+            run: npm test -- --coverage
+            working-directory: SourceCode/backend
+                    
+          - name: Upload Backend Coverage
+            if: always() && github.actor != 'nektos/act'
+            uses: actions/upload-artifact@v4
+            with:
+                name: backend-coverage
+                path: SourceCode/backend/coverage/
+
+    test-python:
+        needs: lint
         runs-on: ubuntu-latest
         steps: 
           - uses: actions/checkout@v4
@@ -51,34 +113,23 @@ jobs:
             with:
                 python-version: "3.11"
 
-          - name: Install Dependencies
-            run: |
-                cd SourceCode
-                npm install
-                npm install --prefix frontend
-                npm install --prefix backend
-                pip install -r archeryutils-service/requirements.txt
-            
-          - name: Run Node.js Tests
-            run: npm run test:all
-            working-directory: SourceCode
-          
+          - name: Install Python Dependencies
+            run: pip install -r requirements.txt
+            working-directory: SourceCode/archeryutils-service
+
           - name: Run Python Tests
-            if: always() # Run even when Node.js tests fail
-            run: pytest archeryutils-service/ --junitxml=python-results.xml
-            working-directory: SourceCode
-          
-          - name: Upload Test Results
-            if: always() && github.actor != 'nektos/act' # Running in GitHub Local Actions
+            run: pytest --junitxml=python-results.xml
+            working-directory: SourceCode/archeryutils-service
+
+          - name: Upload python test results
+            if: always() && github.actor != 'nektos/act'
             uses: actions/upload-artifact@v4
             with:
-              name: test-reports
-              path: |
-                SourceCode/python-results.xml
-                SourceCode/frontend/coverage/
+                name: python-results
+                path: SourceCode/archeryutils-service/python-results.xml
 
     build:
-        needs: [ lint, test ]
+        needs: [ lint, test-frontend, test-backend, test-python ]
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v4
