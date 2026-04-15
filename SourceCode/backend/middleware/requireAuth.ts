@@ -13,6 +13,14 @@ export interface AuthRequest extends Request {
     };
 }
 
+/**
+ * Middleware with validates a JWT and attaches a User object to authorized requests.
+ * @async
+ * @param request Express
+ * @param response Express
+ * @param next Express
+ * @returns {Promise<Response>} Returns a 401/404 response status on failure
+ */
 const requireAuth = async (
     request: AuthRequest,
     response: Response,
@@ -21,7 +29,7 @@ const requireAuth = async (
     const { authorization } = request.headers;
 
     if (!authorization) {
-        return response.status(401).json({ error: "Authorization header required" });
+        return response.status(401).json({ error: "Authorization header required." });
     }
 
     const token = authorization.split(" ")[1];
