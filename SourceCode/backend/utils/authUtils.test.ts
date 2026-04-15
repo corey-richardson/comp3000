@@ -1,5 +1,5 @@
 import { Role } from "@prisma/client";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 import {
     requireRoleInClub,
@@ -12,7 +12,6 @@ import prisma from "../lib/prisma";
 describe("authUtils", () => {
     describe("requireRoleInClub", () => {
         it("should return true if active membership with role exists in database", async () => {
-            console.log(prisma.membership.findFirst);
             vi.mocked(prisma.membership.findFirst).mockResolvedValue({ id: "258" } as any);
             const result = await requireRoleInClub("userId-123", "clubId-456", [ Role.ADMIN ]);
             expect(result).toBe(true);
