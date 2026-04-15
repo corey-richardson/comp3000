@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
-import * as AuthUtils from "../utils/serverUtils";
+import * as AuthUtils from "../utils/authUtils";
 
 // GET /api/profiles/:id
 export const getProfile = async (request: Request, response: Response) => {

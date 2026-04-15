@@ -2,15 +2,6 @@ import { Role } from "@prisma/client";
 
 import prisma from "../lib/prisma";
 
-export async function getEmailForUserId(userId: string) {
-    const user = await prisma.profile.findUnique({
-        where: { id: userId },
-        select: { email: true },
-    });
-
-    return user?.email || null;
-}
-
 export async function requireRoleInClub(
     requestingUserId: string,
     clubId: string,

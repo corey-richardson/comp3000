@@ -3,7 +3,7 @@ import { subDays } from "date-fns";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
-import { requireRoleInClub } from "../utils/serverUtils";
+import { requireRoleInClub } from "../utils/authUtils";
 
 export const getInvitesByClub = async (request: Request, response: Response) => {
     const { clubId } = request.params as { clubId: string };

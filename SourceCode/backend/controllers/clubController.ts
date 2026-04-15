@@ -2,7 +2,7 @@ import { Role } from "@prisma/client";
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
-import { requireRoleInClub, requireRoleInSpecificClubOrDataOwnership } from "../utils/serverUtils";
+import { requireRoleInClub, requireRoleInSpecificClubOrDataOwnership } from "../utils/authUtils";
 
 // POST /api/clubs
 export const createClub = async (request: Request, response: Response) => {

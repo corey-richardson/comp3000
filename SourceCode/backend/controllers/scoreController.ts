@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
 import { refreshRecordsSummary } from "../services/recordsSummaryService";
+import { requireRoleInClub, requireRoleInSharedClubOrDataOwnership } from "../utils/authUtils";
 import { toPrismaAge, toPrismaSex, toPythonAge, toPythonSex } from "../utils/enumAdapter";
-import { requireRoleInClub, requireRoleInSharedClubOrDataOwnership } from "../utils/serverUtils";
 
 const stripJournal = <T extends Score>(scores: T[]) => {
     return scores.map(score => ({

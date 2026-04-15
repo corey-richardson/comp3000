@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
-import { requireRoleInSharedClubOrDataOwnership } from "../utils/serverUtils";
+import { requireRoleInSharedClubOrDataOwnership } from "../utils/authUtils";
 
 // POST /api/contacts/user/:userId
 export const createContact = async (request: Request, response: Response) => {
@@ -9,12 +9,7 @@ export const createContact = async (request: Request, response: Response) => {
     const requestingUserId = (request as any).user.id;
 
     try {
-        const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
-            requestingUserId,
-            targetUserId,
-            ["ADMIN", "CAPTAIN"]
-        );
-
+        const isAuthorised = targetUserId === requestingUserId;
         if (!isAuthorised) {
             return response.status(403).json({ error: "Forbidden." });
         }
