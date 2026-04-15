@@ -20,22 +20,12 @@ vi.mock("jsonwebtoken", () => {
     };
 });
 
-vi.mock("../lib/prisma", () => ({
-    default: {
-        profile: {
-            findUnique: vi.fn(),
-        },
-    },
-    TokenExpiredError
-}));
-
 describe("requireAuth", () => {
     let mockRequest: Partial<AuthRequest>;
     let mockResponse: Partial<Response>;
     const mockNextFunction: NextFunction = vi.fn();
 
     beforeEach(() => {
-        vi.clearAllMocks();
         mockRequest = {
             headers: {},
         };

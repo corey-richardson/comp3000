@@ -9,24 +9,10 @@ import {
 } from "./authUtils";
 import prisma from "../lib/prisma";
 
-vi.mock("../lib/prisma", () => ({
-    default: {
-        profile: {
-            findUnique: vi.fn()
-        },
-        membership: {
-            findFirst: vi.fn()
-        },
-    },
-}));
-
 describe("authUtils", () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
-
     describe("requireRoleInClub", () => {
         it("should return true if active membership with role exists in database", async () => {
+            console.log(prisma.membership.findFirst);
             vi.mocked(prisma.membership.findFirst).mockResolvedValue({ id: "258" } as any);
             const result = await requireRoleInClub("userId-123", "clubId-456", [ Role.ADMIN ]);
             expect(result).toBe(true);
