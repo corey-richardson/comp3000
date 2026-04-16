@@ -1,18 +1,23 @@
 name: CD Pipeline
 
 on:
-    workflow_run:
-        workflows: ["CI Pipeline"]
-        types:
-          - completed
-        branches:
-          - main
+    # workflow_run:
+    #     workflows: ["CI Pipeline"]
+    #     types:
+    #       - completed
+    #     branches:
+    #       - main
+    push: 
+        branches: [ main ]
     workflow_dispatch:
 
 jobs:
     deploy-on-success:
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        # if: ${{ github.event.workflow_run.conclusion == 'success' }}
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: SourceCode
 
         steps:
           - uses: actions/checkout@v4
