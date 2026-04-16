@@ -1,21 +1,15 @@
 import { Router } from "express";
 
-import { acceptInvite, createInvite, declineInvite, getInvitesByClub, getMyInvites, getRecentClubUpdates, revokeInvite } from "../controllers/inviteController";
+import { acceptInvite, declineInvite, getMyInvites, revokeInvite } from "../controllers/inviteController";
 import requireAuth from "../middleware/requireAuth";
 
 const router = Router();
 
-// Relative to /api
+// Relative to /api/invites
 
 // Middleware
 router.use(requireAuth);
 // Protected Routes
-// Relative to /api/clubs
-router.get("/clubs/:clubId/invites/activity", getRecentClubUpdates);
-router.get("/clubs/:clubId/invites", getInvitesByClub);
-router.post("/clubs/:clubId/invites", createInvite);
-
-// Relative to /api/invites
 router.get("/invites/my-invites", getMyInvites);
 router.post("/invites/:inviteId/accept", acceptInvite);
 router.post("/invites/:inviteId/decline", declineInvite);

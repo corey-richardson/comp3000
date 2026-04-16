@@ -15,13 +15,19 @@ import userRoutes from "./routes/userRoutes";
 
 // Express App
 const app = express();
+app.use(express.json());
 
 // Middleware
 app.use(cors({
     origin: "http://localhost:81"
 }));
 
-app.use(express.json());
+// Health Test Route
+app.get("/api/health", (request: Request, response: Response) => {
+    response.status(200).json({
+        backend: "Online!",
+    });
+});
 
 // Request Logging
 app.use((request: Request, response: Response, next: NextFunction) => {
@@ -30,26 +36,18 @@ app.use((request: Request, response: Response, next: NextFunction) => {
     next();
 });
 
-// Smoke Test Route
-app.get("/smoke-test", (request: Request, response: Response) => {
-    response.json({
-        backend: "Online!",
-    });
-});
-
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/clubs", clubRoutes);
 app.use("/api/contacts", contactsRoutes);
+app.use("/api/invites", inviteRoutes);
 app.use("/api/clubs", membershipRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/rounds", roundRoutes);
 app.use("/api/scores", scoreRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api", inviteRoutes);
 
 // Error Handling
-
 app.use((request: Request, response: Response) => {
     response.status(404).json({ error: "Route Not Found!" });
 });

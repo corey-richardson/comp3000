@@ -77,7 +77,7 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
                 venue: selectedRoundData.venue
             }));
         }
-    }, [ selectedRoundData?.name, selectedRoundData?.venue, setFormData ]);
+    }, [ selectedRoundData?.name, selectedRoundData, selectedRoundData?.venue, setFormData, formData.venue ]);
 
     const isRoundValid = !!selectedRoundData;
 

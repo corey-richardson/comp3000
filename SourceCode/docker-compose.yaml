@@ -1,7 +1,8 @@
 services:
 
   archeryutils-service:
-    build: ./archeryutils-service
+    build:
+      context: ./archeryutils-service
     container_name: archeryutils-service
     volumes:
       - ./archeryutils-service:/app:rw
@@ -14,6 +15,7 @@ services:
   database:
     image: postgres:15-alpine
     container_name: database
+    profiles: ["dev"] # dont run in prod
     restart: always
 
     env_file:
@@ -29,7 +31,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+      target: development
     container_name: backend
     volumes:
       - ./backend:/app:rw
@@ -43,10 +47,12 @@ services:
     ports:
       - "82:4000"
     depends_on:
-      - database
+      database:
+        condition: service_started
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
     container_name: frontend
     volumes:
       - ./frontend:/app:rw
@@ -64,3 +70,5 @@ services:
 
 volumes:
   postgres_data:
+
+# docker compose --profile dev up
