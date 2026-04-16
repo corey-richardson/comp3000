@@ -1,2 +1,4 @@
 [![wakatime](https://wakatime.com/badge/user/55c30436-1509-4eb9-9f18-fa9b7c6060c4/project/9dbb6dcd-ade6-495c-b528-720b8ef84ccf.svg)](https://wakatime.com/badge/user/55c30436-1509-4eb9-9f18-fa9b7c6060c4/project/9dbb6dcd-ade6-495c-b528-720b8ef84ccf)
+
 [![CI Pipeline](https://github.com/corey-richardson/comp3000/actions/workflows/ci.yaml/badge.svg)](https://github.com/corey-richardson/comp3000/actions/workflows/ci.yaml)
+[![CD Pipeline](https://github.com/corey-richardson/comp3000/actions/workflows/cd.yaml/badge.svg)](https://github.com/corey-richardson/comp3000/actions/workflows/cd.yaml)

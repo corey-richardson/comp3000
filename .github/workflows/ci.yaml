@@ -137,5 +137,9 @@ jobs:
           - uses: actions/checkout@v4
 
           - name: Build Containers
-            run: docker compose build
+            run: docker compose --profile dev build
             working-directory: SourceCode
+            env:
+              POSTGRES_USER: dummy_user
+              POSTGRES_PASSWORD: dummy_password
+              POSTGRES_DB: archery_test
