@@ -87,4 +87,4 @@ jobs:
                 docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./archeryutils-service
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
                 aws ecs update-service --cluster archery-utils-service --service archery-utils-task-service --force-new-deployment
-                aws ecs wait services-stable --cluster archery-utils-service --services archery-backend-task-service
+                aws ecs wait services-stable --cluster archery-utils-service --services archery-utils-task-service
