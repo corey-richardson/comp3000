@@ -17,9 +17,10 @@ export default tseslint.config(
         languageOptions: {
             ecmaVersion: "latest",
             sourceType: "module",
-            globals: { ...global.browser, ...globals.node },
+            globals: { ...globals.browser, ...globals.node },
         },
         rules: {
+            "eqeqeq": ["error", "always"],
             "@typescript-eslint/no-explicit-any": "off",
             "@typescript-eslint/no-unused-vars": "off",
             "no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_", "caughtErrorsIgnorePattern": "^_" }],

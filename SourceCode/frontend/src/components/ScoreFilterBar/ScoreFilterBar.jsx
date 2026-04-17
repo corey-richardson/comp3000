@@ -108,7 +108,7 @@ const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
                 >
                     {[10, 25, 50, 100, 500, 1000].map((num) => (
                         <option key={num} value={num}>
-                            {loadNumber == num ? `Load: ${num}` : num}
+                            {loadNumber === num ? `Load: ${num}` : num}
                         </option>
                     ))}
                 </select>
