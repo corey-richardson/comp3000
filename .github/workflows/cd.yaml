@@ -58,7 +58,8 @@ jobs:
             run: |
                 docker build --target production -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./backend
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-                aws ecs update-service --cluster archery-utils-service --service archery-backend-task-service --force-new-deployment --wait-for-steady-state
+                aws ecs update-service --cluster archery-utils-service --service archery-backend-task-service --force-new-deployment
+                aws ecs wait services-stable --cluster archery-utils-service --services archery-backend-task-service
         
     deploy-utils:
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -85,4 +86,5 @@ jobs:
             run: |
                 docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./archeryutils-service
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-                aws ecs update-service --cluster archery-utils-service --service archery-utils-task-service --force-new-deployment --wait-for-steady-state
+                aws ecs update-service --cluster archery-utils-service --service archery-utils-task-service --force-new-deployment
+                aws ecs wait services-stable --cluster archery-utils-service --services archery-backend-task-service
