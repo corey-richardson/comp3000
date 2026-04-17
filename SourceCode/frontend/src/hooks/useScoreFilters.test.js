@@ -174,7 +174,7 @@ describe("useScoreFilters", () => {
         const { result } = renderHook(() => useScoreFilters(MOCK_SCORES));
 
         act(() => {
-            result.current.updateFilters("sortOrder", "SCORE");
+            result.current.updateFilters("sortOrder", "SCORE_DESC");
         });
 
         expect(result.current.filteredScores[0].roundName).toBe("WA 50m (Compound)"); // 680
