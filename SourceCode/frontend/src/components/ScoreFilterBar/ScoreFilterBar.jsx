@@ -82,21 +82,35 @@ const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
                     value={filters.sortOrder}
                     onChange={(e) => updateFilters("sortOrder", e.target.value)}
                 >
-                    <option value="NEWEST">Newest First</option>
-                    <option value="OLDEST">Oldest First</option>
-                    <option value="SCORE">Highest Score</option>
+                    <option value="NEWEST">
+                        {filters.sortOrder === "NEWEST" ? "Sort By: Newest First" : "Newest First"}
+                    </option>
+                    <option value="OLDEST">
+                        {filters.sortOrder === "OLDEST" ? "Sort By: Oldest First" : "Oldest First"}
+                    </option>
+                    <option value="SCORE_DESC">
+                        {filters.sortOrder === "SCORE_DESC" ? "Sort By: Highest Score" : "Highest Score"}
+                    </option>
+                    <option value="SCORE_ASC">
+                        {filters.sortOrder === "SCORE_ASC" ? "Sort By: Lowest Score" : "Lowest Score"}
+                    </option>
+                    <option value="HANDICAP_ASC">
+                        {filters.sortOrder === "HANDICAP_ASC" ? "Sort By: Highest Handicap" : "Highest Handicap"}
+                    </option>
+                    <option value="HANDICAP_DESC">
+                        {filters.sortOrder === "HANDICAP_DESC" ? "Sort By: Lowest Handicap" : "Lowest Handicap"}
+                    </option>
                 </select>
 
                 <select
                     value={loadNumber}
                     onChange={(e) => setLoadNumber(e.target.value)}
                 >
-                    <option value="10">Load: 10</option>
-                    <option value="25">Load: 25</option>
-                    <option value="50">Load: 50</option>
-                    <option value="100">Load: 100</option>
-                    <option value="500">Load: 500</option>
-                    <option value="1000">Load: 1000</option>
+                    {[10, 25, 50, 100, 500, 1000].map((num) => (
+                        <option key={num} value={num}>
+                            {loadNumber == num ? `Load: ${num}` : num}
+                        </option>
+                    ))}
                 </select>
 
                 <div className={styles.dateGroup}>

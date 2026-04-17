@@ -65,8 +65,17 @@ export const useScoreFilters = (unfilteredScores = []) => {
             if (filters.sortOrder === "OLDEST") {
                 return new Date(a.dateShot) - new Date(b.dateShot);
             }
-            if (filters.sortOrder === "SCORE") {
+            if (filters.sortOrder === "SCORE_ASC") {
+                return a.score - b.score;
+            }
+            if (filters.sortOrder === "SCORE_DESC") {
                 return b.score - a.score;
+            }
+            if (filters.sortOrder === "HANDICAP_ASC") {
+                return b.handicap - a.handicap;
+            }
+            if (filters.sortOrder === "HANDICAP_DESC") {
+                return a.handicap - b.handicap;
             }
 
             return 0;
