@@ -85,8 +85,14 @@
         <mxCell id="VLXQ8J0mmzj8WEKXBEWX-19" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" value="Wait for Steady State" vertex="1">
           <mxGeometry height="80" width="160" x="320" y="960" as="geometry" />
         </mxCell>
+        <mxCell id="VLXQ8J0mmzj8WEKXBEWX-47" edge="1" parent="1" source="VLXQ8J0mmzj8WEKXBEWX-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="VLXQ8J0mmzj8WEKXBEWX-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="VLXQ8J0mmzj8WEKXBEWX-20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" value="Docker Build and Push" vertex="1">
           <mxGeometry height="80" width="160" x="520" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="VLXQ8J0mmzj8WEKXBEWX-48" edge="1" parent="1" source="VLXQ8J0mmzj8WEKXBEWX-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="VLXQ8J0mmzj8WEKXBEWX-22">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="VLXQ8J0mmzj8WEKXBEWX-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;" value="Refresh ECS Service" vertex="1">
           <mxGeometry height="80" width="160" x="520" y="840" as="geometry" />
