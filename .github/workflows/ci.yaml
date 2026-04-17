@@ -83,7 +83,7 @@ jobs:
                 cache: "npm"
                 cache-dependency-path: SourceCode/backend/package-lock.json
  
-          - name: Install Dependencies
+          - name: Install Backend Dependencies
             run: npm ci
             working-directory: SourceCode/backend
           
