@@ -83,7 +83,7 @@ model Invite {
 
   clubId           String
   userId           String?
-  membershipNumber String?
+  membershipNumber String
   asRoles     Role[]
 
   invitedBy String
