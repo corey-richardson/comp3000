@@ -7,16 +7,15 @@ on:
           - completed
         branches:
           - main
-    workflow_dispatch:
 
 jobs:
-    deploy-on-success:
+
+    deploy-frontend:
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
         runs-on: ubuntu-latest
         defaults:
             run:
                 working-directory: SourceCode
-
         steps:
           - uses: actions/checkout@v4
 
@@ -26,37 +25,64 @@ jobs:
                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                 aws-region: eu-north-1
-
+        
           - name: Deploy Frontend to S3 Bucket
             run: |
                 cd frontend
                 npm install && npm run build
                 aws s3 sync build/ s3://archery-frontend-live --delete
                 aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+    deploy-backend:
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: SourceCode
         
-          - name: Login to ECR
-            id: login-ecr
-            uses: aws-actions/amazon-ecr-login@v1
-        
+        steps:
+          - uses: actions/checkout@v4
+
+          - name: Setup AWS and ECR
+            id: aws-setup
+            uses: ./.github/actions/aws-setup
+            with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
           - name: Build and Push Backend
             env:
-                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                ECR_REGISTRY: ${{ steps.aws-setup.outputs.ecr-registry }}
                 ECR_REPOSITORY: archery-backend
                 IMAGE_TAG: latest
             run: |
                 docker build --target production -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./backend
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+                aws ecs update-service --cluster archery-utils-service --service archery-backend-task-service --force-new-deployment --wait-for-steady-state
+        
+    deploy-utils:
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: SourceCode
 
+        steps:
+          - uses: actions/checkout@v4
+
+          - name: Setup AWS and ECR
+            id: aws-setup
+            uses: ./.github/actions/aws-setup
+            with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        
           - name: Build and Push Utils
             env:
-                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                ECR_REGISTRY: ${{ steps.aws-setup.outputs.ecr-registry }}
                 ECR_REPOSITORY: archery-utils
                 IMAGE_TAG: latest
             run: |
                 docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./archeryutils-service
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-          - name: Refresh ECS Services
-            run: |
-                aws ecs update-service --cluster archery-utils-service --service archery-backend-task-service --force-new-deployment
-                aws ecs update-service --cluster archery-utils-service --service archery-utils-task-service --force-new-deployment
+                aws ecs update-service --cluster archery-utils-service --service archery-utils-task-service --force-new-deployment --wait-for-steady-state
