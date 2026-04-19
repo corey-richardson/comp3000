@@ -16,10 +16,21 @@ jobs:
             frontend: ${{ steps.filter.outputs.frontend }}
             utils: ${{ steps.filter.outputs.utils }}
         steps:
+
           - uses: actions/checkout@v4
+            with:
+                fetch-depth: 0
+
+          - name: Set base SHA
+            id: base
+            run: |
+                echo "base=$(git rev-parse HEAD^)" >> $GITHUB_OUTPUT
+
           - uses: dorny/paths-filter@v3
             id: filter
             with:
+                base: ${{ steps.base.outputs.base }}
+                ref: ${{ github.event.workflow_run.head_sha }}
                 filters: |
                     backend: ['SourceCode/backend/**']
                     frontend: ['SourceCode/frontend/**']
