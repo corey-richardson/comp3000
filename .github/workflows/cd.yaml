@@ -25,7 +25,7 @@ jobs:
           - uses: dorny/paths-filter@v3
             id: filter
             with:
-                base: ${{ github.event.workflow_run.head_sha || github.sha }}~1
+                base: HEAD~1
                 filters: |
                     backend: ['SourceCode/backend/**']
                     frontend: ['SourceCode/frontend/**']
