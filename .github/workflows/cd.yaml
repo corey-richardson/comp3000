@@ -7,7 +7,6 @@ on:
           - completed
         branches:
           - main
-    workflow_dispatch: # temp for testing
 
 jobs:
     changes:
@@ -18,15 +17,9 @@ jobs:
             utils: ${{ steps.filter.outputs.utils }}
         steps:
           - uses: actions/checkout@v4
-            with:
-                ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-                fetch-depth: 2
-
           - uses: dorny/paths-filter@v3
             id: filter
             with:
-                base: 'HEAD~1'
-                initial-fetch-depth: '2'
                 filters: |
                     backend: ['SourceCode/backend/**']
                     frontend: ['SourceCode/frontend/**']
