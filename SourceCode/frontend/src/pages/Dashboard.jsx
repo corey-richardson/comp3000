@@ -134,7 +134,7 @@ const Dashboard = () => {
     }, [ user.id, authIsReady, makeApiCall ]);
 
     return (
-        <div>
+        <div className="content">
 
             <div className={dashboardStyles.dashboardGrid}>
                 <RecentScores
