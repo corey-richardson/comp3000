@@ -10,3 +10,6 @@ coverage/
 ~$*
 # AWS Notes
 .aws*
+# Report
+/07-Report/res/*.png
+/07-Report/~*.tmp
