@@ -25,7 +25,8 @@ jobs:
           - uses: dorny/paths-filter@v3
             id: filter
             with:
-                base: HEAD~1
+                base: 'HEAD~1'
+                initial-fetch-depth: '2'
                 filters: |
                     backend: ['SourceCode/backend/**']
                     frontend: ['SourceCode/frontend/**']
