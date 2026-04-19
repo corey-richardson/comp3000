@@ -12,14 +12,15 @@ jobs:
     changes:
         runs-on: ubuntu-latest
         outputs:
-            backend:
-            frontend:
-            utils:
+            backend: ${{ steps.filter.outputs.backend }}
+            frontend: ${{ steps.filter.outputs.frontend }}
+            utils: ${{ steps.filter.outputs.utils }}
         steps:
           - uses: actions/checkout@v4
           - uses: dorny/paths-filter@v3
             id: filter
             with:
+                base: ${{ github.event.workflow_run.head_branch }}
                 filters: |
                     backend: ['SourceCode/backend/**']
                     frontend: ['SourceCode/frontend/**']
