@@ -9,32 +9,27 @@ on:
           - main
 
 jobs:
-
-    deploy-frontend:
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    changes:
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: SourceCode
+        outputs:
+            backend:
+            frontend:
+            utils:
         steps:
           - uses: actions/checkout@v4
-
-          - name: Configure AWS
-            uses: aws-actions/configure-aws-credentials@v2
+          - uses: dorny/paths-filter@v3
+            id: filter
             with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: eu-north-1
-        
-          - name: Deploy Frontend to S3 Bucket
-            run: |
-                cd frontend
-                npm install && npm run build
-                aws s3 sync build/ s3://archery-frontend-live --delete
-                aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+                filters: |
+                    backend: ['SourceCode/backend/**']
+                    frontend: ['SourceCode/frontend/**']
+                    utils: ['SourceCode/archeryutils-service/**']
 
     deploy-backend:
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        needs: [changes]
+        if: |
+            github.event.workflow_run.conclusion == 'success' &&
+            needs.changes.outputs.backend == 'true'
         runs-on: ubuntu-latest
         defaults:
             run:
@@ -60,9 +55,39 @@ jobs:
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
                 aws ecs update-service --cluster archery-utils-service --service archery-backend-task-service --force-new-deployment
                 aws ecs wait services-stable --cluster archery-utils-service --services archery-backend-task-service
+
+    deploy-frontend:
+        needs: [changes]
+        if: |
+            github.event.workflow_run.conclusion == 'success' &&
+            needs.changes.outputs.frontend == 'true'
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: SourceCode
+        steps:
+          - uses: actions/checkout@v4
+
+          - name: Configure AWS
+            uses: aws-actions/configure-aws-credentials@v2
+            with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: eu-north-1
         
+          - name: Deploy Frontend to S3 Bucket
+            run: |
+                cd frontend
+                npm install && npm run build
+                aws s3 sync build/ s3://archery-frontend-live --delete
+                aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+
     deploy-utils:
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        needs: [changes]
+        if: |
+            github.event.workflow_run.conclusion == 'success' &&
+            needs.changes.outputs.utils == 'true'
         runs-on: ubuntu-latest
         defaults:
             run:
