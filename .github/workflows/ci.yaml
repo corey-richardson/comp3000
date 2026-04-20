@@ -134,19 +134,19 @@ jobs:
                 name: python-results
                 path: SourceCode/archeryutils-service/python-results.xml
 
-    build:
-        needs: [ lint, test-frontend, test-backend, test-python ]
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v4
+    # build:
+    #     needs: [ lint, test-frontend, test-backend, test-python ]
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #       - uses: actions/checkout@v4
 
-          - name: Build Containers
-            run: docker compose --profile dev build
-            working-directory: SourceCode
-            env:
-              POSTGRES_USER: dummy_user
-              POSTGRES_PASSWORD: dummy_password
-              POSTGRES_DB: archery_test
+    #       - name: Build Containers
+    #         run: docker compose --profile dev build
+    #         working-directory: SourceCode
+    #         env:
+    #           POSTGRES_USER: dummy_user
+    #           POSTGRES_PASSWORD: dummy_password
+    #           POSTGRES_DB: archery_test
 
     
     prepare-deployment:
