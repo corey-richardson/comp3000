@@ -21,16 +21,24 @@ jobs:
             with:
                 fetch-depth: 0
 
-          - name: Set base SHA
-            id: base
-            run: |
-                echo "base=$(git rev-parse HEAD^)" >> $GITHUB_OUTPUT
+          - name: Download CI Metadata
+            uses: actions/download-artifact@v4
+            with:
+                name: commit-metadata
+                run-id: ${{ github.event.workflow_run.id }}
 
-          - uses: dorny/paths-filter@v3
+          - name: Read SHAs
+            id: shas
+            run: |
+                echo "base=$(cat base_sha.txt)" >> $GITHUB_OUTPUT
+                echo "head=$(cat head_sha.txt)" >> $GITHUB_OUTPUT
+        
+          - name: Filter Deployment
+            uses: dorny/paths-filter@v3
             id: filter
             with:
-                base: ${{ steps.base.outputs.base }}
-                ref: ${{ github.event.workflow_run.head_sha }}
+                base: ${{ steps.shas.outputs.base }}
+                ref: ${{ steps.shas.outputs.head }}
                 filters: |
                     backend: ['SourceCode/backend/**']
                     frontend: ['SourceCode/frontend/**']

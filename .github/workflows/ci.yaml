@@ -147,3 +147,18 @@ jobs:
               POSTGRES_USER: dummy_user
               POSTGRES_PASSWORD: dummy_password
               POSTGRES_DB: archery_test
+
+    
+    prepare-deployment:
+        needs: [ lint, test-frontend, test-backend, test-python ]
+        runs-on: ubuntu-latest
+        steps:
+          - name: Save Commit Range
+            run: |
+                echo "${{ github.event.before }}" > base_sha.txt
+                echo "${{ github.event.after }}" > head_sha.txt
+          - name: Upload Metadata
+            uses: actions/upload-artifact@v4
+            with:
+                name: commit-metadata
+                path: ./*.txt
