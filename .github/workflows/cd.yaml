@@ -10,6 +10,7 @@ on:
 
 jobs:
     changes:
+        if: github.event.workflow_run.conclusion == 'success'
         runs-on: ubuntu-latest
         outputs:
             backend: ${{ steps.filter.outputs.backend }}
@@ -26,6 +27,8 @@ jobs:
             with:
                 name: commit-metadata
                 run-id: ${{ github.event.workflow_run.id }}
+                repository: ${{ github.repository }}
+                github-token: ${{ secrets.GITHUB_TOKEN }}
 
           - name: Read SHAs
             id: shas
@@ -46,9 +49,7 @@ jobs:
 
     deploy-backend:
         needs: [changes]
-        if: |
-            github.event.workflow_run.conclusion == 'success' &&
-            needs.changes.outputs.backend == 'true'
+        if: needs.changes.outputs.backend == 'true'
         runs-on: ubuntu-latest
         defaults:
             run:
@@ -86,9 +87,7 @@ jobs:
 
     deploy-frontend:
         needs: [changes]
-        if: |
-            github.event.workflow_run.conclusion == 'success' &&
-            needs.changes.outputs.frontend == 'true'
+        if: needs.changes.outputs.frontend == 'true'
         runs-on: ubuntu-latest
         defaults:
             run:
@@ -113,9 +112,7 @@ jobs:
 
     deploy-utils:
         needs: [changes]
-        if: |
-            github.event.workflow_run.conclusion == 'success' &&
-            needs.changes.outputs.utils == 'true'
+        if: needs.changes.outputs.utils == 'true'
         runs-on: ubuntu-latest
         defaults:
             run:
