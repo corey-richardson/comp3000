@@ -26,7 +26,7 @@ datasource db {
 // Models
 
 model Profile {
-  id        String @id @default(cuid())
+  id        String @id @default(cuid(2))
   firstName String
   lastName  String
   username  String @unique
@@ -53,7 +53,7 @@ model Profile {
 }
 
 model Club {
-  id   String @id @default(cuid())
+  id   String @id @default(cuid(2))
   name String @unique
 
   created_at  DateTime  @default(now())
@@ -65,7 +65,7 @@ model Club {
 }
 
 model Membership {
-  id String @id @default(cuid())
+  id String @id @default(cuid(2))
 
   clubId String
   userId String
@@ -79,7 +79,7 @@ model Membership {
 }
 
 model Invite {
-  id String @id @default(cuid())
+  id String @id @default(cuid(2))
 
   clubId           String
   userId           String?
@@ -99,7 +99,7 @@ model Invite {
 }
 
 model EmergencyContact {
-  id     String @id @default(cuid())
+  id     String @id @default(cuid(2))
   userId String
 
   name               String
@@ -113,7 +113,7 @@ model EmergencyContact {
 }
 
 model Score {
-  id     String @id @default(cuid())
+  id     String @id @default(cuid(2))
   userId String
 
   dateShot    DateTime
@@ -153,7 +153,7 @@ model Score {
 }
 
 // model Scoresheet {
-//   id           String @id @default(cuid())
+//   id           String @id @default(cuid(2))
 //   scoreId      String @unique
 //   fileUrl      String
 //   uploadedById String
@@ -163,7 +163,7 @@ model Score {
 // }
 
 model RecordsSummary {
-  id     String @id @default(cuid())
+  id     String @id @default(cuid(2))
   userId String @unique
 
   bowstyleSummaries BowstyleSummary[]
@@ -173,7 +173,7 @@ model RecordsSummary {
 }
 
 model BowstyleSummary {
-  id       String   @id @default(cuid())
+  id       String   @id @default(cuid(2))
   userId   String
   bowstyle Bowstyle
 
