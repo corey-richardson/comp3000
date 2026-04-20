@@ -12,6 +12,7 @@ CMD ["npm", "run", "dev"]
 # BUILD
 FROM common AS build-step
 COPY . .
+ENV DATABASE_URL="postgresql://dummy:dummy_password@localhost:83/dummy_db?schema=public"
 RUN npx prisma generate
 RUN npm run build
 RUN npm prune --production
