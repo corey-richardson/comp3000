@@ -112,7 +112,7 @@ const DetailsForm = ({ profile, setProfile, isLoading, setIsLoading, error, setE
                     </div>
 
                     <div className={formStyles.fieldGroup}>
-                        <label>Sex Category (as per AGB):</label>
+                        <label>Sex (as per AGB):</label>
                         <select value={profile?.sex ?? "NOT_SET"} onChange={ handleInputChange("sex") }>
                             <option value="NOT_SET" disabled>Please Select</option>
                             <option value="OPEN">{ EnumMap["OPEN"] }</option>
