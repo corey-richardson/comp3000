@@ -314,4 +314,56 @@ describe("userController", () => {
             expect(response.json).toHaveBeenCalledWith({ error: "Internal server error during login." });
         });
     });
+
+    describe("deleteUser (TDD)", () => {
+        it("should return 404 if userId not found in database", async () => {
+            // Arrange
+            const request = {} as Request;
+            const response = mockResponse();
+
+            (prisma.profile.findUnique as any).mockResolvedValue(null);
+            // Act
+            await controller.deleteUser(request, response);
+            // Assert
+            expect(response.status).toHaveBeenCalledWith(404);
+            expect(response.json).toHaveBeenCalledWith(expect.objectContaining({
+                "error": "User not found."
+            }));
+            expect(prisma.profile.delete).not.toHaveBeenCalled();
+        });
+
+        it("should return 200 on successful deletion", async () => {
+            // Arrange
+            const request = {} as Request;
+            const response = mockResponse();
+
+            (prisma.profile.findUnique as any).mockResolvedValue({ "id": "test-id" });
+            (prisma.profile.delete as any).mockResolvedValue({ "id": "test-id" });
+            // Act
+            await controller.deleteUser(request, response);
+            // Assert
+            expect(prisma.profile.delete).toHaveBeenCalledWith({
+                where: {
+                    id: "test-id"
+                }
+            });
+            expect(response.status).toHaveBeenCalledWith(200);
+        });
+    });
+
+    it("should return status 500 if generic exception", async () => {
+        // Arrange
+        const request = {} as Request;
+        const response = mockResponse();
+
+        (prisma.profile.findUnique as any).mockResolvedValue({ id: "test-id" });
+        (prisma.profile.delete as any).mockRejectedValue(
+            new Error("uh oh broken")
+        );
+        // Act
+        await controller.deleteUser(request, response);
+        // Assert
+        expect(response.status).toHaveBeenCalledWith(500);
+        expect(response.json).toHaveBeenCalledWith({ error: "Internal server error." });
+    });
 });
