@@ -14,7 +14,7 @@ const stripJournal = <T extends Score>(scores: T[]) => {
 };
 
 export const createScore = async (request: Request, response: Response) => {
-    const requestingUser = (request as any).user;
+    const requestingUserId = (request as any).user.id;
 
     try {
         const {
@@ -62,7 +62,7 @@ export const createScore = async (request: Request, response: Response) => {
         const newScore = await prisma.score.create({
             data: {
                 profile: {
-                    connect: { id: requestingUser.id }
+                    connect: { id: requestingUserId }
                 },
 
                 handicap: flaskServiceData.handicap,
