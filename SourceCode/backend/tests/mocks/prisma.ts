@@ -10,7 +10,7 @@ const mockPrisma: any = {
 
     },
     invite: {
-
+        updateMany: vi.fn(),
     },
     membership: {
         findUnique: vi.fn(),
@@ -24,6 +24,7 @@ const mockPrisma: any = {
     profile: {
         create: vi.fn(),
         delete: vi.fn(),
+        findFirst: vi.fn(),
         findMany: vi.fn(),
         findUnique: vi.fn(),
         update: vi.fn()

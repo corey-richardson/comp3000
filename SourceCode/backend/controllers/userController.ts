@@ -60,7 +60,7 @@ export const signupUser = async (request: Request, response: Response) => {
         response.status(201).json({ id: profile.id, username, email, token });
 
     } catch (_error: any) {
-        response.status(500).json({ error: "Internal error during signup." });
+        response.status(500).json({ error: "Internal server error during signup." });
     }
 };
 
