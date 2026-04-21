@@ -1,0 +1,14 @@
+deleteUser
+    get current userId from requireAuth middleware injection
+    
+    try
+        findUnique profile from Profile where id: userId
+        if not profile, response status 404
+
+        // Referential Integrity is enforced at the schema level, using onDelete parameters
+        // Therefore, here we can just call the Profile.delete method and Prisma will handle cleanup
+        prisma.profile.delete where id: userId
+
+        response status 200
+    catch
+        response status 500
