@@ -356,25 +356,25 @@ describe("userController", () => {
             });
             expect(response.status).toHaveBeenCalledWith(204);
         });
-    });
 
-    it("should return status 500 if generic exception", async () => {
+        it("should return status 500 if generic exception", async () => {
         // Arrange
-        const request = {
-            user: {
-                id: "test-id"
-            }
-        } as any;
-        const response = mockResponse();
+            const request = {
+                user: {
+                    id: "test-id"
+                }
+            } as any;
+            const response = mockResponse();
 
-        (prisma.profile.findUnique as any).mockResolvedValue({ id: "test-id" });
-        (prisma.profile.delete as any).mockRejectedValue(
-            new Error("uh oh broken")
-        );
-        // Act
-        await controller.deleteUser(request, response);
-        // Assert
-        expect(response.status).toHaveBeenCalledWith(500);
-        expect(response.json).toHaveBeenCalledWith({ error: "Internal server error." });
+            (prisma.profile.findUnique as any).mockResolvedValue({ id: "test-id" });
+            (prisma.profile.delete as any).mockRejectedValue(
+                new Error("uh oh broken")
+            );
+            // Act
+            await controller.deleteUser(request, response);
+            // Assert
+            expect(response.status).toHaveBeenCalledWith(500);
+            expect(response.json).toHaveBeenCalledWith({ error: "Internal server error." });
+        });
     });
 });
