@@ -94,8 +94,8 @@ model Invite {
   declined_at DateTime?
 
   club    Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  invitee Profile? @relation("invitesReceived", fields: [userId], references: [id])
-  inviter Profile  @relation("invitesSent", fields: [invitedBy], references: [id])
+  invitee Profile? @relation("invitesReceived", fields: [userId], references: [id], onDelete: SetNull)
+  inviter Profile  @relation("invitesSent", fields: [invitedBy], references: [id], onDelete: Cascade)
 }
 
 model EmergencyContact {
