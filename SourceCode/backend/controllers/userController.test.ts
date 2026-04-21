@@ -2,8 +2,7 @@ import "../tests/mocks/prisma";
 
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 import * as controller from "./userController";
 import prisma from "../lib/prisma";
@@ -318,7 +317,11 @@ describe("userController", () => {
     describe("deleteUser (TDD)", () => {
         it("should return 404 if userId not found in database", async () => {
             // Arrange
-            const request = {} as Request;
+            const request = {
+                user: {
+                    id: "test-id"
+                }
+            } as any;
             const response = mockResponse();
 
             (prisma.profile.findUnique as any).mockResolvedValue(null);
@@ -332,9 +335,13 @@ describe("userController", () => {
             expect(prisma.profile.delete).not.toHaveBeenCalled();
         });
 
-        it("should return 200 on successful deletion", async () => {
+        it("should return 204 on successful deletion", async () => {
             // Arrange
-            const request = {} as Request;
+            const request = {
+                user: {
+                    id: "test-id"
+                }
+            } as any;
             const response = mockResponse();
 
             (prisma.profile.findUnique as any).mockResolvedValue({ "id": "test-id" });
@@ -347,13 +354,17 @@ describe("userController", () => {
                     id: "test-id"
                 }
             });
-            expect(response.status).toHaveBeenCalledWith(200);
+            expect(response.status).toHaveBeenCalledWith(204);
         });
     });
 
     it("should return status 500 if generic exception", async () => {
         // Arrange
-        const request = {} as Request;
+        const request = {
+            user: {
+                id: "test-id"
+            }
+        } as any;
         const response = mockResponse();
 
         (prisma.profile.findUnique as any).mockResolvedValue({ id: "test-id" });
