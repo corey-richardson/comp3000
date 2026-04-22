@@ -1,6 +1,7 @@
-flask
-archeryutils
-pytest
-pytest-cov
-pytest-mock
-gunicorn
+Flask==3.1.3
+Jinja2==3.1.6
+Pygments==2.20.0
+Werkzeug==3.1.8
+archeryutils==2.0.0
+pip-chill==1.0.5
+pytest-cov==7.1.0
