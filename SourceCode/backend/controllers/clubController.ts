@@ -1,5 +1,5 @@
 import { Role } from "@prisma/client";
-import { request, Request, Response } from "express";
+import { Request, Response } from "express";
 
 import prisma from "../lib/prisma";
 import { requireRoleInClub } from "../utils/authUtils";

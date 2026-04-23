@@ -29,6 +29,8 @@ const ClubDangerZone = ({ clubId, clubName }) => {
                 throw new Error(data.error || "Failed to delete club.");
             }
 
+            navigate("/clubs");
+
         } catch (error) {
             setError(error.message || "Failed to delete club.");
         } finally {
