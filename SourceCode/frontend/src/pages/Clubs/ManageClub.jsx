@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import ClubDangerZone from "../../components/ClubDangerZone/ClubDangerZone";
 import MembershipTable from "../../components/MembershipTable/MembershipTable";
 import { useApi } from "../../hooks/useApi";
 import headerLinkStyles from "../../styles/HeaderLinks.module.css";
@@ -76,6 +77,8 @@ const ManageClub = () => {
                     </div>
 
                     <MembershipTable members={club?.members} clubName={club?.name} decrementMemberCount={decrementMemberCount} />
+
+                    <ClubDangerZone clubId={clubId} clubName={club?.name} />
                 </>
             )}
 

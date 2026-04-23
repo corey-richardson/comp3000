@@ -1,0 +1,44 @@
+.dangerZone {
+    margin-top: 2rem;
+    position: relative;
+}
+
+.dangerZone:hover {
+    background-color: var(--light-gray);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px var(--shadow);
+}
+
+.title {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+}
+
+.deleteButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: transparent;
+    color: var(--text-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+}
+
+.deleteButton:hover {
+    cursor: pointer;
+    background-color: white;
+    border-color: red;
+    box-shadow: 0 2px 4px red;
+    font-weight: bold;
+}
