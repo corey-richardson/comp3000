@@ -3,6 +3,7 @@ import { vi } from "vitest";
 const mockPrisma: any = {
     club: {
         create: vi.fn(),
+        delete: vi.fn(),
         findMany: vi.fn(),
         findUnique: vi.fn(),
     },
