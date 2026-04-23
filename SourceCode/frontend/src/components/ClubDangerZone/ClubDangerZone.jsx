@@ -16,7 +16,25 @@ const ClubDangerZone = ({ clubId, clubName }) => {
     const [ error, setError ] = useState(null);
 
     const handleDelete = async () => {
-        console.log("Deleting " + clubName);
+        setIsDeleting(true);
+        setError(null);
+
+        try {
+            const response = await makeApiCall(`/api/clubs/${clubId}`, {
+                method: "DELETE"
+            });
+
+            if (!response.ok) {
+                const data = response.json();
+                throw new Error(data.error || "Failed to delete club.");
+            }
+
+        } catch (error) {
+            setError(error.message || "Failed to delete club.");
+        } finally {
+            setShowOverlay(false);
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -29,14 +47,14 @@ const ClubDangerZone = ({ clubId, clubName }) => {
                 <div>
                     <strong>Delete this club</strong>
                     <p>This is a destructive action, there is no going back. Please be certain.</p>
-                    {error && <p className="error-message">{error}</p>}
                 </div>
 
                 <button
                     className={dangerStyles.deleteButton}
                     onClick={() => setShowOverlay(true)}
                 >
-                    <Trash2 /> Delete Club
+                    <Trash2 />
+                    Delete Club
                 </button>
 
                 {showOverlay && (
@@ -51,6 +69,8 @@ const ClubDangerZone = ({ clubId, clubName }) => {
                     />
                 )}
             </div>
+
+            { error && <p className="error-message">{ error }</p> }
         </div>
     );
 };
