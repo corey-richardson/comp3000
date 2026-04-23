@@ -1,5 +1,5 @@
 import { Role } from "@prisma/client";
-import { Request, Response } from "express";
+import { request, Request, Response } from "express";
 
 import prisma from "../lib/prisma";
 import { requireRoleInClub } from "../utils/authUtils";
@@ -190,6 +190,45 @@ export const getMyClubs = async (request: Request, response: Response) => {
             }
         });
     } catch (_error: any) {
+        return response.status(500).json({ error: "Internal Server Error." });
+    }
+};
+
+/**
+deleteClub
+- include clubId in request params
+- try
+    - club.findUnique
+    - if not club, return 404
+
+    club.delete
+    return 204
+- catch
+    - return 500
+*/
+
+export const deleteClub = async (request: Request, response: Response) => {
+    const { clubId } = request.params as { clubId: string };
+
+    try {
+        const club = await prisma.club.findUnique({
+            where: {
+                id: clubId
+            },
+        });
+
+        if (!club) {
+            return response.status(404).json({ error: "Club not found." });
+        }
+
+        await prisma.club.delete({
+            where: {
+                id: clubId
+            },
+        });
+
+        return response.status(204).send();
+    } catch (_error) {
         return response.status(500).json({ error: "Internal Server Error." });
     }
 };

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { createClub, getClubById, getMyClubs } from "../controllers/clubController";
+import { createClub, deleteClub, getClubById, getMyClubs } from "../controllers/clubController";
 import { createInvite, getInvitesByClub, getRecentClubUpdates } from "../controllers/inviteController";
 import requireAuth from "../middleware/requireAuth";
 
@@ -19,5 +19,6 @@ router.post("/:clubId/invites", createInvite);
 router.post("/", createClub);
 router.get("/my-clubs", getMyClubs);
 router.get("/:clubId", getClubById);
+router.delete("/:clubId", deleteClub);
 
 export default router;
