@@ -172,7 +172,7 @@ describe("userController", () => {
             await controller.signupUser(request, response);
             // Assert
             expect(response.status).toHaveBeenCalledWith(500);
-            expect(response.json).toHaveBeenCalledWith({ error: "Internal server error during signup." });
+            expect(response.json).toHaveBeenCalledWith({ error: "Internal Server Error during signup." });
         });
     });
 
@@ -310,7 +310,7 @@ describe("userController", () => {
             await controller.loginUser(request, response);
             // Assert
             expect(response.status).toHaveBeenCalledWith(500);
-            expect(response.json).toHaveBeenCalledWith({ error: "Internal server error during login." });
+            expect(response.json).toHaveBeenCalledWith({ error: "Internal Server Error during login." });
         });
     });
 
@@ -374,7 +374,7 @@ describe("userController", () => {
             await controller.deleteUser(request, response);
             // Assert
             expect(response.status).toHaveBeenCalledWith(500);
-            expect(response.json).toHaveBeenCalledWith({ error: "Internal server error." });
+            expect(response.json).toHaveBeenCalledWith({ error: "Internal Server Error." });
         });
     });
 });

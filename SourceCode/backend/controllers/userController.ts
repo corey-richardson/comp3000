@@ -60,7 +60,7 @@ export const signupUser = async (request: Request, response: Response) => {
         response.status(201).json({ id: profile.id, username, email, token });
 
     } catch (_error: any) {
-        response.status(500).json({ error: "Internal server error during signup." });
+        response.status(500).json({ error: "Internal Server Error during signup." });
     }
 };
 
@@ -110,7 +110,7 @@ export const loginUser = async (request: Request, response: Response) => {
         });
 
     } catch (_error: any) {
-        response.status(500).json({ error: "Internal server error during login." });
+        response.status(500).json({ error: "Internal Server Error during login." });
     }
 };
 
@@ -136,6 +136,6 @@ export const deleteUser = async(request: Request, response: Response) => {
         return response.status(204).send();
 
     } catch (_error) {
-        return response.status(500).json({ error: "Internal server error." });
+        return response.status(500).json({ error: "Internal Server Error." });
     }
 };

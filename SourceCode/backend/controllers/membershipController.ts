@@ -91,7 +91,7 @@ export const updateMembership = async (request: Request, response: Response) => 
 
         return response.status(200).json(updatedMembership);
     } catch (_error: any) {
-        return response.status(500).json({ error: "Internal server error." });
+        return response.status(500).json({ error: "Internal Server Error." });
     }
 };
 
