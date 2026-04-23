@@ -53,6 +53,7 @@ describe("clubController", () => {
 
         mockResponse = {
             status: vi.fn().mockReturnThis(),
+            send: vi.fn(),
             json: vi.fn(),
         } as any;
     });
@@ -110,7 +111,7 @@ describe("clubController", () => {
             // Arrange
             mockRequest.body = { clubName: "Existing Club" };
             /** https://www.prisma.io/docs/orm/reference/error-reference#p2002 */
-            vi.mocked(prisma.$transaction).mockRejectedValue({ code: "P2002" });
+            (prisma.$transaction as any).mockRejectedValue({ code: "P2002" });
             // Act
             await controller.createClub(mockRequest as Request, mockResponse as Response);
             // Assert
@@ -121,7 +122,7 @@ describe("clubController", () => {
         it("should return status 500 if generic exception", async () => {
             // Arrange
             mockRequest.body = { clubName: "Broken Club" };
-            vi.mocked(prisma.$transaction).mockRejectedValue(
+            (prisma.$transaction as any).mockRejectedValue(
                 new Error("uh oh broken")
             );
             // Act
@@ -139,7 +140,7 @@ describe("clubController", () => {
 
         it("should return status 403 if the user is not a member of the given club", async () => {
             // Arrange
-            vi.mocked(requireRoleInClub).mockResolvedValue(false);
+            (requireRoleInClub as any).mockResolvedValue(false);
             // Act
             await controller.getClubById(mockRequest as Request, mockResponse as Response);
             // Assert
@@ -149,8 +150,8 @@ describe("clubController", () => {
 
         it("should return status 404 if club not found", async () => {
             // Arrange
-            vi.mocked(requireRoleInClub).mockResolvedValue(true);
-            vi.mocked(prisma.club.findUnique).mockResolvedValue(null);
+            (requireRoleInClub as any).mockResolvedValue(true);
+            (prisma.club.findUnique as any).mockResolvedValue(null);
             // Act
             await controller.getClubById(mockRequest as Request, mockResponse as Response);
             // Assert
@@ -160,8 +161,8 @@ describe("clubController", () => {
 
         it("should return status 200 if club found, with memberCount", async () => {
             // Arrange
-            vi.mocked(requireRoleInClub).mockResolvedValue(true);
-            vi.mocked(prisma.club.findUnique).mockResolvedValue(mockClub as any);
+            (requireRoleInClub as any).mockResolvedValue(true);
+            (prisma.club.findUnique as any).mockResolvedValue(mockClub as any);
             // Act
             await controller.getClubById(mockRequest as Request, mockResponse as Response);
             // Assert
@@ -249,7 +250,7 @@ describe("clubController", () => {
                     .mockResolvedValueOnce(roles.isAdmin)
                     .mockResolvedValueOnce(roles.isCaptain)
                     .mockResolvedValueOnce(roles.isRecords);
-                vi.mocked(prisma.club.findUnique).mockResolvedValue(mockClub as any);
+                (prisma.club.findUnique as any).mockResolvedValue(mockClub as any);
                 // Act
                 await controller.getClubById(mockRequest as Request, mockResponse as Response);
                 // Assert
@@ -290,8 +291,8 @@ describe("clubController", () => {
 
         it("should return status 200 with memberships and pagination data", async () => {
             // Arrange
-            vi.mocked(prisma.membership.findMany).mockResolvedValue(mockMemberships as any);
-            vi.mocked(prisma.membership.count).mockResolvedValue(2);
+            (prisma.membership.findMany as any).mockResolvedValue(mockMemberships as any);
+            (prisma.membership.count as any).mockResolvedValue(2);
             // Act
             await controller.getMyClubs(mockRequest as Request, mockResponse as Response);
             // Assert
@@ -312,8 +313,8 @@ describe("clubController", () => {
         it("should apply pagination (limit + page)", async () => {
             // Arrange
             mockRequest.query = { limit: "1", page: "2" };
-            vi.mocked(prisma.membership.findMany).mockResolvedValue(mockMemberships as any);
-            vi.mocked(prisma.membership.count).mockResolvedValue(2);
+            (prisma.membership.findMany as any).mockResolvedValue(mockMemberships as any);
+            (prisma.membership.count as any).mockResolvedValue(2);
             // Act
             await controller.getMyClubs(mockRequest as Request, mockResponse as Response);
             // Assert
@@ -324,9 +325,56 @@ describe("clubController", () => {
 
         it("should return 500 on error", async () => {
             // Arrange
-            vi.mocked(prisma.membership.findMany).mockRejectedValue(new Error("uh ohhhh"));
+            (prisma.membership.findMany as any).mockRejectedValue(new Error("uh ohhhh"));
             // Act
             await controller.getMyClubs(mockRequest as Request, mockResponse as Response);
+            // Assert
+            expect(mockResponse.status).toHaveBeenCalledWith(500);
+            expect(mockResponse.json).toHaveBeenCalledWith({ error: "Internal Server Error." });
+        });
+    });
+
+    describe("deleteClub", () => {
+        beforeEach(() => {
+            mockRequest = { params: { clubId: "test-id" } };
+        });
+
+        it("should return 404 if club not found in db", async () => {
+            // Arrange
+            (prisma.club.findUnique as any).mockResolvedValue(null);
+            // Act
+            await controller.deleteClub(mockRequest as Request, mockResponse as Response);
+            // Assert
+            expect(mockResponse.status).toHaveBeenCalledWith(404);
+            expect(mockResponse.json).toHaveBeenCalledWith(expect.objectContaining({
+                "error": "Club not found."
+            }));
+            expect(prisma.club.delete).not.toHaveBeenCalled();
+        });
+
+        it("should return 204 on successful deletion", async () => {
+            // Arrange
+            (prisma.club.findUnique as any).mockResolvedValue({ "id": "test-id" });
+            (prisma.club.delete as any).mockResolvedValue({ "id": "test-id" });
+            // Act
+            await controller.deleteClub(mockRequest as Request, mockResponse as Response);
+            // Assert
+            expect(prisma.club.delete).toHaveBeenCalledWith({
+                where: {
+                    id: "test-id"
+                }
+            });
+            expect(mockResponse.status).toHaveBeenCalledWith(204);
+        });
+
+        it("should return status 500 if generic exception", async () => {
+            // Arrange
+            (prisma.club.findUnique as any).mockResolvedValue({ "id": "test-id" });
+            (prisma.club.delete as any).mockRejectedValue(
+                new Error("uh oh broken")
+            );
+            // Act
+            await controller.deleteClub(mockRequest as Request, mockResponse as Response);
             // Assert
             expect(mockResponse.status).toHaveBeenCalledWith(500);
             expect(mockResponse.json).toHaveBeenCalledWith({ error: "Internal Server Error." });
