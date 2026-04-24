@@ -1,5 +1,5 @@
 .dashboardImageContainer {
-  min-height: 400px;
+  min-height: 500px;
   background-color: #000;
   position: relative;
   display: flex;
@@ -9,6 +9,13 @@
   overflow: hidden;
   margin-bottom: 2.5rem;
 }
+
+@media (width >= 1720px) {
+    .dashboardImageContainer {
+        margin-top: 2rem;
+    }
+}
+
 
 .dashboardImageContainer::before {
   content: "";
@@ -26,10 +33,12 @@
 .dashboardImageContainer p, 
 .dashboardImageContainer > .links a {
   color: #fff;
+  font-weight: 525;
   position: relative;
   z-index: 1;
   text-shadow: 0 2px 8px rgb(0 0 0 / 70%);
-  padding: 20px 0;
+  padding: 1rem 0;
+  margin: 0;
   max-width: 80%;
   text-align: center;
 }
