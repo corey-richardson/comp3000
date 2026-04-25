@@ -10,9 +10,9 @@ const router = Router();
 // Middleware
 router.use(requireAuth);
 // Protected Routes
-router.get("/invites/my-invites", getMyInvites);
-router.post("/invites/:inviteId/accept", acceptInvite);
-router.post("/invites/:inviteId/decline", declineInvite);
-router.delete("/invites/:inviteId", revokeInvite);
+router.get("/my-invites", getMyInvites);
+router.post("/:inviteId/accept", acceptInvite);
+router.post("/:inviteId/decline", declineInvite);
+router.delete("/:inviteId", revokeInvite);
 
 export default router;
