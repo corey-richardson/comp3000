@@ -209,8 +209,14 @@ deleteClub
 
 export const deleteClub = async (request: Request, response: Response) => {
     const { clubId } = request.params as { clubId: string };
+    const requestingUserId = (request as any).user.id;
 
     try {
+        const isAuthorised = await requireRoleInClub(requestingUserId, clubId, [ Role.ADMIN ]);
+        if (!isAuthorised) {
+            return response.status(403).json({ error: "Forbidden." });
+        }
+
         const club = await prisma.club.findUnique({
             where: {
                 id: clubId

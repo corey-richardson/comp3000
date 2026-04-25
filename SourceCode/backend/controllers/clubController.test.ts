@@ -336,11 +336,28 @@ describe("clubController", () => {
 
     describe("deleteClub", () => {
         beforeEach(() => {
-            mockRequest = { params: { clubId: "test-id" } };
+            mockRequest = {
+                ...mockRequest,
+                params: { clubId: "test-id" }
+            };
+        });
+
+        it("should return 403 if user not admin", async () => {
+            // Arrange
+            (requireRoleInClub as any).mockResolvedValue(false);
+            // Act
+            await controller.deleteClub(mockRequest as Request, mockResponse as Response);
+            // Assert
+            expect(mockResponse.status).toHaveBeenCalledWith(403);
+            expect(mockResponse.json).toHaveBeenCalledWith(expect.objectContaining({
+                "error": "Forbidden."
+            }));
+            expect(prisma.club.delete).not.toHaveBeenCalled();
         });
 
         it("should return 404 if club not found in db", async () => {
             // Arrange
+            (requireRoleInClub as any).mockResolvedValue(true);
             (prisma.club.findUnique as any).mockResolvedValue(null);
             // Act
             await controller.deleteClub(mockRequest as Request, mockResponse as Response);
@@ -354,6 +371,7 @@ describe("clubController", () => {
 
         it("should return 204 on successful deletion", async () => {
             // Arrange
+            (requireRoleInClub as any).mockResolvedValue(true);
             (prisma.club.findUnique as any).mockResolvedValue({ "id": "test-id" });
             (prisma.club.delete as any).mockResolvedValue({ "id": "test-id" });
             // Act
@@ -369,6 +387,7 @@ describe("clubController", () => {
 
         it("should return status 500 if generic exception", async () => {
             // Arrange
+            (requireRoleInClub as any).mockResolvedValue(true);
             (prisma.club.findUnique as any).mockResolvedValue({ "id": "test-id" });
             (prisma.club.delete as any).mockRejectedValue(
                 new Error("uh oh broken")
