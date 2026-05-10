@@ -23,21 +23,32 @@ const MemberScores = () => {
     const [ error, setError ] = useState(null);
 
     const filterBarProps = useScoreFilters(scores);
-    const { filteredScores } = filterBarProps;
+    const { filters } = filterBarProps;
 
     const paginationProps = usePagination();
     const {
         loadNumber,
-        currentPage, setTotalPages,
+        currentPage, setCurrentPage,
+        setTotalPages,
         totalCount, setTotalCount
     } = paginationProps;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filters, setCurrentPage]);
 
     const fetchScores = useCallback(async (page) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            const response = await makeApiCall(`/api/scores/user/${userId}?limit=${loadNumber}&page=${page}`);
+            const queryParams = new URLSearchParams({
+                page,
+                limit: loadNumber,
+                ...filters
+            }).toString();
+
+            const response = await makeApiCall(`/api/scores/user/${userId}?${queryParams}`);
             if (!response) {
                 return; // 401
             };
@@ -58,7 +69,7 @@ const MemberScores = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [ userId, makeApiCall, loadNumber, setTotalPages, setTotalCount ]);
+    }, [ userId, makeApiCall, filters, loadNumber, setTotalPages, setTotalCount ]);
 
     useEffect(() => {
         fetchScores(currentPage);
@@ -135,10 +146,10 @@ const MemberScores = () => {
                     paginationProps={paginationProps}
                 />
 
-                <p className="small">{ totalCount } scores found. { filteredScores.length !== totalCount && <span>({filteredScores.length} displayed.)</span> }</p>
+                <p className="small">{ totalCount } scores found. { scores.length !== totalCount && <span>({scores.length} displayed.)</span> }</p>
             </div>
 
-            { filteredScores.map(score => (
+            { scores.map(score => (
                 <EditableScoreItem
                     key={score.id}
                     score={score}
