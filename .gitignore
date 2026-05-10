@@ -13,3 +13,4 @@ coverage/
 # Report
 /07-Report/res/*.png
 /07-Report/~*.tmp
+*.mp4
