@@ -87,10 +87,22 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
         const { name, value } = e.target;
 
         setFormData(prev => {
-            const newData = { ...prev, [name]: value };
+            if (name !== "dateShot") {
+                return { ...prev, [name]: value };
+            }
 
-            if (name === "dateShot") {
-                newData.dateShot = new Date(value);
+            const newData = { ...prev };
+
+            const parsedDate = new Date(value);
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+
+            if (isNaN(parsedDate.getTime())) {
+                newData.dateShot = prev.dateShot;
+            } else if (parsedDate > today) {
+                newData.dateShot = today;
+            } else {
+                newData.dateShot = parsedDate;
             }
 
             return newData;
@@ -110,6 +122,7 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
                         type="date"
                         name="dateShot"
                         value={formData.dateShot.toISOString().slice(0, 10)}
+                        max={new Date().toISOString().slice(0, 10)}
                         onChange={handleChange}
                         required
                     />
