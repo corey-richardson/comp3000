@@ -46,7 +46,7 @@ export const usePagination = (initialPage = 1) => {
     }, [ loadNumber ]);
 
     return {
-        currentPage,
+        currentPage, setCurrentPage,
         totalPages, setTotalPages,
         totalCount, setTotalCount,
         loadNumber, setLoadNumber,

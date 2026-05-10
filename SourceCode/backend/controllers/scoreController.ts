@@ -296,6 +296,8 @@ export const getScoresByUser = async (request: Request, response: Response) => {
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
     const skip = (page - 1) * limit;
 
+    const { status, venue, bowstyle, ageCategory, sex, search } = request.query;
+
     try {
         const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
             requestingUserId,
@@ -307,15 +309,28 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
+        const whereQuery: any = {
+            userId: targetUserId
+        };
+
+        if (status && status !== "ALL") whereQuery.status = status;
+        if (venue && venue !== "ALL") whereQuery.venue = venue;
+        if (bowstyle && bowstyle !== "ALL") whereQuery.bowstyle = bowstyle;
+        if (ageCategory && ageCategory !== "ALL") whereQuery.ageCategory = ageCategory;
+        if (sex && sex !== "ALL") whereQuery.profile.sex = sex;
+        if (search) {
+            whereQuery.roundName = { contains: search as string, mode: "insensitive" };
+        };
+
         const [scores, totalCount, targetUser, recordsSummary ] = await Promise.all ([
             prisma.score.findMany({
-                where: { userId: targetUserId },
+                where: whereQuery,
                 orderBy: { dateShot: "desc" },
                 take: limit,
                 skip: skip,
             }),
             prisma.score.count({
-                where: { userId: targetUserId }
+                where: whereQuery
             }),
             prisma.profile.findUnique({
                 where: { id: targetUserId },
@@ -371,6 +386,8 @@ export const getScoresByClub = async (request: Request, response: Response) => {
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
     const skip = limit ? (page - 1) * limit : undefined;
 
+    const { status, venue, bowstyle, ageCategory, sex, search } = request.query;
+
     try {
         const isAuthorised = await requireRoleInClub(
             requestingUserId,
@@ -382,15 +399,26 @@ export const getScoresByClub = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
+        const whereQuery: any = {
+            profile: {
+                memberOf: {
+                    some: { clubId, ended_at: null }
+                }
+            }
+        };
+
+        if (status && status !== "ALL") whereQuery.status = status;
+        if (venue && venue !== "ALL") whereQuery.venue = venue;
+        if (bowstyle && bowstyle !== "ALL") whereQuery.bowstyle = bowstyle;
+        if (ageCategory && ageCategory !== "ALL") whereQuery.ageCategory = ageCategory;
+        if (sex && sex !== "ALL") whereQuery.profile.sex = sex;
+        if (search) {
+            whereQuery.roundName = { contains: search as string, mode: "insensitive" };
+        };
+
         const [ scores, totalCount ] = await Promise.all([
             prisma.score.findMany({
-                where: {
-                    profile: {
-                        memberOf: {
-                            some: { clubId, ended_at: null }
-                        }
-                    }
-                },
+                where: whereQuery,
                 include: {
                     profile: {
                         select: {
@@ -405,13 +433,7 @@ export const getScoresByClub = async (request: Request, response: Response) => {
                 skip: skip,
             }),
             prisma.score.count({
-                where: {
-                    profile: {
-                        memberOf: {
-                            some: { clubId, ended_at: null }
-                        }
-                    }
-                }
+                where: whereQuery
             })
         ]);
 

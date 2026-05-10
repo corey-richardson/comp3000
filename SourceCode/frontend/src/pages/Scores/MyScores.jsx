@@ -20,24 +20,34 @@ const MyScores = () => {
     const [ error, setError ] = useState(null);
 
     const filterBarProps = useScoreFilters(scores);
-    const { filteredScores } = filterBarProps;
+    const { filters } = filterBarProps;
 
     const paginationProps = usePagination();
     const {
-        currentPage,
         loadNumber,
+        currentPage, setCurrentPage,
         setTotalPages,
         totalCount, setTotalCount
     } = paginationProps;
 
-    const fetchScores = useCallback(async (currentPage) => {
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filters, setCurrentPage]);
+
+    const fetchScores = useCallback(async (page) => {
         if (!authIsReady || !user?.id) return;
 
         setError(null);
         setIsLoading(true);
 
         try {
-            const response = await makeApiCall(`/api/scores/user/${user.id}?limit=${loadNumber}&page=${currentPage}`);
+            const queryParams = new URLSearchParams({
+                page,
+                limit: loadNumber,
+                ...filters
+            }).toString();
+
+            const response = await makeApiCall(`/api/scores/user/${user.id}?${queryParams}`);
             if (!response) return; // 401
 
             const data = await response.json();
@@ -52,7 +62,7 @@ const MyScores = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [ user?.id, authIsReady, makeApiCall, loadNumber, setTotalCount, setTotalPages ]);
+    }, [ user?.id, authIsReady, makeApiCall, loadNumber, filters, setTotalCount, setTotalPages ]);
 
     useEffect(() => {
         fetchScores(currentPage);
@@ -83,22 +93,12 @@ const MyScores = () => {
                     paginationProps={paginationProps}
                 />
 
-                <p className="small">
-                    {filteredScores.length} {filteredScores.length === 1 ? "score" : "scores"} displayed.
-
-                    {filteredScores.length !== scores.length && (
-                        <span> ({scores.length} loaded)</span>
-                    )}
-
-                    {scores.length !== paginationProps.totalCount && (
-                        <span> ({ totalCount } total)</span>
-                    )}
-                </p>
+                <p className="small">{ totalCount } scores found. { scores.length !== totalCount && <span>({scores.length} displayed.)</span> }</p>
             </header>
 
             <div className={styles.scoreList}>
-                { filteredScores.length > 0 ? (
-                    filteredScores.map(score => (
+                { scores.length > 0 ? (
+                    scores.map(score => (
                         <ScoreItem
                             score={score}
                             onDelete={handleDeletion} key={score.id}
