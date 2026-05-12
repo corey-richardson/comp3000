@@ -44,8 +44,8 @@ export const useScoreFilters = () => {
     const hasActiveFilters = useMemo(() => {
         return Object.keys(INITIAL_FILTERS).some(
             key => filters[key] !== INITIAL_FILTERS[key]
-        );
-    }, [ filters ]);
+        ) || localSearch !== INITIAL_FILTERS.searchPhrase;
+    }, [ filters, localSearch ]);
 
     return {
         filters,
