@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
@@ -6,6 +6,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import RecordsSummaryEditor from "../../components/RecordsSummaryEditor/RecordsSummaryEditor";
 import ScoreFilterBar from "../../components/ScoreFilterBar/ScoreFilterBar";
 import EditableScoreItem from "../../components/ScoreItems/EditableScoreItem";
+import styles from "../../components/ScoreItems/ScoreItem.module.css";
 import { useApi } from "../../hooks/useApi";
 import { usePagination } from "../../hooks/usePagination";
 import { useScoreFilters } from "../../hooks/useScoreFilters";
@@ -23,7 +24,7 @@ const MemberScores = () => {
     const [ error, setError ] = useState(null);
 
     const filterBarProps = useScoreFilters(scores);
-    const { filters } = filterBarProps;
+    const { filters, localSearch } = filterBarProps;
 
     const paginationProps = usePagination();
     const {
@@ -32,6 +33,16 @@ const MemberScores = () => {
         setTotalPages,
         totalCount, setTotalCount
     } = paginationProps;
+
+    const displayedScores = useMemo(() => {
+        if (!localSearch) {
+            return scores;
+        }
+
+        return scores.filter(score =>
+            score.roundName.toLowerCase().includes(localSearch.toLowerCase())
+        );
+    }, [ localSearch, scores ]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -125,15 +136,6 @@ const MemberScores = () => {
         }
     };
 
-    if (isLoading) {
-        return (
-            <div className="content">
-                <Breadcrumbs customLabel="Loading..." />
-                <p className="small centred">Loading scores...</p>
-            </div>
-        );
-    }
-
     return (
         <div className="content">
             <Breadcrumbs customLabel={`${user?.firstName} ${user?.lastName}`} />
@@ -149,15 +151,21 @@ const MemberScores = () => {
                 <p className="small">{ totalCount } scores found. { scores.length !== totalCount && <span>({scores.length} displayed.)</span> }</p>
             </div>
 
-            { scores.map(score => (
-                <EditableScoreItem
-                    key={score.id}
-                    score={score}
-                    onDelete={handleDelete}
-                    onStatusUpdate={handleStatusUpdate}
-                    isPending={isPendingAction}
-                />
-            ))}
+            <div className={styles.scoreList}>
+                { displayedScores.length > 0 ? (
+                    displayedScores.map(score => (
+                        <EditableScoreItem
+                            key={score.id}
+                            score={score}
+                            onDelete={handleDelete}
+                            onStatusUpdate={handleStatusUpdate}
+                            isPending={isPendingAction}
+                        />
+                    ))
+                ) : !isLoading && (
+                    <p className="small centred">No scores to display.</p>
+                )}
+            </div>
 
             <Pagination paginationProps={paginationProps} />
 
