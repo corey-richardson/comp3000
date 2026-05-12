@@ -24,7 +24,7 @@ const MemberScores = () => {
     const [ error, setError ] = useState(null);
 
     const filterBarProps = useScoreFilters(scores);
-    const { filters, localSearch } = filterBarProps;
+    const { filters, displayedScores } = filterBarProps;
 
     const paginationProps = usePagination();
     const {
@@ -33,16 +33,6 @@ const MemberScores = () => {
         setTotalPages,
         totalCount, setTotalCount
     } = paginationProps;
-
-    const displayedScores = useMemo(() => {
-        if (!localSearch) {
-            return scores;
-        }
-
-        return scores.filter(score =>
-            score.roundName.toLowerCase().includes(localSearch.toLowerCase())
-        );
-    }, [ localSearch, scores ]);
 
     useEffect(() => {
         setCurrentPage(1);
