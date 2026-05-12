@@ -1,4 +1,5 @@
 import { RotateCcw } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import styles from "./FilterBar.module.css";
 import EnumMap from "../../lib/enumMap";
@@ -8,6 +9,22 @@ const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
     const { filters, updateFilters, clearFilters, hasActiveFilters } = filterBarProps;
     const { loadNumber, setLoadNumber } = paginationProps;
 
+    const [ localSearch, setLocalSearch ] = useState(filters.searchPhrase);
+
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            if (localSearch !== filters.searchPhrase) {
+                updateFilters("searchPhrase", localSearch);
+            }
+        }, 500);
+
+        return () => clearTimeout(debounceTimer);
+    }, [ localSearch, updateFilters, filters.searchPhrase ]);
+
+    useEffect(() => {
+        setLocalSearch(filters.searchPhrase);
+    }, [ filters.searchPhrase ]);
+
     return (
         <div className={styles.filterContainer}>
 
@@ -15,8 +32,8 @@ const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
                 <input
                     type="text"
                     placeholder="Search round name..."
-                    value={filters.searchPhrase}
-                    onChange={(e) => updateFilters("searchPhrase", e.target.value)}
+                    value={localSearch}
+                    onChange={(e) => setLocalSearch(e.target.value)}
                     className={styles.searchInput}
                 />
 

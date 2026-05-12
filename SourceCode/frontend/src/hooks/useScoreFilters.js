@@ -23,13 +23,16 @@ export const useScoreFilters = () => {
     const [ filters, setFilters ] = useState(INITIAL_FILTERS);
 
     const updateFilters = (key, value) => {
+        console.log(key, value);
         setFilters(prev => ({ ...prev, [key]: value }));
     };
 
     const clearFilters = () => setFilters(INITIAL_FILTERS);
 
     const hasActiveFilters = useMemo(() => {
-        return JSON.stringify(filters) !== JSON.stringify(INITIAL_FILTERS);
+        return Object.keys(INITIAL_FILTERS).some(
+            key => filters[key] !== INITIAL_FILTERS[key]
+        );
     }, [ filters ]);
 
     return {

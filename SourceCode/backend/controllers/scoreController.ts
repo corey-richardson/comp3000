@@ -296,7 +296,7 @@ export const getScoresByUser = async (request: Request, response: Response) => {
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
     const skip = (page - 1) * limit;
 
-    const { status, venue, bowstyle, ageCategory, sex, search } = request.query;
+    const { status, venue, bowstyle, ageCategory, sex, searchPhrase } = request.query;
 
     try {
         const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
@@ -318,8 +318,8 @@ export const getScoresByUser = async (request: Request, response: Response) => {
         if (bowstyle && bowstyle !== "ALL") whereQuery.bowstyle = bowstyle;
         if (ageCategory && ageCategory !== "ALL") whereQuery.ageCategory = ageCategory;
         if (sex && sex !== "ALL") whereQuery.profile.sex = sex;
-        if (search) {
-            whereQuery.roundName = { contains: search as string, mode: "insensitive" };
+        if (searchPhrase) {
+            whereQuery.roundName = { contains: searchPhrase as string, mode: "insensitive" };
         };
 
         const [scores, totalCount, targetUser, recordsSummary ] = await Promise.all ([
@@ -386,7 +386,7 @@ export const getScoresByClub = async (request: Request, response: Response) => {
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
     const skip = limit ? (page - 1) * limit : undefined;
 
-    const { status, venue, bowstyle, ageCategory, sex, search } = request.query;
+    const { status, venue, bowstyle, ageCategory, sex, searchPhrase } = request.query;
 
     try {
         const isAuthorised = await requireRoleInClub(
@@ -412,8 +412,8 @@ export const getScoresByClub = async (request: Request, response: Response) => {
         if (bowstyle && bowstyle !== "ALL") whereQuery.bowstyle = bowstyle;
         if (ageCategory && ageCategory !== "ALL") whereQuery.ageCategory = ageCategory;
         if (sex && sex !== "ALL") whereQuery.profile.sex = sex;
-        if (search) {
-            whereQuery.roundName = { contains: search as string, mode: "insensitive" };
+        if (searchPhrase) {
+            whereQuery.roundName = { contains: searchPhrase as string, mode: "insensitive" };
         };
 
         const [ scores, totalCount ] = await Promise.all([
