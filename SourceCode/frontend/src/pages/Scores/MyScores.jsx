@@ -82,15 +82,6 @@ const MyScores = () => {
         setScores(prev => prev.filter(score => score.id !== id));
     };
 
-    if (isLoading) {
-        return (
-            <div className="content">
-                <Breadcrumbs customLabel="Loading..." />
-                <p className="small centred">Loading scores...</p>
-            </div>
-        );
-    }
-
     return (
         <div className="content">
             <Breadcrumbs />
@@ -103,7 +94,14 @@ const MyScores = () => {
                     paginationProps={paginationProps}
                 />
 
-                <p className="small">{ totalCount } scores found. { scores.length !== totalCount && <span>({scores.length} displayed.)</span> }</p>
+                <p className="small">
+                    { isLoading && scores.length === 0
+                        ? "Searching..."
+                        : (
+                            <>{ totalCount } scores found. { scores.length !== totalCount && <span>({scores.length} displayed.)</span> }</>
+                        )
+                    }
+                </p>
             </header>
 
             <div className={styles.scoreList}>
@@ -115,7 +113,7 @@ const MyScores = () => {
                             isEditable={true}
                         />
                     ))
-                ) : (
+                ) : !isLoading && (
                     <p className="small centred">No scores to display. Submit one <Link to="../scores/submit">here</Link>.</p>
                 )}
             </div>
