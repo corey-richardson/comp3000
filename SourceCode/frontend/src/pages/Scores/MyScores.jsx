@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
@@ -19,8 +19,8 @@ const MyScores = () => {
     const [ isLoading, setIsLoading ] = useState(true);
     const [ error, setError ] = useState(null);
 
-    const filterBarProps = useScoreFilters(scores);
-    const { filters } = filterBarProps;
+    const filterBarProps = useScoreFilters();
+    const { filters, localSearch } = filterBarProps;
 
     const paginationProps = usePagination();
     const {
@@ -29,6 +29,16 @@ const MyScores = () => {
         setTotalPages,
         totalCount, setTotalCount
     } = paginationProps;
+
+    const displayedScores = useMemo(() => {
+        if (!localSearch) {
+            return scores;
+        }
+
+        return scores.filter(score =>
+            score.roundName.toLowerCase().includes(localSearch.toLowerCase())
+        );
+    }, [ localSearch, scores ]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -97,8 +107,8 @@ const MyScores = () => {
             </header>
 
             <div className={styles.scoreList}>
-                { scores.length > 0 ? (
-                    scores.map(score => (
+                { displayedScores.length > 0 ? (
+                    displayedScores.map(score => (
                         <ScoreItem
                             score={score}
                             onDelete={handleDeletion} key={score.id}

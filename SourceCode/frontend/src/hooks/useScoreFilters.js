@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 const INITIAL_FILTERS = {
     searchPhrase: "",
@@ -21,13 +21,25 @@ const INITIAL_FILTERS = {
  */
 export const useScoreFilters = () => {
     const [ filters, setFilters ] = useState(INITIAL_FILTERS);
+    const [ localSearch, setLocalSearch ] = useState(INITIAL_FILTERS.searchPhrase);
+
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            setFilters(prev => ({ ...prev, searchPhrase: localSearch }));
+        }, 500);
+
+        return () => clearTimeout(debounceTimer);
+    }, [ localSearch ]);
 
     const updateFilters = (key, value) => {
         console.log(key, value);
         setFilters(prev => ({ ...prev, [key]: value }));
     };
 
-    const clearFilters = () => setFilters(INITIAL_FILTERS);
+    const clearFilters = () => {
+        setFilters(INITIAL_FILTERS);
+        setLocalSearch(INITIAL_FILTERS.searchPhrase);
+    };
 
     const hasActiveFilters = useMemo(() => {
         return Object.keys(INITIAL_FILTERS).some(
@@ -37,6 +49,7 @@ export const useScoreFilters = () => {
 
     return {
         filters,
+        localSearch, setLocalSearch,
         updateFilters,
         clearFilters,
         hasActiveFilters
