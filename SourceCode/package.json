@@ -5,6 +5,7 @@
     "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
@@ -14,7 +15,6 @@
   },
   "scripts": {
     "prepare": "cd .. && husky SourceCode/.husky",
-    
     "lint": "concurrently --kill-others-on-fail -n \"JS,CSS,PY\" -c \"yellow,blue,green\" \"npm run lint:js\" \"npm run lint:css\" \"npm run lint:python\"",
     "lint:fix": "concurrently --kill-others-on-fail -n \"JS,CSS,PY\" -c \"yellow,blue,green\" \"npm run lint:js:fix\" \"npm run lint:css:fix\" \"npm run lint:python:fix\"",
     "lint:js": "eslint . --max-warnings 0",
@@ -23,7 +23,6 @@
     "lint:css:fix": "stylelint \"**/*.module.css\" --fix",
     "lint:python": "python -m flake8 --config=archeryutils-service/.flake8 archeryutils-service/ && python -m black --check archeryutils-service/ && python -m isort --check-only archeryutils-service/",
     "lint:python:fix": "python -m isort archeryutils-service/ && python -m black archeryutils-service/ && python -m flake8 --config=archeryutils-service/.flake8 archeryutils-service/",
-    
     "test:frontend": "npm test --prefix frontend -- --coverage",
     "test:backend": "npm test --prefix backend -- --coverage",
     "test:python": "docker exec -it archeryutils-service python -m pytest --cov=. --cov-report=html --cov-report=term",

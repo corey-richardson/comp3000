@@ -15,7 +15,7 @@ const ScoreFilterBar = ({ filterBarProps, paginationProps }) => {
 
     useEffect(() => {
         setLocalSearch(filters.searchPhrase);
-    }, [ filters.searchPhrase ]);
+    }, [ filters.searchPhrase, setLocalSearch ]);
 
     return (
         <div className={styles.filterContainer}>

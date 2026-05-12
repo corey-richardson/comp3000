@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import globals from "globals";
 import reactPlugin from "eslint-plugin-react";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
 import importPlugin from "eslint-plugin-import";
 import tseslint from "typescript-eslint";
 
@@ -41,7 +42,10 @@ export default tseslint.config(
     },
     {
         files: ["**/frontend/src/**/*.{js,jsx,ts,tsx}"],
-        plugins: { react: reactPlugin },
+        plugins: {
+            react: reactPlugin,
+            "react-hooks": reactHooksPlugin
+        },
         settings: { react: { version: "detect" } },
         rules: {
             ...reactPlugin.configs.flat.recommended.rules,
@@ -49,6 +53,7 @@ export default tseslint.config(
             "react/jsx-uses-react": "off",
             "react/prop-types": "off",
             "react/jsx-uses-vars": "error",
+            "react-hooks/exhaustive-deps": "warn",
         },
     }
 )
