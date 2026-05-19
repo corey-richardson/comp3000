@@ -79,18 +79,18 @@ const EditableScoreItem = ({
 
             <div className={styles.statsGrid}>
                 <div className={styles.statBlock}>
-                    <label>Hits</label>
-                    <span>{score.hits || 0}</span>
-                </div>
-
-                <div className={styles.statBlock}>
-                    <label>10s/9s</label>
-                    <span>{score.tens || 0} / {score.nines || 0}</span>
-                </div>
-
-                <div className={styles.statBlock}>
                     <label>Xs</label>
-                    <span>{score.xs || 0}</span>
+                    <span>{score.xs ?? "-"}</span>
+                </div>
+
+                <div className={styles.statBlock}>
+                    <label>10s / 9s</label>
+                    <span>{score.tens ?? "-"} / {score.nines ?? "-"}</span>
+                </div>
+
+                <div className={styles.statBlock}>
+                    <label>Hits</label>
+                    <span>{score.hits ?? "-"}</span>
                 </div>
             </div>
 
@@ -99,14 +99,14 @@ const EditableScoreItem = ({
                     {score.notes && (
                         <div className={styles.notesBlock}>
                             <label>Notes</label>
-                            <span>{score.notes}</span>
+                            <span>{score.notes ?? "-"}</span>
                         </div>
                     )}
 
                     {score.journal && (
                         <div className={styles.notesBlock}>
                             <label>Journal</label>
-                            <span>{score.journal}</span>
+                            <span>{score.journal ?? "-"}</span>
                         </div>
                     )}
                 </div>

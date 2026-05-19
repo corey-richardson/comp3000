@@ -236,7 +236,7 @@ const ScoreForm = ({ formData, setFormData, handleSubmit, isLoading, error, butt
                 </div>
 
                 <div className={formStyles.fieldGroup}>
-                    <label>Xs + Tens:</label>
+                    <label>Tens:</label>
                     <input
                         type="number"
                         step="1"

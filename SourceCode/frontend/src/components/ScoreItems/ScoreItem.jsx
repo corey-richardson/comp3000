@@ -106,7 +106,7 @@ const ScoreItem = ({
 
                         <div className={styles.statBlock}>
                             <label>10s / 9s</label>
-                            <span>{score.tens ?? 0} / {score.nines ?? 0}</span>
+                            <span>{score.tens ?? "-"} / {score.nines ?? "-"}</span>
                         </div>
 
                         <div className={styles.statBlock}>
