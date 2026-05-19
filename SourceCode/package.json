@@ -26,6 +26,6 @@
     "test:frontend": "npm test --prefix frontend -- --coverage",
     "test:backend": "npm test --prefix backend -- --coverage",
     "test:python": "docker exec -it archeryutils-service python -m pytest --cov=. --cov-report=html --cov-report=term",
-    "test:all": "concurrently -n \"FRONTEND,BACKEND,PYTHON\" -c \"yellow,blue,green\" \"npm run test:frontend\" \"npm run test:backend\""
+    "test": "concurrently -n \"FRONTEND,BACKEND,PYTHON\" -c \"yellow,blue,green\" \"npm run test:frontend\" \"npm run test:backend\""
   }
 }
