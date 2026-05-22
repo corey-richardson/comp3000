@@ -6,11 +6,50 @@ import { refreshRecordsSummary } from "../services/recordsSummaryService";
 import { requireRoleInClub, requireRoleInSharedClubOrDataOwnership } from "../utils/authUtils";
 import { toPrismaAge, toPrismaSex, toPythonAge, toPythonSex } from "../utils/enumAdapter";
 
+// HELPER METHOD
+
 const stripJournal = <T extends Score>(scores: T[]) => {
     return scores.map(score => ({
         ...score,
         journal: null
     }));
+};
+
+// D.R.Y METHODS
+
+const scoreFilteringWhereQueryBuilder = (query: any): any => {
+    const { status, venue, bowstyle, ageCategory, sex, searchPhrase, startDate, endDate } = query;
+    const whereQuery: any = {};
+
+    if (status && status !== "ALL") whereQuery.status = status;
+    if (venue && venue !== "ALL") whereQuery.venue = venue;
+    if (bowstyle && bowstyle !== "ALL") whereQuery.bowstyle = bowstyle;
+    if (ageCategory && ageCategory !== "ALL") whereQuery.ageCategory = ageCategory;
+    if (sex && sex !== "ALL") whereQuery.profile.sex = sex;
+    if (searchPhrase) {
+        whereQuery.roundName = { contains: searchPhrase as string, mode: "insensitive" };
+    };
+    if (startDate || endDate) {
+        whereQuery.dateShot = {};
+        if (startDate) {
+            whereQuery.dateShot.gte = new Date(startDate as string);
+        }
+        if (endDate) {
+            const end = new Date(endDate as string);
+            end.setHours(23, 59, 59, 999);
+            whereQuery.dateShot.lte = end;
+        }
+    }
+
+    return whereQuery;
+};
+
+const getPaginationParams = (query: any) => {
+    const limit = query.limit ? parseInt(query.limit as string) : 25;
+    const page = query.page ? parseInt(query.page as string) : 1;
+    const skip = (page - 1) * limit;
+
+    return { limit, page, skip };
 };
 
 export const createScore = async (request: Request, response: Response) => {
@@ -291,12 +330,7 @@ export const deleteScore = async (request: Request, response: Response) => {
 export const getScoresByUser = async (request: Request, response: Response) => {
     const { userId: targetUserId } = request.params as { userId: string };
     const requestingUserId = (request as any).user.id;
-
-    const limit = request.query.limit ? parseInt(request.query.limit as string) : 25;
-    const page = request.query.page ? parseInt(request.query.page as string) : 1;
-    const skip = (page - 1) * limit;
-
-    const { status, venue, bowstyle, ageCategory, sex, searchPhrase, startDate, endDate } = request.query;
+    const { limit, page, skip } = getPaginationParams(request.query);
 
     try {
         const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
@@ -309,29 +343,8 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
-        const whereQuery: any = {
-            userId: targetUserId
-        };
-
-        if (status && status !== "ALL") whereQuery.status = status;
-        if (venue && venue !== "ALL") whereQuery.venue = venue;
-        if (bowstyle && bowstyle !== "ALL") whereQuery.bowstyle = bowstyle;
-        if (ageCategory && ageCategory !== "ALL") whereQuery.ageCategory = ageCategory;
-        if (sex && sex !== "ALL") whereQuery.profile.sex = sex;
-        if (searchPhrase) {
-            whereQuery.roundName = { contains: searchPhrase as string, mode: "insensitive" };
-        };
-        if (startDate || endDate) {
-            whereQuery.dateShot = {};
-            if (startDate) {
-                whereQuery.dateShot.gte = new Date(startDate as string);
-            }
-            if (endDate) {
-                const end = new Date(endDate as string);
-                end.setHours(23, 59, 59, 999);
-                whereQuery.dateShot.lte = end;
-            }
-        }
+        const whereQuery = scoreFilteringWhereQueryBuilder(request.query);
+        whereQuery.userId = targetUserId;
 
         const [scores, totalCount, targetUser, recordsSummary ] = await Promise.all ([
             prisma.score.findMany({
@@ -393,12 +406,7 @@ export const getScoresByUser = async (request: Request, response: Response) => {
 export const getScoresByClub = async (request: Request, response: Response) => {
     const { clubId } = request.params as { clubId: string };
     const requestingUserId = (request as any).user.id;
-
-    const limit = request.query.limit ? parseInt(request.query.limit as string) : 25;
-    const page = request.query.page ? parseInt(request.query.page as string) : 1;
-    const skip = limit ? (page - 1) * limit : undefined;
-
-    const { status, venue, bowstyle, ageCategory, sex, searchPhrase, startDate, endDate } = request.query;
+    const { limit, page, skip } = getPaginationParams(request.query);
 
     try {
         const isAuthorised = await requireRoleInClub(
@@ -411,33 +419,13 @@ export const getScoresByClub = async (request: Request, response: Response) => {
             return response.status(403).json({ error: "Forbidden." });
         }
 
-        const whereQuery: any = {
-            profile: {
-                memberOf: {
-                    some: { clubId, ended_at: null }
-                }
+        const whereQuery = scoreFilteringWhereQueryBuilder(request.query);
+        whereQuery.profile = {
+            ...whereQuery.profile,
+            memberOf: {
+                some: { clubId, ended_at: null }
             }
         };
-
-        if (status && status !== "ALL") whereQuery.status = status;
-        if (venue && venue !== "ALL") whereQuery.venue = venue;
-        if (bowstyle && bowstyle !== "ALL") whereQuery.bowstyle = bowstyle;
-        if (ageCategory && ageCategory !== "ALL") whereQuery.ageCategory = ageCategory;
-        if (sex && sex !== "ALL") whereQuery.profile.sex = sex;
-        if (searchPhrase) {
-            whereQuery.roundName = { contains: searchPhrase as string, mode: "insensitive" };
-        };
-        if (startDate || endDate) {
-            whereQuery.dateShot = {};
-            if (startDate) {
-                whereQuery.dateShot.gte = new Date(startDate as string);
-            }
-            if (endDate) {
-                const end = new Date(endDate as string);
-                end.setHours(23, 59, 59, 999);
-                whereQuery.dateShot.lte = end;
-            }
-        }
 
         const [ scores, totalCount ] = await Promise.all([
             prisma.score.findMany({
