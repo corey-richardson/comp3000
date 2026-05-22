@@ -296,7 +296,7 @@ export const getScoresByUser = async (request: Request, response: Response) => {
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
     const skip = (page - 1) * limit;
 
-    const { status, venue, bowstyle, ageCategory, sex, searchPhrase } = request.query;
+    const { status, venue, bowstyle, ageCategory, sex, searchPhrase, startDate, endDate } = request.query;
 
     try {
         const isAuthorised = await requireRoleInSharedClubOrDataOwnership(
@@ -321,6 +321,17 @@ export const getScoresByUser = async (request: Request, response: Response) => {
         if (searchPhrase) {
             whereQuery.roundName = { contains: searchPhrase as string, mode: "insensitive" };
         };
+        if (startDate || endDate) {
+            whereQuery.dateShot = {};
+            if (startDate) {
+                whereQuery.dateShot.gte = new Date(startDate as string);
+            }
+            if (endDate) {
+                const end = new Date(endDate as string);
+                end.setHours(23, 59, 59, 999);
+                whereQuery.dateShot.lte = end;
+            }
+        }
 
         const [scores, totalCount, targetUser, recordsSummary ] = await Promise.all ([
             prisma.score.findMany({
@@ -374,6 +385,7 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             }
         });
     } catch (_error: any) {
+        console.log(_error);
         return response.status(500).json({ error: "Internal Server Error." });
     }
 };
@@ -386,7 +398,7 @@ export const getScoresByClub = async (request: Request, response: Response) => {
     const page = request.query.page ? parseInt(request.query.page as string) : 1;
     const skip = limit ? (page - 1) * limit : undefined;
 
-    const { status, venue, bowstyle, ageCategory, sex, searchPhrase } = request.query;
+    const { status, venue, bowstyle, ageCategory, sex, searchPhrase, startDate, endDate } = request.query;
 
     try {
         const isAuthorised = await requireRoleInClub(
@@ -415,6 +427,17 @@ export const getScoresByClub = async (request: Request, response: Response) => {
         if (searchPhrase) {
             whereQuery.roundName = { contains: searchPhrase as string, mode: "insensitive" };
         };
+        if (startDate || endDate) {
+            whereQuery.dateShot = {};
+            if (startDate) {
+                whereQuery.dateShot.gte = new Date(startDate as string);
+            }
+            if (endDate) {
+                const end = new Date(endDate as string);
+                end.setHours(23, 59, 59, 999);
+                whereQuery.dateShot.lte = end;
+            }
+        }
 
         const [ scores, totalCount ] = await Promise.all([
             prisma.score.findMany({
