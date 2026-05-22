@@ -1,5 +1,5 @@
 import { Save, CheckCircle, AlertCircle, Warehouse, Sun } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "./RecordsSummaryEditor.module.css";
 import { useApi } from "../../hooks/useApi";
@@ -27,7 +27,7 @@ const ClassificationGroup = ({
     onFieldChange
 }) => {
 
-    const Icon = venue === "INDOOR" ? Warehouse : Sun;
+    const Icon = venue === "indoor" ? Warehouse : Sun;
 
     return (
         <div className={styles.dataGroup}>
@@ -85,6 +85,15 @@ const RecordsSummaryEditor = ({ userId, initialSummary }) => {
     const [ isSubmitting, setIsSubmitting ] = useState(false);
     const [ status, setStatus ] = useState({ type: null, message: "" });
     const [ activeBowstyleIndex, setActiveBowstyleIndex ] = useState(0);
+
+    useEffect(() => {
+        if (initialSummary) {
+            setFormData({
+                notes: initialSummary.notes || "",
+                bowstyleSummaries: initialSummary.bowstyleSummaries || [],
+            });
+        }
+    }, [ initialSummary ]);
 
     const handleNotesChange = (e) => {
         setFormData(prev => ({ ...prev, notes: e.target.value }));
