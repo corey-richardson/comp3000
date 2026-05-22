@@ -398,7 +398,6 @@ export const getScoresByUser = async (request: Request, response: Response) => {
             }
         });
     } catch (_error: any) {
-        console.log(_error);
         return response.status(500).json({ error: "Internal Server Error." });
     }
 };
