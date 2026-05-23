@@ -1,3 +1,5 @@
+/* CONTAINERS */
+
 .filterContainer {
     display: flex;
     gap: 1rem;
@@ -8,29 +10,36 @@
     align-items: stretch;
 }
 
+.filterRow {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+}
+
+/* FORM INPUTS AND SELECTS */
+
+.searchInput,
+.filterRow select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+}
+
 .searchInput {
     flex: 2;
     min-width: 200px;
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    box-sizing: border-box;
 }
 
-.filterContainer select {
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+.filterRow select {
+    flex: 1;
+    min-width: 120px;
     background: white;
-    box-sizing: border-box;
+    cursor: pointer;
 }
 
-.searchInput:focus, 
-.filterContainer select:focus,
-.dateGroup input:focus-within {
-    outline: none;
-    border-color: var(--primary-color);
-}
+/* DATES */
 
 .dateGroup {
     display: flex;
@@ -48,7 +57,6 @@
 
 .inputWrapper {
     display: flex;
-    flex-direction: column;
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
@@ -76,6 +84,8 @@
     width: 100%;
 }
 
+/* INTERACTIONS */
+
 .clearButton {
     display: flex;
     align-items: center;
@@ -85,6 +95,7 @@
     background: white;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
+    cursor: pointer;
 }
 
 .clearButton:hover:not(:disabled) {
@@ -93,17 +104,14 @@
     box-shadow: 0 4px 12px var(--blue-shadow);
 }
 
-.filterRow {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    width: 100%;
+.searchInput:focus, 
+.filterRow select:focus,
+.dateGroup:focus-within {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
-.filterRow select {
-    flex: 1;
-    min-width: 120px;
-}
+/* MEDIA QUERIES RWD */
 
 @media (width <= 1167px) {
     .filterContainer {
@@ -115,7 +123,7 @@
         flex: 1 1 100%;
     }
 
-    .filterContainer select {
+    .filterRow select {
         flex: 1 1 calc(50% - 0.25rem);
     }
 
@@ -126,14 +134,21 @@
 }
 
 @media (width <= 768px) {
-    .filterContainer select,
-    .dateGroup {
-        flex: 1 1 100%;
+    .filterRow select,
+    .dateGroup,
+    .searchInput,
+    .clearButton,
+    .filterRow {
         width: 100%;
     }
     
-    .searchInput {
-        width: 100%;
+    .filterRow select,
+    .dateGroup {
+        flex: 1 1 100%;
+    }
+    
+    .filterRow {
+        flex-direction: column;
     }
 
     .dateGroup {
@@ -155,16 +170,6 @@
 
     .clearButton {
         flex: 1 1 100%;
-        width: 100%;
         justify-content: center;
-    }
-
-    .filterRow {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .filterRow select {
-        width: 100%;
     }
 }
