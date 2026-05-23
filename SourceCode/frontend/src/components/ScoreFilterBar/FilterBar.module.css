@@ -14,6 +14,7 @@
     padding: 0.5rem;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
+    box-sizing: border-box;
 }
 
 .filterContainer select {
@@ -21,6 +22,7 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     background: white;
+    box-sizing: border-box;
 }
 
 .searchInput:focus, 
@@ -40,7 +42,8 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     box-sizing: border-box;
-    min-width: fit-content;
+    min-width: 0;
+    width: 100%;
 }
 
 .inputWrapper {
@@ -49,6 +52,7 @@
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
+    width: 100%;
 }
 
 .inputWrapper:first-child {
@@ -68,6 +72,8 @@
     font-family: inherit;
     height: 100%;
     cursor: pointer;
+    flex: 1;
+    width: 100%;
 }
 
 .clearButton {
@@ -123,22 +129,39 @@
     .filterContainer select,
     .dateGroup {
         flex: 1 1 100%;
+        width: 100%;
     }
     
+    .searchInput {
+        width: 100%;
+    }
+
     .dateGroup {
         flex-direction: column;
         height: auto;
         padding: 0.75rem;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .inputWrapper {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .inputWrapper input {
+        text-align: right;
     }
 
     .clearButton {
         flex: 1 1 100%;
+        width: 100%;
         justify-content: center;
     }
 
     .filterRow {
         flex-direction: column;
+        width: 100%;
     }
     
     .filterRow select {
