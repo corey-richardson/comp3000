@@ -74,10 +74,11 @@ const InviteActivity = ({ activity, isLoading, error }) => {
                                     return null;
                                 })()}
                                 {" by "}
-                                <strong>{ inviterName }</strong>.
-                                Their invite { verb } <strong>{ label }</strong> on&nbsp;
+                                <strong>{ inviterName }</strong>
+                                {" on "}
                                 <strong>{ new Date(date).toLocaleDateString() }</strong> at&nbsp;
                                 <strong>{ new Date(date).toLocaleTimeString() }</strong>.
+                                Their invite { verb } <strong>{ label }</strong>.
                             </p>
                         </div>
                     );
