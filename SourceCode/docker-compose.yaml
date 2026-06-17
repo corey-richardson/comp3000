@@ -53,6 +53,7 @@ services:
   frontend:
     build: 
       context: ./frontend
+      target: development
     container_name: frontend
     volumes:
       - ./frontend:/app:rw

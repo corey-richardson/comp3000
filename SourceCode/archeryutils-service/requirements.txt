@@ -3,6 +3,7 @@ archeryutils==2.0.0
 blinker==1.9.0
 click==8.3.2
 coverage==7.13.5
+gunicorn==22.0.0
 Flask==3.1.3
 iniconfig==2.3.0
 itsdangerous==2.2.0
